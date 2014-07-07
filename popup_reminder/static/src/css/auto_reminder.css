@@ -1,0 +1,44 @@
+.alaram_table tbody > tr:nth-child(odd) {
+background-color: #f0f0fa;
+background-color: #efeff8;
+background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0fa), to(#eeeef6));
+background-image: -webkit-linear-gradient(top, #f0f0fa, #eeeef6);
+background-image: -moz-linear-gradient(top, #f0f0fa, #eeeef6);
+background-image: -ms-linear-gradient(top, #f0f0fa, #eeeef6);
+background-image: -o-linear-gradient(top, #f0f0fa, #eeeef6);
+background-image: linear-gradient(to bottom, #f0f0fa, #eeeef6);
+    border-top: 1px solid #dddddd ! important;
+}
+
+.alaram_table{
+    width:100%;
+}
+
+.go_button, .accept_button {
+    color: #ffffff;
+    background-color: #0064cd;
+    background-repeat: repeat-x;
+    background-image: -khtml-gradient(linear, left top, left bottom, from(#049cdb), to(#0064cd));
+    background-image: -moz-linear-gradient(top, #049cdb, #0064cd);
+    background-image: -ms-linear-gradient(top, #049cdb, #0064cd);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #049cdb), color-stop(100%, #0064cd));
+    background-image: -webkit-linear-gradient(top, #049cdb, #0064cd);
+    background-image: -o-linear-gradient(top, #049cdb, #0064cd);
+    background-image: linear-gradient(top, #049cdb, #0064cd);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#049cdb', endColorstr='#0064cd', GradientType=0);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    border-color: #0064cd #0064cd #003f81;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    border-radius: 1em;
+    cursor: pointer;
+    width: 80px;
+    height: 22px;
+}
+
+.go_button:hover, .accept_button:hover {
+    background: #049cdb;
+}
+
+.click_button{
+    background: #049cdb ! important;
+}

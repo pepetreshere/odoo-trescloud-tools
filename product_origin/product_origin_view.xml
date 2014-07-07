@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+		<record id="product_origin_tree_view" model="ir.ui.view">
+            <field name="name">product.product.origin.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field eval="9" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Products">
+                		<field name="country_id"/>
+                 </tree>
+            </field>
+        </record>
+         <record id="product_origin_form_view" model="ir.ui.view">
+            <field name="name">product.origin.form</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//div[@name='ean']" position="after">
+            		<field name="country_id"/>
+            	</xpath>
+            </field>
+         </record>
+         
+         <record id="product_origin_search_form_view" model="ir.ui.view">
+            <field name="name">product.origin.search.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//filter[@string='Company']" position="after">
+            		<filter string='Country of Origin' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'country_id'}"/>
+            	</xpath>
+            </field>
+         </record>
+</data>
+</openerp>
+

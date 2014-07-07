@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data noupdate="1">
+		
+		<!-- !!!!!!!!!!!!!!!!!!!!!!!!!  REPORTE - LINEAS DE FACTURA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+		<record id="line_invoices_report" model="ir.actions.report.xml">
+			<field name="name">Lineas de facturas</field>
+			<field name="type">ir.actions.report.xml</field>
+			<field name="model">account.invoice</field>
+			<field name="report_name">print_report_line_invoices</field>
+			<field name="report_type">aeroo</field>
+			<field name="in_format">oo-ods</field>
+			<field name='out_format' eval="ref('report_aeroo_ooo.report_mimetypes_xls_odt')" />
+		    <field name="report_rml">trescloud_reportes_generales/report/report_lines_invoices.ods</field>
+			<field name="parser_state">default</field>
+			<field name="tml_source">file</field>
+		</record>
+		
+		    <!-- Necesario para que se muestre automaticamente en el botón imprimir que viene por defecto en openerp -->
+		<record id="ir_values_line_invoices_report" model="ir.values">
+			<field name="name">print_report_line_invoices</field>
+			<field name="key2">client_print_multi</field>
+			<field eval="1" name="object"/>
+			<field eval="'ir.actions.report.xml,'+str(line_invoices_report)" name="value" />
+			<field name="key">action</field>
+			<field name="model">account.invoice</field>
+		</record>
+		
+		
+		<!-- !!!!!!!!!!!!!!!!!!!!!!!!!  REPORTE - RETENCIONES EN FACTURAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+		<record id="retention_invoices_report" model="ir.actions.report.xml">
+			<field name="name">Retenciones en facturas</field>
+			<field name="type">ir.actions.report.xml</field>
+			<field name="model">account.invoice</field>
+			<field name="report_name">print_report_retention_invoices</field>
+			<field name="report_type">aeroo</field>
+			<field name="in_format">oo-ods</field>
+			<field name='out_format' eval="ref('report_aeroo_ooo.report_mimetypes_xls_odt')" />
+			<field name="report_rml">trescloud_reportes_generales/report/report_invoices.ods</field>
+			<field name="parser_state">default</field>
+			<field name="tml_source">file</field>
+		</record>
+		
+		<record id="ir_values_retention_invoices_report" model="ir.values">
+			<field name="name">print_report_retention_invoices</field>
+			<field name="key2">client_print_multi</field>
+			<field eval="1" name="object"/>
+			<field eval="'ir.actions.report.xml,'+str(retention_invoices_report)" name="value" />
+			<field name="key">action</field>
+			<field name="model">account.invoice</field>
+		</record>
+		
+		<!-- !!!!!!!!!!!!!!!!!!!!!!!!!  REPORTE - DETALLE DE FACTURAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+		<record id="details_invoices_report" model="ir.actions.report.xml">
+			<field name="name">Detalle de Facturas</field>
+			<field name="type">ir.actions.report.xml</field>
+			<field name="model">account.invoice</field>
+			<field name="report_name">print_report_details_invoices</field>
+			<field name="report_type">aeroo</field>
+			<field name="in_format">oo-ods</field>
+			<field name='out_format' eval="ref('report_aeroo_ooo.report_mimetypes_xls_odt')" />
+		    <field name="report_rml">trescloud_reportes_generales/report/report_details_invoices.ods</field>
+			<field name="parser_state">default</field>
+			<field name="tml_source">file</field>
+		</record>
+		
+		    <!-- Necesario para que se muestre automaticamente en el botón imprimir que viene por defecto en openerp -->
+		<record id="print_report_details_invoices" model="ir.values">
+			<field name="name">print_report_details_invoices</field>
+			<field name="key2">client_print_multi</field>
+			<field eval="1" name="object"/>
+			<field eval="'ir.actions.report.xml,'+str(details_invoices_report)" name="value" />
+			<field name="key">action</field>
+			<field name="model">account.invoice</field>
+		</record>
+
+		<!-- !!!!!!!!!!!!!!!!!!!!!!!!!  REPORTE - IMPUESTOS DE FACTURAS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+		<record id="tax_invoices_report" model="ir.actions.report.xml">
+			<field name="name">Impuestos de Facturas</field>
+			<field name="type">ir.actions.report.xml</field>
+			<field name="model">account.invoice</field>
+			<field name="report_name">print_report_tax_invoices</field>
+			<field name="report_type">aeroo</field>
+			<field name="in_format">oo-ods</field>
+			<field name='out_format' eval="ref('report_aeroo_ooo.report_mimetypes_xls_odt')" />
+		    <field name="report_rml">trescloud_reportes_generales/report/report_tax_lines_invoices.ods</field>
+			<field name="parser_state">default</field>
+			<field name="tml_source">file</field>
+		</record>
+		
+		    <!-- Necesario para que se muestre automaticamente en el botón imprimir que viene por defecto en openerp -->
+		<record id="print_report_tax_invoices" model="ir.values">
+			<field name="name">print_report_tax_invoices</field>
+			<field name="key2">client_print_multi</field>
+			<field eval="1" name="object"/>
+			<field eval="'ir.actions.report.xml,'+str(tax_invoices_report)" name="value" />
+			<field name="key">action</field>
+			<field name="model">account.invoice</field>
+		</record>
+		
+		
+		<!-- !!!!!!!!!!!!!!!!!!!!!!!!!  REPORTE - IMPUESTOS DE RETENCIONES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+		<record id="tax_withholds_report" model="ir.actions.report.xml">
+			<field name="name">Impuestos de retenciones</field>
+			<field name="type">ir.actions.report.xml</field>
+			<field name="model">account.withhold</field>
+			<field name="report_name">print_report_tax_withholds</field>
+			<field name="report_type">aeroo</field>
+			<field name="in_format">oo-ods</field>
+			<field name='out_format' eval="ref('report_aeroo_ooo.report_mimetypes_xls_odt')" />
+		    <field name="report_rml">trescloud_reportes_generales/report/report_tax_lines_withhold.ods</field>
+			<field name="parser_state">default</field>
+			<field name="tml_source">file</field>
+		</record>
+		
+		    <!-- Necesario para que se muestre automaticamente en el botón imprimir que viene por defecto en openerp -->
+		<record id="print_report_tax_withholds" model="ir.values">
+			<field name="name">print_report_tax_withholds</field>
+			<field name="key2">client_print_multi</field>
+			<field eval="1" name="object"/>
+			<field eval="'ir.actions.report.xml,'+str(tax_withholds_report)" name="value" />
+			<field name="key">action</field>
+			<field name="model">account.withhold</field>
+		</record>
+		
+		
+
+
+	</data>
+</openerp>

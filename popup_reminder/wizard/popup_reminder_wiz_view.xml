@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="popup_reminder_wiz_form_view">
+            <field name="name">popup.reminder.wiz.form</field>
+            <field name="model">popup.reminder.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Pop Up Reminder Wizard" version="7.0">
+                    <separator string="Alarm" />
+                    <field name="alarm_id"/>
+                    <footer>
+                        <button name="create_reminder" type="object" string="Create" class="oe_highlight"
+                        context="{'alarm_id': alarm_id }"  />
+                        or
+                        <button name="action_cancel" string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="act_popup_reminder_wiz" model="ir.actions.act_window">
+            <field name="name">Pop Up Reminder</field>
+            <field name="res_model">popup.reminder.wiz</field>
+            <field name="view_type">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="popup_reminder_wiz_form_view"/>
+        </record>
+    </data>
+</openerp>

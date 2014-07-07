@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+<t t-name="alarm_popup">
+    <div>
+        <t t-if="widget.reminder.length">
+            <t t-foreach="widget.group" t-as="group">
+	            <FIELDSET class="field_set_1" style="border-radius : 0.0em;box-shadow: 5px 5px 1px 1px #999; margin-top:10px; width:90%;"><LEGEND><div style="color: #7c7bad;"><h2><t t-esc="group.model_name"/></h2></div></LEGEND>
+	            <table class="alaram_table">
+	                <tr style="color:white;width:100%">
+	                    <th style="width:50%;background:gray;">Name</th>
+	                    <th style="width:50%;background:gray;">Time</th>
+	                    <th style="width:50%;background:gray;"></th>
+	                    <th style="width:50%;background:gray;"></th>
+	                </tr>
+	                <t t-foreach="widget.reminder" t-as="reminder">
+	                	<t t-if="group.name == reminder[0]">
+		                    <tr style="height:25px;">  
+		                        <td><b><t t-esc="reminder[2]"/></b></td>
+		                        <td style="text-align: center;"><b><t t-if="reminder[3]" t-esc="reminder[3]"/></b></td>
+		                        <td><button class="go_button" t-att-id="group.name + '_' + reminder[1]">GO</button></td>
+		                        <td><button class="accept_button" t-att-id="reminder[4]" >Accept</button></td>
+		                    </tr>
+	                    </t>
+	                </t>
+	            </table>
+	            </FIELDSET>
+            </t>
+        </t>
+    </div>
+</t>
+
+</templates>

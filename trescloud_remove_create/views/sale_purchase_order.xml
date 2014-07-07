@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="sale_order_form_view">
+			<field name="name">sale.order.form</field>
+			<field name="model">sale.order</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//form/sheet/notebook/page[@string='Order Lines']/field/form/group/group/field[@name='tax_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false,
+						'create_edit': false}</attribute>
+				</xpath>
+				<xpath expr="//form/sheet/notebook/page[@string='Order Lines']/field/tree/field[@name='tax_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false,
+						'create_edit': false}</attribute>
+				</xpath>
+			</field>
+		</record>
+
+	<record model="ir.ui.view" id="purchase_order_form_view">
+		<field name="name">purchase.order.form</field>
+		<field name="model">purchase.order</field>
+		<field name="type">form</field>
+		<field name="inherit_id" ref="purchase.purchase_order_form" />
+		<field name="arch" type="xml">
+			<xpath
+				expr="//form/sheet/notebook/page[@string='Purchase Order']/field/tree/field[@name='taxes_id']"
+				position="attributes">
+				<attribute name="options">{'limit': 10, 'create': false,
+					'create_edit': false}
+				</attribute>
+			</xpath>
+		</field>
+	</record>
+		
+		
+
+	</data>
+</openerp>
+

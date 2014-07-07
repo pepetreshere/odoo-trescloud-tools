@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+
+		<record model="ir.ui.view" id="account_invoice_customer_form_view">
+			<field name="name">account.invoice.form.customer</field>
+			<field name="model">account.invoice</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="account.invoice_form" />
+			<field name="arch" type="xml">
+				<xpath
+					expr="//form/sheet/notebook/page[@string='Invoice Lines']/field/tree/field[@name='invoice_line_tax_id']"
+					position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false,
+						'create_edit': false}
+					</attribute>
+				</xpath>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="account_invoice_supplier_form_view">
+			<field name="name">account.invoice.form.supplier</field>
+			<field name="model">account.invoice</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="account.invoice_supplier_form" />
+			<field name="arch" type="xml">
+				<xpath
+					expr="//form/sheet/notebook/page[@string='Invoice']/field/tree/field[@name='invoice_line_tax_id']"
+					position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false,
+						'create_edit': false}
+					</attribute>
+				</xpath>
+			</field>
+		</record>
+
+
+	</data>
+</openerp>
+

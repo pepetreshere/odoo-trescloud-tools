@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+    <record id="opportunity2phonecall_view_inherit_trescloud" model="ir.ui.view">
+       <field name="name">crm.opportunity2phonecall.form</field>
+       <field name="model">crm.opportunity2phonecall</field>
+       <field name="inherit_id" ref="crm.opportunity2phonecall_view" />
+       <field name="arch" type="xml">
+	       <xpath expr="//field[@name='date']" position="replace">
+	           <label for="date"/>
+	               <div>                        
+	                   <field name="date" nolabel="1"/> 
+	 				   <button name="%(popup_reminder.act_popup_reminder_wiz)d" string="Create Reminder" type="action" attrs="{'invisible':[('action','!=','schedule')]}" 
+	 				           context="{'default_date': date}" class="oe_highlight"/>
+	               </div> 
+			</xpath> 
+       </field>
+    </record>
+    
+    </data>
+</openerp>

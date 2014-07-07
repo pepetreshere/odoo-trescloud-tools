@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+<record model="ir.ui.view" id="account_asset_asset_form_view">
+			<field name="name">account.asset.asset.form</field>
+			<field name="model">account.asset.asset</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="account_asset.view_account_asset_asset_form" />
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+				<field name="image_medium" widget="image" class="oe_avatar oe_left" />
+				</field>
+				<field name="purchase_date" position="after">
+					<field name="property_stock_asset" />
+					<field name="user_id" />
+					
+				</field>
+
+				<notebook position="inside">
+					<page string="Info">
+						<group colspan="4" col="4">
+							<field name="model" />
+							<field name="manufacturer" />
+							<field name="serial" />
+						</group>
+			
+					</page>
+				</notebook>
+				<sheet position="after">
+				<div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+               		  </div>
+				</sheet>
+		
+			</field>
+			
+		</record>
+
+		
+		<!-- Asset Kanban View -->
+		<record model="ir.ui.view" id="assets_kanban_view">
+			<field name="name">Asset Kanban</field>
+			<field name="model">account.asset.asset</field>
+			<field name="arch" type="xml">
+				<kanban>
+					<templates>
+						<t t-name="kanban-box">
+							<div class="oe_kanban_vignette">
+								<a type="open">
+									<img
+										t-att-src="kanban_image('account.asset.asset', 'image_small', record.id.value)"
+										class="oe_kanban_image" />
+								</a>
+								<div class="oe_kanban_details">
+									<h4>
+										<a type="open">
+											<field name="name" />
+										</a>
+									</h4>
+									<ul>
+										<li>
+											Model:
+											<field name="model"></field>
+										</li>
+										<li>
+											Manufacturer:
+											<field name="manufacturer"></field>
+										</li>
+										<li>
+											Serial No:
+											<field name="serial"></field>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</t>
+					</templates>
+				</kanban>
+			</field>
+		</record>
+
+		 <record model="ir.ui.view" id="account_asset_asset_search_view_inherit">
+                <field name="name">account.asset.asset.form</field>
+                <field name="model">account.asset.asset</field>
+                <field name="inherit_id" ref="account_asset.view_account_asset_search"/>
+                <field name="arch" type="xml">
+					<field name="name" position="after">
+						<field name="name"/>
+						<field name="model"/>
+						<field name="manufacturer"/>
+						<field name="serial"/>
+						<field name="property_stock_asset" />
+						<field name="user_id" />
+						
+						<filter string='Category' icon="terp-stock_symbol-selection"
+						domain="[]" context="{'group_by' : 'category_id'}" />
+						
+						<filter string='Location' icon="terp-stock_symbol-selection"
+						domain="[]" context="{'group_by' : 'property_stock_asset'}" />
+						
+						<filter string='Responsible' icon="terp-stock_symbol-selection"
+						domain="[]" context="{'group_by' : 'user_id'}" />
+					</field>
+				</field>
+            </record>
+
+
+<!-- 		Inicio Cambiando la secuencia de los view mode para presentacion, objeto activos fijos -->
+		<record id="action_account_asset_asset_kanban" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="assets_kanban_view"/>
+            <field name="act_window_id" ref="account_asset.action_account_asset_asset_form"/>
+        </record>
+        <record id="action_account_asset_asset_tree" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="account_asset.view_account_asset_asset_tree"/>
+            <field name="act_window_id" ref="account_asset.action_account_asset_asset_form"/>
+        </record>
+        
+        <record id="action_account_asset_asset_form" model="ir.actions.act_window.view">
+            <field eval="3" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account_asset.view_account_asset_asset_form"/>
+            <field name="act_window_id" ref="account_asset.action_account_asset_asset_form"/>
+        </record>
+ <!-- 		Fin Cambiando la secuencia de los view mode para presentacion -->
+
+
+            
+            <record model="ir.ui.view" id="account_asset_manufacturer_tree_view">
+                <field name="name">account.asset.manufacturer.tree</field>
+                <field name="model">account.asset.manufacturer</field>
+                <field name="type">tree</field>
+                <field name="arch" type="xml">
+                    <tree string="Manufacturer">
+                        <field name="name"/>
+                    </tree>
+                </field>
+            </record>
+
+            <record model="ir.ui.view" id="account_asset_manufacturer_form_view">
+                <field name="name">account.asset.manufacturer.form</field>
+                <field name="model">account.asset.manufacturer</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form string="Manufacturer">
+                        <field name="name" />
+                    </form>
+                </field>
+            </record>
+
+            <record model="ir.ui.view" id="account_asset_manufacturer_search_view">
+                <field name="name">account.asset.manufacturer.form</field>
+                <field name="model">account.asset.manufacturer</field>
+                <field name="type">search</field>
+                <field name="arch" type="xml">
+                    <search string="Manufacturer">
+                        <field name="name"/>
+                    </search>
+                </field>
+            </record>
+            
+            <record model="ir.actions.act_window" id="action_account_asset_manufacturer_tree_view">
+                <field name="name">Manufacturers</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">account.asset.manufacturer</field>
+		   <!-- <field name="domain">[('field_name','condition',criteria)]</field>-->
+                <field name="view_type">form</field>
+                <field name="view_mode">tree,form</field>
+                <field name="view_id" ref="account_asset_manufacturer_tree_view"/>
+            </record>
+
+			<menuitem id="account_asset_manufacturer_menu" name="Fabricante" parent="account_asset.menu_finance_config_assets" action="action_account_asset_manufacturer_tree_view"/>
+
+
+	</data>
+</openerp>

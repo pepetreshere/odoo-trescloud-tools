@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+		
+		<record id="view_crm_meeting_form_inherit_trescloud" model="ir.ui.view" >
+	        <field name="name">CRM - Meetings Form</field>
+	        <field name="model">crm.meeting</field>
+	        <field name="inherit_id" ref="base_calendar.view_crm_meeting_form" />
+	        <field name="arch" type="xml">
+			    <xpath expr="//field[@name='alarm_id']" position="replace">
+		            <label for="alarm_id"/>
+                    <div>                        
+                        <field name="alarm_id" nolabel="1"/> 
+   						<button name="create_reminder" confirm="Want to create a reminder?" string="Create Reminder" type="object" states="draft,open,pending" class="oe_highlight"
+		                context="{'default_date': date, 'active_model': 'crm.meeting', 'alarm_id': alarm_id, 'active_id': active_id }"/>
+                    </div> 
+				</xpath>            
+	        </field>
+	    </record>    
+        
+     </data>
+</openerp>

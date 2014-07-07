@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+    <record id="crm_todo_opportunity_add" model="ir.ui.view">
+        <field name="name">Opportunities - Tasks</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_form_view_oppor" />
+        <field name="arch" type="xml">
+            <data>
+            <page string="Lead" position="after">
+                <page string="Meetings">
+                    <field name="metting_ids" colspan="4" nolabel="1">
+			       		<tree string="Meetings" create="false" delete="false" editable="bottom" >
+			                <field name="name" string="Subject" />
+			                <field name="user_id"/>
+			                <field name="date"/>
+			                <field name="state" invisible="True"/>
+			                <field name="duration"/>
+			                <field name="message_unread" invisible="1"/>
+			            </tree>
+                    </field>
+                </page>
+                <page string="Phone Calls">
+                    <field name="phone_ids" colspan="4" nolabel="1">
+			       		<tree string="Phone call" create="false" delete="false" editable="bottom">
+			                <field name="date"/>
+							<field name="name"/>
+							<field name="partner_id"/>     
+					        <field name="partner_phone"/>
+					        <field name="user_id"/>
+					        <field name="state"/>
+			            </tree>
+                    </field>
+                </page>
+            </page>
+            </data>
+        </field>
+    </record>
+    
+
+    </data>
+</openerp>

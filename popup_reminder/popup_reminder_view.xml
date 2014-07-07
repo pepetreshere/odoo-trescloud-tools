@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record model="ir.ui.view" id="popup_reminder_search_view">
+            <field name="name">popup.reminder.search</field>
+            <field name="model">popup.reminder</field>
+            <field name="arch" type="xml">
+                <search string="Pop Up Remider">
+                    <field name="name"/>
+                    <field name="alarm_date"/>
+                    <field name="event_date"/>
+                    <field name="user_id"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="User" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Alarm" icon="terp-go-month" domain="[]" context="{'group_by':'alarm_date'}"/>
+                        <filter string="Event" icon="terp-go-month" domain="[]" context="{'group_by':'event_date'}"/>
+                        <filter string="Model" icon="terp-crm" domain="[]" context="{'group_by':'model_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="popup_reminder_tree_view">
+            <field name="name">popup.reminder.tree</field>
+            <field name="model">popup.reminder</field>
+            <field name="arch" type="xml">
+                <tree string="Pop Up Reminder">
+                    <field name="name"/>
+                    <field name="alarm_date"/>
+                    <field name="event_date"/>
+                    <field name="user_id"/>
+                    <field name="processed"/>
+                    <field name="model_id"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="popup_reminder_form_view">
+            <field name="name">popup.reminder.form</field>
+            <field name="model">popup.reminder</field>
+            <field name="arch" type="xml">
+                <form string="Pop Up Reminder">
+                    <field name="name"/>
+                    <field name="alarm_date"/>
+                    <field name="event_date"/>
+                    <field name="user_id"/>
+                    <field name="processed"/>
+                    <field name="model_id"/>
+                    <separator string="Alarms" colspan="4" />
+                    <field name="alarm_ids" nolabel="1" colspan="4"/>
+                </form>
+            </field>
+        </record>
+        
+        <record id="act_popup_reminder" model="ir.actions.act_window">
+            <field name="name">Pop Up Reminder</field>
+            <field name="res_model">popup.reminder</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+<!--             <field name="help" type="html"> -->
+<!--               <p class="oe_view_nocontent_create"> -->
+<!--                 Click to record a new supplier invoice. -->
+<!--               </p><p> -->
+<!--                 You can control the invoice from your supplier according to -->
+<!--                 what you purchased or received. OpenERP can also generate -->
+<!--                 draft invoices automatically from purchase orders or receipts. -->
+<!--               </p> -->
+<!--             </field> -->
+        </record>
+       
+       <menuitem id="popup_reminder_menu" name="Pop Up Reminder" parent="base.menu_calendar_configuration" action="act_popup_reminder"/>
+       
+
+        <!-- Opportunities Form View -->
+        <record model="ir.ui.view" id="crm_case_form_view_oppor_inherit">
+            <field name="name">Opportunities inherit</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+            <field name="arch" type="xml">               
+                <xpath expr="//field[@name='date_action']" position="after">
+                	<button name="%(act_popup_reminder_wiz)d" string="Create Reminder" type="action" states="draft,open,pending" class="oe_highlight"
+                    context="{'default_date': date_action}"/>
+				</xpath>
+                
+            </field>
+       </record>
+    </data>
+</openerp>

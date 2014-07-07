@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+        <record id="view_order_bom_expand_form" model="ir.ui.view">
+            <field name="name">sale.order.bom_expand.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <button name="action_quotation_send" position="after">
+                    <button name="expand_bom" type="object" string="Expand bom" states="draft" class="oe_highlight"/>
+                </button>
+            </field>
+        </record>
+
+        <record id="view_mrp_bom_new_type_form" model="ir.ui.view">
+            <field name="name">mrp.bom.form</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//p[@class='oe_grey']" position="replace">
+                    <p colspan="2" class="oe_grey" attrs="{'invisible': [('type','!=','phantom')]}">
+                        When processing a sales order for this product, the delivery order
+                        will contain the raw materials, instead of the finished product.
+                    </p>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="replace">
+                	<field name="name"/>
+                </xpath>
+                
+                <field name="type" position="after">
+                    <p colspan="2" class="oe_grey" attrs="{'invisible': [('type','!=','break_down_on_sale')]}">
+                        When selecting this product in a sale order it will be broken down
+                        into it components, no further action is taken.
+                    </p>
+                </field>
+            </field>
+        </record>
+
+</data>
+</openerp>
+

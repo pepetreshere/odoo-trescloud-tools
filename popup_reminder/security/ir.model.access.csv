@@ -1,0 +1,5 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_popup_reminder_user","popup.reminder","model_popup_reminder","base.group_sale_salesman",1,1,1,0
+"access_popup_reminder_manager","popup.reminder","model_popup_reminder","base.group_sale_manager",1,1,1,1
+"access_popup_reminder_wiz_user","popup.reminder.wiz","model_popup_reminder_wiz","base.group_sale_salesman",1,1,1,0
+"access_popup_reminder_wiz_manager","popup.reminder.wiz","model_popup_reminder_wiz","base.group_sale_manager",1,1,1,1

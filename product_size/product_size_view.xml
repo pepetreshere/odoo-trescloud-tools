@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+		<record id="product_size_tree_view" model="ir.ui.view">
+            <field name="name">product.product.size.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field eval="9" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Products">
+                		<field name="measure"/>
+                 </tree>
+            </field>
+        </record>
+        
+        		
+         <record id="product_size_form_view" model="ir.ui.view">
+            <field name="name">product.size.form</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//field[@name='list_price']" position="after">           			
+            			<separator string="Size"/>
+            			<newline/>
+            			<field name="long_p"/>
+            			<field name="width"/>
+            			<field name="thickness"/>
+            			<field name="measure"/>            		
+            	</xpath>
+            </field>
+         </record>
+         
+         
+</data>
+</openerp>
+

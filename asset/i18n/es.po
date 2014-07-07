@@ -1,0 +1,197 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* asset
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20140408-231240\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-14 16:23+0000\n"
+"PO-Revision-Date: 2014-05-14 11:26-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: asset
+#: view:account.asset.asset:0
+msgid "Category"
+msgstr "Categoría"
+
+#. module: asset
+#: view:account.asset.asset:0
+msgid "Responsible"
+msgstr "Responsable"
+
+#. module: asset
+#: field:account.asset.asset,message_follower_ids:0
+#: field:account.asset.manufacturer,message_follower_ids:0
+msgid "Followers"
+msgstr "Followers"
+
+#. module: asset
+#: model:ir.model,name:asset.model_account_asset_asset
+msgid "Asset"
+msgstr "Activo"
+
+#. module: asset
+#: constraint:account.asset.asset:0
+msgid "Prorata temporis can be applied only for time method \"number of depreciations\"."
+msgstr "El prorrateo de tiempo sólo se puede utilizar para el método de tiempo \"numero de amortizaciones\""
+
+#. module: asset
+#: view:account.asset.asset:0
+msgid "Serial No:"
+msgstr "Serial No:"
+
+#. module: asset
+#: model:ir.module.category,description:asset.module_category_eam
+msgid "Helps you manage your assets."
+msgstr "Helps you manage your assets."
+
+#. module: asset
+#: model:ir.actions.act_window,name:asset.action_account_asset_manufacturer_tree_view
+msgid "Manufacturers"
+msgstr "Fabricantes"
+
+#. module: asset
+#: field:account.asset.asset,message_unread:0
+#: field:account.asset.manufacturer,message_unread:0
+msgid "Unread Messages"
+msgstr "Unread Messages"
+
+#. module: asset
+#: help:account.asset.asset,message_summary:0
+#: help:account.asset.manufacturer,message_summary:0
+msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+
+#. module: asset
+#: help:account.asset.asset,message_unread:0
+#: help:account.asset.manufacturer,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr "If checked new messages require your attention."
+
+#. module: asset
+#: help:account.asset.asset,image_medium:0
+msgid "Medium-sized image of the asset. It is automatically resized as a 128x128px image, with aspect ratio preserved, only when the image exceeds one of those sizes. Use this field in form views or some kanban views."
+msgstr "Medium-sized image of the asset. It is automatically resized as a 128x128px image, with aspect ratio preserved, only when the image exceeds one of those sizes. Use this field in form views or some kanban views."
+
+#. module: asset
+#: field:account.asset.asset,message_is_follower:0
+#: field:account.asset.manufacturer,message_is_follower:0
+msgid "Is a Follower"
+msgstr "Is a Follower"
+
+#. module: asset
+#: constraint:account.asset.asset:0
+msgid "Error ! You cannot create recursive assets."
+msgstr "!Error¡ No puede crear activos recursivos"
+
+#. module: asset
+#: help:account.asset.asset,image:0
+msgid "This field holds the image used as image for the asset, limited to 1024x1024px."
+msgstr "This field holds the image used as image for the asset, limited to 1024x1024px."
+
+#. module: asset
+#: field:account.asset.asset,manufacturer:0
+#: view:account.asset.manufacturer:0
+#: model:ir.ui.menu,name:asset.account_asset_manufacturer_menu
+msgid "Manufacturer"
+msgstr "Fabricante"
+
+#. module: asset
+#: view:account.asset.asset:0
+msgid "Info"
+msgstr "Info"
+
+#. module: asset
+#: help:account.asset.asset,image_small:0
+msgid "Small-sized image of the asset. It is automatically resized as a 64x64px image, with aspect ratio preserved. Use this field anywhere a small image is required."
+msgstr "Small-sized image of the asset. It is automatically resized as a 64x64px image, with aspect ratio preserved. Use this field anywhere a small image is required."
+
+#. module: asset
+#: field:account.asset.asset,property_stock_asset:0
+msgid "Asset Location"
+msgstr "Localización Activo"
+
+#. module: asset
+#: field:account.asset.manufacturer,name:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: asset
+#: field:account.asset.asset,message_ids:0
+#: field:account.asset.manufacturer,message_ids:0
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: asset
+#: field:account.asset.asset,message_summary:0
+#: field:account.asset.manufacturer,message_summary:0
+msgid "Summary"
+msgstr "Summary"
+
+#. module: asset
+#: field:account.asset.asset,model:0
+msgid "Model"
+msgstr "Modelo"
+
+#. module: asset
+#: help:account.asset.asset,message_ids:0
+#: help:account.asset.manufacturer,message_ids:0
+msgid "Messages and communication history"
+msgstr "Historial de Mensajes y comunicaciones"
+
+#. module: asset
+#: field:account.asset.asset,user_id:0
+msgid "Assigned to"
+msgstr "Asignado a"
+
+#. module: asset
+#: view:account.asset.asset:0
+msgid "Model:"
+msgstr "Modelo:"
+
+#. module: asset
+#: field:account.asset.asset,image:0
+msgid "Image"
+msgstr "Imagen"
+
+#. module: asset
+#: view:account.asset.asset:0
+msgid "Manufacturer:"
+msgstr "Fabricante:"
+
+#. module: asset
+#: field:account.asset.asset,serial:0
+msgid "Serial no."
+msgstr "Serial no."
+
+#. module: asset
+#: field:account.asset.asset,image_medium:0
+msgid "Medium-sized image"
+msgstr "Medium-sized image"
+
+#. module: asset
+#: model:ir.model,name:asset.model_account_asset_manufacturer
+msgid "Email Thread"
+msgstr "Hilo de mensajes"
+
+#. module: asset
+#: field:account.asset.asset,image_small:0
+msgid "Small-sized image"
+msgstr "Small-sized image"
+
+#. module: asset
+#: model:ir.module.category,name:asset.module_category_eam
+msgid "Enterprise Asset Management"
+msgstr "Enterprise Asset Management"
+
+#. module: asset
+#: view:account.asset.asset:0
+msgid "Location"
+msgstr "Localización"
+
