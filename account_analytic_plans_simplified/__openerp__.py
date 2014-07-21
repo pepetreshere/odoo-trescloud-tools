@@ -19,10 +19,10 @@
 #
 ##############################################################################
 {
-    'name': 'Sale Order for Retail',
+    'name': 'Simplified Analytic Plans',
     'version': '1.0',
-    'category': 'sale',
-    'depends': ['account_analytic_plans'],
+    'category': 'account',
+    'depends': ['account_analytic_plans','base'],
     'author': 'TRESCLOUD Cia Ltda',
     'description': 
     """
@@ -37,6 +37,7 @@
     """,
     'website': 'http://www.trescloud.com',
     'data': [
+             'views/account_analytic_plan_instance_view.xml',
     ],
     'installable': True,
     'auto_install': False,
