@@ -22,8 +22,8 @@ msgstr "Instancia de plan analítico"
 
 #. module: account_analytic_plans_simplified
 #: constraint:account.analytic.plan.instance:0
-msgid "Error: The cost distribution must match 100%, please review the costs"
-msgstr "Error: La distribución de costos debe sumar 100%, por favor revise los porcentajes"
+msgid "Error: The cost distribution must match 100%, please review the percentages"
+msgstr "Error: Error: La distribución de costos debe sumar 100%, por favor revise los porcentajes"
 
 #. module: account_analytic_plans_simplified
 #: view:account.analytic.plan.instance:0

@@ -22,7 +22,7 @@
     'name': 'Simplified Analytic Plans',
     'version': '1.0',
     'category': 'account',
-    'depends': ['account_analytic_plans','base'],
+    'depends': ['base','account_analytic_plans'],
     'author': 'TRESCLOUD Cia Ltda',
     'description': 
     """

@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp.osv import fields, osv
 from openerp import netsvc
+from openerp.tools.translate import _
 
 
 class account_analytic_plan_instance(osv.osv):
@@ -62,7 +63,7 @@ class account_analytic_plan_instance(osv.osv):
         return False 
      
     _constraints = [
-                    (_distribute_100percent, 'Error: The cost distribution must match 100%, please review the percentages', ['account_ids']),
+                    (_distribute_100percent, _('Error: The cost distribution must match 100%, please review the percentages'), ['account_ids']),
                     ]
     
 account_analytic_plan_instance()
