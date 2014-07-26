@@ -21,6 +21,7 @@
 from openerp.osv import fields, osv
 from openerp import netsvc
 from openerp.tools.translate import _
+import unittest #para comparar floats
 
 
 class account_analytic_plan_instance(osv.osv):
@@ -58,9 +59,12 @@ class account_analytic_plan_instance(osv.osv):
         account_analytic_plan_instance_lines_ids = account_analytic_plan_instance_line_obj.search(cr, uid, [('plan_id','in',ids)], limit=100, context=context)
         for lines in account_analytic_plan_instance_line_obj.browse(cr, uid, account_analytic_plan_instance_lines_ids, context=context):
             sum += lines.rate
-        if sum == 100.0:
+        cien = 100.0
+        if round(sum,2) == round(cien,2):
             return True
         return False 
+
+
      
     _constraints = [
                     (_distribute_100percent, _('Error: The cost distribution must match 100%, please review the percentages'), ['account_ids']),
