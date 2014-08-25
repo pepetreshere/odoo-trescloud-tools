@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<openerp>
+<data>
+
+<!-- Add plan_id after user_id in account.journal many2one with account.analytic.plan -->
+
+    <record id="account_analytic_plans.view_move_form_inherit" model="ir.ui.view">
+       <field name="name">account.move.form.inherit</field>
+       <field name="model">account.move</field>
+       <field name="inherit_id" ref="account.view_move_form"/>
+       <field name="arch" type="xml">
+           <xpath expr="/form/sheet/notebook/page/field[@name='line_id']/tree/field[@name='analytic_account_id']" position="after">
+               <field name="analytics_id" context="{'journal_id':parent.journal_id}" groups="analytic.group_analytic_accounting"/>
+           </xpath>
+           <xpath expr="/form/sheet/notebook/page/field[@name='line_id']/form/notebook/page/group/group/field[@name='analytic_account_id']" position="after">
+               <field name="analytics_id" context="{'journal_id':parent.journal_id}" groups="analytic.group_analytic_accounting"/>
+           </xpath>
+       </field>
+    </record>
+
+    <record model="ir.ui.view" id="account_analytic_plans.view_move_line_form_inherit">
+        <field name="name">account.move.line.form.inherit</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_form"/>
+        <field name="arch" type="xml">
+            <field name="analytic_account_id" position="after">
+                <field name="analytics_id" context="{'journal_id':journal_id}" groups="analytic.group_analytic_accounting"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="account_analytic_plans.view_move_line_form_1_inherit">
+        <field name="name">account.move.line.form.inherit1</field>
+        <field name="model">account.move.line</field>
+        <field name="priority">2</field>
+        <field name="inherit_id" ref="account.view_move_line_form2"/>
+        <field name="arch" type="xml">
+            <field name="analytic_account_id" position="after">
+                <field name="analytics_id" context="{'journal_id':journal_id}" groups="analytic.group_analytic_accounting"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="account_analytic_plans.view_move_line_tree_inherit">
+        <field name="name">account.move.line.tree.inherit</field>
+        <field name="model">account.move.line</field>
+        <field name="priority">2</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="analytic_account_id" position="after">
+                <field name="analytics_id" context="{'journal_id':journal_id}" groups="analytic.group_analytic_accounting"/>
+            </field>
+        </field>
+    </record>
+
+
+
+    <!-- add property field on default analytic account-->
+
+        <record model="ir.ui.view" id="account_analytic_plans.view_default_inherit_form">
+            <field name="name">account.analytic.default.form.plans</field>
+            <field name="model">account.analytic.default</field>
+            <field name="inherit_id" ref="account_analytic_default.view_account_analytic_default_form"/>
+            <field name="arch" type="xml">
+                <field name="analytic_id" required="1" position="after">
+                    <field name="analytics_id" required="1"/>
+                </field>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="account_analytic_plans.view_default_inherit_tree">
+            <field name="name">account.analytic.default.tree.plans</field>
+            <field name="model">account.analytic.default</field>
+            <field name="inherit_id" ref="account_analytic_default.view_account_analytic_default_tree"/>
+            <field name="arch" type="xml">
+                <xpath  expr="//field[@name='analytic_id']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+                <xpath  expr="//field[@name='analytic_id']" position="after">
+                    <field name="analytics_id" required="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="account_analytic_plans.view_bank_statement_inherit_form" model="ir.ui.view">
+            <field name="name">account.bank.statement.form.inherit</field>
+            <field name="model">account.bank.statement</field>
+            <field name="inherit_id" ref="account.view_bank_statement_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/tree/field[@name='analytic_account_id']" position="after">
+                    <field name="analytics_id" groups="analytic.group_analytic_accounting"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page/field[@name='line_ids']/form/group/field[@name='analytic_account_id']" position="after">
+                    <field name="analytics_id" groups="analytic.group_analytic_accounting"/>
+                </xpath>
+            </field>
+        </record>
+
+</data>
+</openerp>
