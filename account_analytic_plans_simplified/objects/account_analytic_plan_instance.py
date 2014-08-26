@@ -26,7 +26,7 @@ from openerp.tools.translate import _
 class account_analytic_plan_instance(osv.osv):
     _inherit = "account.analytic.plan.instance"
 
-    def name_get(self, cr, uid, ids, context=None):
+    def analytic_name_get(self, cr, uid, ids, context=None):
         '''
         Al nombre original le agregamos la cadena completa de centros de costos involucrados
         '''       
@@ -49,6 +49,17 @@ class account_analytic_plan_instance(osv.osv):
             res2.append((account_analytic_plan_instance_id, new_name))
         return res2
 
+    def _analytic_name(self, cr, uid, ids, field_name, args, context=None):
+#         res={}
+#         for this in self.name_get(cr, uid, ids, context=context):
+#             res= this[1]
+#         return res
+#     
+        result =  dict.fromkeys(ids, '')
+        for obj in self.browse(cr, uid, ids, context=context):
+            result[obj.id] = str(self.analytic_name_get(cr, uid, obj.id, context=context)[0][1])
+        return result    
+    
     def _distribute_100percent(self, cr, uid, ids, context=None):
         '''
         Valida que la suma de porcentajes sea 100%
@@ -65,6 +76,10 @@ class account_analytic_plan_instance(osv.osv):
 
 
      
+    _columns = {
+        'name':fields.function(_analytic_name, type='char', string='Name Analitics plans', store=True),
+                }
+                     
     _constraints = [
                     (_distribute_100percent, _('Error: The cost distribution must match 100%, please review the percentages'), ['account_ids']),
                     ]

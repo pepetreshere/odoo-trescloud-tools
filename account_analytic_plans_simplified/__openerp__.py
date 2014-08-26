@@ -38,6 +38,8 @@
     'website': 'http://www.trescloud.com',
     'data': [
              'views/account_analytic_plan_instance_view.xml',
+             'views/account_analytic_plans_no_replace_view.xml',
+             
     ],
     'installable': True,
     'auto_install': False,
