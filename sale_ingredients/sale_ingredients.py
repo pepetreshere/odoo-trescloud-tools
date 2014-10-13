@@ -95,7 +95,8 @@ class sale_order(osv.osv):
                     'sequence': sequence,
                     'delay': bom_line.product_id.sale_delay or 0.0,
                     'product_id': bom_line.product_id.id,
-                    'price_unit': result.get('value',{}).get('price_unit'),
+                    # TODO: Esta funcionalidad deberia ser parametrizable
+                    'price_unit': 0.0 ,#result.get('value',{}).get('price_unit'),
                     'tax_id': [(6,0,result.get('value',{}).get('tax_id'))],
                     'type': bom_line.product_id.procure_method,
                     'product_uom_qty': result.get('value',{}).get('product_uos_qty'),
@@ -115,6 +116,8 @@ class sale_order(osv.osv):
         return warnings
 
     def expand_bom(self, cr, uid, ids, context=None, depth=0):
+        if context is None:
+            context={}
         if depth == 10:
             return True
         if type(ids) in [int, long]:
