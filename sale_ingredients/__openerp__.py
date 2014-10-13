@@ -23,7 +23,8 @@
 {
     "name" : "Sale Order Ingredients",
     "version" : "0.1",
-    "description" : """
+    "description" : """ Se cambio la funcionalidad para adaptarla en SF
+        Ahora los productos asociados a la receta salen con precio 0.0
         """,
     "author" : "Serpent Consulting Services Pvt. Ltd.",
     "website" : "http://www.serpentcs.com",
