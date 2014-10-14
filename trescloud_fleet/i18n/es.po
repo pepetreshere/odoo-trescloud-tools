@@ -1,0 +1,407 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* trescloud_fleet
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20130801-231109\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-08-21 19:11+0000\n"
+"PO-Revision-Date: 2013-08-21 19:11+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,mobile:0
+msgid "Movil"
+msgstr "Movil"
+
+#. module: trescloud_fleet
+#: help:fleet.vehicle,image_vehicle:0
+#: help:fleet.vehicle,image_vehicle1:0
+#: help:fleet.vehicle,image_vehicle2:0
+#: help:fleet.vehicle,image_vehicle3:0
+msgid "This field holds the image used as photo, limited to 1024x1024px."
+msgstr "Este campo contiene la imagen utilizada como foto, limitado a 1024x1024px"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.contract:0
+msgid "[('supplier','=',True ),('function','!=','Conductor')]"
+msgstr ""
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.fuel:0
+msgid "Additional Details"
+msgstr "Datos adicionales"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.contract:0
+#: view:fleet.vehicle.log.fuel:0
+msgid "\"[('contractor','=',True)\""
+msgstr ""
+
+#. module: trescloud_fleet
+#: model:ir.actions.act_window,name:trescloud_fleet.fleet_driver_act
+#: model:ir.ui.menu,name:trescloud_fleet.fleet_driver_menu
+msgid "Drivers"
+msgstr "Conductores"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle:0
+msgid "Vehicle"
+msgstr "Vehiculo"
+
+#. module: trescloud_fleet
+#: selection:fleet.vehicle.log.fuel,fuel_type:0
+msgid "Diesel"
+msgstr "Diesel"
+
+#. module: trescloud_fleet
+#: model:ir.actions.act_window,name:trescloud_fleet.fleet_contractor_act
+#: model:ir.ui.menu,name:trescloud_fleet.fleet_contractor_menu
+#: field:res.partner,contractor:0
+msgid "Contractor"
+msgstr "Comprador"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle.log.contract,message_follower_ids:0
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle.log.fuel,fuel_type:0
+msgid "Fuel Type"
+msgstr "Tipo conmbustible"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,image_vehicle2:0
+#: field:fleet.vehicle,image_vehicle3:0
+msgid "Photo Vehicle Other"
+msgstr "Otras Fotos del Vehiculo"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle:0
+msgid "Photo 2"
+msgstr "Foto 2"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle:0
+msgid "Photo 1"
+msgstr "Foto 1"
+
+#. module: trescloud_fleet
+#: model:ir.model,name:trescloud_fleet.model_fleet_vehicle_log_contract
+msgid "Contract information on a vehicle"
+msgstr "Información del contrato en un vehículo"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,image_vehicle:0
+msgid "Photo Vehicle front"
+msgstr "Foto Frontal del Vehiculo"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle:0
+msgid "Additional Properties"
+msgstr "Propiedades Adicionales"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle.log.contract,message_ids:0
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,year:0
+msgid "Manufacturing year"
+msgstr "Año Fabricación"
+
+#. module: trescloud_fleet
+#: selection:fleet.vehicle.log.fuel,fuel_type:0
+msgid "Electric"
+msgstr "Eléctrico"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle.log.contract,message_unread:0
+msgid "Unread Messages"
+msgstr "Mensajes no leídos"
+
+#. module: trescloud_fleet
+#: field:res.partner,driver:0
+msgid "Driver"
+msgstr "Conductor"
+
+#. module: trescloud_fleet
+#: help:fleet.vehicle.log.contract,message_summary:0
+msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Contiene el resumen Remover (número de mensajes, ...). Este resumen es directamente en formato html para insertar en las vistas kanban."
+
+#. module: trescloud_fleet
+#: model:ir.model,name:trescloud_fleet.model_fleet_vehicle_log_fuel
+msgid "Fuel log for vehicles"
+msgstr "Registro de combustible para los vehículos"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle.log.contract,message_is_follower:0
+msgid "Is a Follower"
+msgstr "Es un seguidor"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle:0
+msgid "Engine Options"
+msgstr "Opciones de motor"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle:0
+msgid "Front"
+msgstr "Frente"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,vin_sn:0
+msgid "Chassis Number"
+msgstr "Número de Chasis"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,motor_sn:0
+msgid "Engine Number"
+msgstr "Número del motor"
+
+#. module: trescloud_fleet
+#: model:ir.actions.act_window,name:trescloud_fleet.fleet_supplier_act
+#: model:ir.ui.menu,name:trescloud_fleet.fleet_supplier_menu
+msgid "Suppliers"
+msgstr "Proveedores"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.contract:0
+msgid "[('supplier','=',False )]"
+msgstr ""
+
+#. module: trescloud_fleet
+#: model:ir.actions.act_window,help:trescloud_fleet.fleet_supplier_act
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new Supplier. \n"
+"              </p><p>\n"
+"                You will be able to manage your fleet by keeping track of the.\n"
+"            </p><p>\n"
+"                OpenERP will warn you when services or contract have to be\n"
+"                renewed.\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Haga clic para crear un nuevo proveedor. \n"
+"              </p><p>\n"
+"                Usted será capaz de gestionar su flota mediante el seguimiento de los archivos.\n"
+"            </p><p>\n"
+"                OpenERP le avisará cuando los servicios o contratos tienen que ser\n"
+"                Renovada.\n"
+"              </p>\n"
+"            "
+
+#. module: trescloud_fleet
+#: selection:fleet.vehicle.log.fuel,fuel_type:0
+msgid "Hybrid"
+msgstr "Híbrido"
+
+#. module: trescloud_fleet
+#: help:fleet.vehicle.log.contract,message_ids:0
+msgid "Messages and communication history"
+msgstr "Mensajes e historial de comunicación"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.contract:0
+#: view:fleet.vehicle.log.fuel:0
+msgid "\"{'default_supplier':1}\""
+msgstr ""
+
+#. module: trescloud_fleet
+#: selection:fleet.vehicle.log.fuel,fuel_type:0
+msgid "Gasoline"
+msgstr "Gasolina"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle.log.contract,message_summary:0
+msgid "Summary"
+msgstr "Resumen"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.contract:0
+#: view:fleet.vehicle.log.fuel:0
+msgid "\"{'default_contractor':1}\""
+msgstr ""
+
+#. module: trescloud_fleet
+#: help:fleet.vehicle.log.fuel,fuel_type:0
+msgid "Fuel Used by the vehicle"
+msgstr "Combustible utilizado por el vehículo"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.fuel:0
+msgid "Fuel Logs"
+msgstr "Registros de combustible"
+
+#. module: trescloud_fleet
+#: help:fleet.vehicle,motor_sn:0
+msgid "Unique number written on the vehicle motor (engine number)"
+msgstr "Número único escrito en el motor del vehículo (número de motor)"
+
+#. module: trescloud_fleet
+#: help:res.partner,driver:0
+msgid "Check this box if this contact is a Driver. If it's not checked."
+msgstr "Marque esta casilla si este contacto es un controlador. Si no está marcada."
+
+#. module: trescloud_fleet
+#: help:fleet.vehicle.log.contract,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr "Si se marca nuevos mensajes requieren su atención."
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,no_vehicle:0
+msgid "Number Vehicle"
+msgstr "Número de vehículo"
+
+#. module: trescloud_fleet
+#: model:ir.model,name:trescloud_fleet.model_fleet_vehicle
+msgid "Information on a vehicle"
+msgstr "Información sobre el vehículo"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.contract:0
+msgid "{'search_default_customer':1, 'show_address': 1}"
+msgstr ""
+
+#. module: trescloud_fleet
+#: model:ir.model,name:trescloud_fleet.model_fleet_type_vehicle
+msgid "fleet.type.vehicle"
+msgstr ""
+
+#. module: trescloud_fleet
+#: selection:fleet.vehicle.log.fuel,gasoline_type:0
+msgid "Super"
+msgstr "Super"
+
+#. module: trescloud_fleet
+#: selection:fleet.vehicle.log.fuel,gasoline_type:0
+msgid "Extra"
+msgstr "Extra"
+
+#. module: trescloud_fleet
+#: help:fleet.vehicle,vehicle_registration:0
+msgid "License plate number of the vehicle (ie: vehicle registration for a car)"
+msgstr "Número de placa del vehículo (por ejemplo: registro de vehículos para un coche) "
+
+#. module: trescloud_fleet
+#: help:res.partner,contractor:0
+msgid "Check this box if this contact is a Contractor. If it's not checked."
+msgstr "Marque esta casilla si este contacto es un contratista. Si no está marcada."
+
+#. module: trescloud_fleet
+#: model:ir.actions.act_window,help:trescloud_fleet.fleet_contractor_act
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new Contractor. \n"
+"              </p><p>\n"
+"                You will be able to manage your fleet by keeping track of the.\n"
+"            </p><p>\n"
+"                OpenERP will warn you when services or contract have to be\n"
+"                renewed.\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Click para crear una nueva contratista. \n"
+"              </p><p>\n"
+"                Usted será capaz de gestionar su flota mediante el seguimiento de los archivos.\n"
+"            </p><p>\n"
+"                OpenERP le avisará cuando los servicios o contratos tienen que ser\n"
+"                Renovada.\n"
+"              </p>\n"
+"            "
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle:0
+msgid "Back"
+msgstr "Posterior"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,image_vehicle1:0
+msgid "Photo Vehicle Back"
+msgstr "Foto Posterior del Vehiculo"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.contract:0
+msgid "Contract logs"
+msgstr "Los registros del Contrato"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle:0
+msgid "Photo Vehicle"
+msgstr "Foto del vehículo"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle.log.contract:0
+#: view:fleet.vehicle.log.fuel:0
+msgid "\"[('supplier','=',True )\""
+msgstr ""
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,description:0
+#: field:fleet.vehicle,description1:0
+#: field:fleet.vehicle,description2:0
+#: field:fleet.vehicle,description3:0
+msgid "Photo Description"
+msgstr "Descripcion de la Foto"
+
+#. module: trescloud_fleet
+#: field:fleet.type.vehicle,name:0
+#: field:fleet.type.vehicle,type_ids:0
+msgid "Type vehicle"
+msgstr "Tipo de Vehiculo"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle.log.fuel,gasoline_type:0
+msgid "Gasoline Type"
+msgstr "tipo de Gasolina"
+
+#. module: trescloud_fleet
+#: model:ir.actions.act_window,help:trescloud_fleet.fleet_driver_act
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new driver. \n"
+"              </p><p>\n"
+"                You will be able to manage your fleet by keeping track of the.\n"
+"            </p><p>\n"
+"                OpenERP will warn you when services or contract have to be\n"
+"                renewed.\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Haga click para crear un nuevo controlador. \n"
+"              </p><p>\n"
+"                Usted será capaz de gestionar su flota mediante el seguimiento de los archivos.\n"
+"            </p><p>\n"
+"                OpenERP le avisará cuando los servicios o contratos tienen que ser\n"
+"                regargado.\n"
+"              </p>\n"
+"            "
+
+#. module: trescloud_fleet
+#: model:ir.model,name:trescloud_fleet.model_res_partner
+#: model:ir.ui.menu,name:trescloud_fleet.fleet_partner
+msgid "Partner"
+msgstr "Personas"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,type_id:0
+msgid "type_ids"
+msgstr "Tipo de Vehiculo"
+
+#. module: trescloud_fleet
+#: view:fleet.vehicle:0
+msgid "General Properties"
+msgstr "Propiedades Generales"
+
+#. module: trescloud_fleet
+#: field:fleet.vehicle,vehicle_registration:0
+msgid "Vehicle Registration"
+msgstr "Registro de Vehículo"
+

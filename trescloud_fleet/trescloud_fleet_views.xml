@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		 <record model="ir.ui.view" id="fleet_vehicle_form_view_inherit">
+            <field name="name">Fleet Vehicle Form</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_form" />
+            <field name="arch" type="xml">
+
+			 <label for="license_plate" class="oe_edit_only" position="attributes">
+				<attribute name="for">Placa</attribute>
+				<attribute name="string">Placa</attribute>
+			</label> 
+			<field name="license_plate" position="after">
+				<h4>
+					<label for="no_vehicle" class="oe_edit_only"/>
+				</h4>
+					<field name="no_vehicle" />
+			</field>
+	  		<group col="2" string="General Properties" position="replace">
+	  		<form string="Vehicle" version="7.0">
+	            <notebook colspan="4" >
+	            	<page string="General Properties" >
+	            		<group col="3" string="General Properties">
+                            <group >
+                                <field name="driver_id" on_change="on_change_contact(driver_id)"
+                                	domain="[('is_company','=',False ),('driver','=',True)]"
+									context="{'default_driver':1, 'show_address': 1}"/>
+                                <field name="mobile" />
+                                <field name="location" />
+                                <field name="vin_sn" />
+                                <field name="motor_sn" />
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                            <group >
+                                <label for="odometer" />
+                                <div>
+                                    <field name="odometer" class="oe_inline" on_change="on_change_odometer(odometer, context)"/>
+                                    <field name="odometer_unit" class="oe_inline"/>
+                                </div>
+                                <field name="vehicle_registration" />
+                                <field name="acquisition_date" />
+                                <field name="year"/>
+                                <field name="type_id"/>
+                                <field name="car_value" />
+                            </group>
+                        </group>
+	            	</page>
+	            	<page string="Additional Properties" >
+                        <group col="3">
+                            <group string="Additional Properties">
+                                <field name="seats" />
+                                <field name="doors" />
+                                <field name="color" />
+                            </group>
+                            <group string="Engine Options">
+                                <field name="transmission" />
+                                <field name="fuel_type" />
+                                <!-- <field name="gasoline_type" attrs="{'invisible': [('fuel_type','!=','gasoline')]}"/> -->
+                                <field name="co2" />
+                                <field name="horsepower" />
+                                <field name="horsepower_tax" />
+                                <field name="power" />
+                            </group>  
+                        </group>
+	            	</page>
+	            	<page string="Photo Vehicle" >
+                        <group name="Photo Vehicle" colspan="3" col="3">                      
+	                        <group string="Front" colspan="1" col="1">
+	                            <field name="description" colspan="1"  nolabel="1"/>
+	                            <field name="image_vehicle" widget='image'  nolabel="1" class="oe_left oe_avatar"/>
+	                		</group>
+	                		<group string="Back" colspan="1" col="1">
+	                            <field name="description1" colspan="1"  nolabel="1"/>
+	                            <field name="image_vehicle1" widget='image'  nolabel="1" class="oe_left oe_avatar"/>
+	                		</group>
+                        </group>
+                        <group name="Other Photos" colspan="3" col="3">
+                        
+	                        <group string="Photo 1" colspan="1" col="1">
+	                            <field name="description2" colspan="1"  nolabel="1"/>
+	                            <field name="image_vehicle2" widget='image'  nolabel="1" class="oe_left oe_avatar"/>
+	                		</group>
+	                		<group string="Photo 2" colspan="1" col="1">
+	                            <field name="description3" colspan="1"  nolabel="1"/>
+	                            <field name="image_vehicle3" widget='image'  nolabel="1" class="oe_left oe_avatar"/>
+	                		</group>
+
+                        </group>
+	            	</page>
+	            </notebook></form>
+			</group>
+			<xpath expr="/form/sheet/group[@col='2']" position="replace"></xpath>
+            </field>
+         </record>
+         
+         <record model="ir.ui.view" id="fleet_vehicle_log_contract_form_inherit_msn">
+            <field name="name">fleet_vehicle_log_contract_form_inherit</field>
+            <field name="model">fleet.vehicle.log.contract</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_contract_form" />
+            <field name="arch" type="xml">
+
+				<group position="attributes">
+                    <field name="insurer_id">
+						<attribute name="domain">[('supplier','=',True )]</attribute>
+						<attribute name="context">{'search_default_customer':1, 'show_address': 1}</attribute>
+					</field>
+					<field name="purchaser_id" position="attributes">
+						<attribute name="domain">[('supplier','=',False )]</attribute>
+					</field>
+                </group>
+	<!-- 			<xpath expr="/form/sheet/group/group/field[@name='insurer_id']" position="attributes">
+                    <attribute name="domain">[('title','!=9)]</attribute>
+					<attribute name="context">{'search_default_customer':1, 'show_address': 1}</attribute>
+					
+                </xpath> -->
+
+                <form string="Contract logs" version="7.0" position="inside">
+                    <div class="oe_chatter">
+                        <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                    </div>
+                </form>
+            </field>
+         </record>
+        
+         
+         <record model="ir.ui.view" id="fleet_vehicle_inherit_search">
+            <field name="name">fleet.vehicle.search</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_search" />
+            <field name="arch" type="xml">
+                    <field name="driver_id" position="after">
+                    	<field name="no_vehicle"/>
+                    </field>
+            </field>
+        </record> 
+       
+        <record model='ir.ui.view' id='fleet_vehicle_odometer_inherit_tree'>
+            <field name="name">fleet.vehicle.odometer.tree</field>
+            <field name="model">fleet.vehicle.odometer</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_odometer_tree" />
+            <field name="arch" type="xml">
+	            <field name="vehicle_id" position="after">
+	             	<field name="driver_id" 
+	             	domain="[('is_company','=',False )]"
+					context="{'default_driver':1, 'show_address': 1}"/>
+	             </field>
+            </field>
+        </record>  
+             
+        <record model='ir.ui.view' id='fleet_vehicle_odometer_search'>
+            <field name="name">fleet.vehicle.odometer.search</field>
+            <field name="model">fleet.vehicle.odometer</field>
+            <field name="arch" type="xml">
+                <search string="Vehicles odometers" >
+                    <group expand="1" string="Group By...">
+                    <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
+                	<filter name="groupby_date" context="{'group_by' : 'date'}" string="Date"/>
+                	</group>
+                </search>
+            </field>
+        </record>
+      
+    </data>
+</openerp>

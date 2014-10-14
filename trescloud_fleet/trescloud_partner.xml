@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--
+        Resource: res.partner funtion
+        -->
+        
+     <!--    <record model="ir.ui.view" id="view_partner_simple_form_view_inherit_fleet">
+            <field name="name">Partner Fleet Vehicle Form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_simple_form" />
+            <field name="arch" type="xml">
+            
+	            <field name="function" placeholder="e.g. Sales Director" position="attributes">
+		        	<attribute name="for">"Conductor"</attribute>
+				</field>
+			
+			</field>
+        </record> 
+        
+   								<field name="supplier" position="after">
+									<field name="driver"/>
+								</field>
+        -->
+
+        <record id="view_partner_fleet_inherit_form" model="ir.ui.view">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" /> 
+            <field eval="1" name="priority"/>
+            <field name="arch" type="xml">
+                
+   				<xpath expr="/form/sheet/notebook/page/group/group/field[@name='supplier']" position="after">
+                    <field name="driver"/>
+                    <field name="contractor"/>
+                </xpath>
+                
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='fleet_driver_act'>
+            <field name="name">Drivers</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_company','=',False),('driver','=',True)]</field>
+            <field name="context">{'default_driver':1}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new driver. 
+              </p><p>
+                You will be able to manage your fleet by keeping track of the.
+            </p><p>
+                OpenERP will warn you when services or contract have to be
+                renewed.
+              </p>
+            </field>
+        </record>
+        <menuitem name="Partner" parent="fleet.menu_root" id="fleet_partner" sequence="4" groups="fleet.group_fleet_user"/>     
+        <menuitem action="fleet_driver_act" parent="fleet_partner" id="fleet_driver_menu" groups="fleet.group_fleet_user"/>
+         
+         <!-- context="{'default_driver':1, 'show_address': 1}" -->
+		<record model='ir.ui.view' id='fleet_vehicle_log_contract_inherit_form'>
+            <field name="name">fleet.vehicle.log_contract.form</field>
+            <field name="model">fleet.vehicle.log.contract</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_contract_form" />            
+            <field name="arch" type="xml">
+            
+               	<xpath expr="/form/sheet/group/group/field[@name='insurer_id']" position="attributes">
+                    	<attribute name="context">"{'default_supplier':1}"</attribute>
+						<attribute name="domain">"[('supplier','=',True )]"</attribute>
+                </xpath>
+               	<xpath expr="/form/sheet/group/group/field[@name='purchaser_id']" position="attributes">
+                    	<attribute name="context">"{'default_contractor':1}"</attribute>
+						<attribute name="domain">"[('contractor','=',True)]"</attribute>
+                </xpath>
+                
+            </field>
+        </record>         
+         
+        <record model='ir.actions.act_window' id='fleet_supplier_act'>
+            <field name="name">Suppliers</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('supplier','=',True)]</field>
+            <field name="context">{'default_supplier':1}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new Supplier. 
+              </p><p>
+                You will be able to manage your fleet by keeping track of the.
+            </p><p>
+                OpenERP will warn you when services or contract have to be
+                renewed.
+              </p>
+            </field>
+        </record>
+        <menuitem action="fleet_supplier_act" parent="fleet_partner" id="fleet_supplier_menu" groups="fleet.group_fleet_user"/>
+        
+	 	<record model='ir.actions.act_window' id='fleet_contractor_act'>
+            <field name="name">Contractor</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('contractor','=',True)]</field>
+            <field name="context">{'default_contractor':1}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new Contractor. 
+              </p><p>
+                You will be able to manage your fleet by keeping track of the.
+            </p><p>
+                OpenERP will warn you when services or contract have to be
+                renewed.
+              </p>
+            </field>
+        </record>
+        <menuitem action="fleet_contractor_act" parent="fleet_partner" id="fleet_contractor_menu" groups="fleet.group_fleet_user"/>
+         
+         
+        <record model='ir.ui.view' id='fleet_vehicle_log_fuel_inherit_form'>
+            <field name="name">fleet.vehicle.log.fuel.form</field>
+            <field name="model">fleet.vehicle.log.fuel</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_fuel_form" /> 
+            <field name="arch" type="xml">
+            
+               	<xpath expr="/form/sheet/group/group[@string='Refueling Details']/field[@name='liter']" position="attributes">
+                   	<attribute name="string">Galon</attribute>
+				</xpath> 
+		      	<xpath expr="/form/sheet/group/group[@string='Refueling Details']/field[@name='price_per_liter']" position="attributes">
+                   	<attribute name="string">Precio por Galon</attribute>
+				</xpath>           
+              	<xpath expr="/form/sheet/group/group[@string='Additional Details']/field[@name='vendor_id']" position="attributes">
+                   	<attribute name="context">"{'default_supplier':1}"</attribute>
+					<attribute name="domain">"[('supplier','=',True )]"</attribute>
+				</xpath>
+				<xpath expr="/form/sheet/group/group[@string='Additional Details']/field[@name='purchaser_id']" position="attributes">
+                   	<attribute name="context">"{'default_contractor':1}"</attribute>
+					<attribute name="domain">"[('contractor','=',True)]"</attribute>
+				</xpath>
+               
+            </field>
+        </record> 
+         
+       <record model='ir.ui.view' id='log_fuel_by_vehicle_search'>
+            <field name="name">log.fuel.by.vehicle.search</field>
+            <field name="model">fleet.vehicle.log.fuel</field>
+            <field name="arch" type="xml">
+                <search string="Vehicles BY Fuel" >
+                     <group expand="1" string="Group By...">
+                    <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
+                	<filter name="groupby_date" context="{'group_by' : 'date'}" string="Date"/>
+                	
+                	</group>
+                </search>
+            </field>
+        </record>
+         
+    </data>
+ </openerp>

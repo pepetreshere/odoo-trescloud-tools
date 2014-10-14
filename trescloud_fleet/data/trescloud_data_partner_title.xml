@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="True">
+
+	    <!--
+        Resource: res.partner.title.contact
+        -->
+        <record id="res_partner_title_chofer" model="res.partner.title">
+            <field name="domain">contact</field>
+            <field name="name">Chofer</field>
+            <field name="shortcut">Chofer</field>
+        </record>
+        
+    </data>
+    <data noupdate="False">
+    	<record forcecreate="True" id="decimal_fleet" model="decimal.precision">
+            <field name="name">Fleet</field>
+            <field name="digits">3</field>
+        </record>
+    	
+    </data>
+ </openerp>
