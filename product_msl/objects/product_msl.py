@@ -20,11 +20,6 @@
 ##############################################################################
 
 import datetime
-from lxml import etree
-import math
-import pytz
-import re
-
 import openerp
 from openerp import SUPERUSER_ID
 from openerp import pooler, tools
@@ -39,9 +34,9 @@ class product_msl(osv.osv):
      _columns = {
         'name': fields.char('Zone Name', size=60, required=True, 
                             help='Name of the MSL.'),
-        'Packaging_Time': fields.float('Packaging Time in (hours)',digits=(15,2), size=40,help="shelf life in sealed bag.", required=True),
-        'open_time': fields.float('open time in (hours)', digits=(15,2),size=40, help="time I open the package",required=True),
-        'Alarm_percentage': fields.float('Alarm percentage', digits=(15,2),size=40, help="percentage of moisture alarm ",required=True)
+        'packagend_time': fields.float('Packaging Time in hours',digits=(15,2), size=40,help="shelf life in sealed bag.", required=True),
+        'open_time': fields.float('Open Time in hours', digits=(15,2),size=40, help="time I open the package",required=True),
+        'alarm_percentage': fields.float('Alarm percentage', digits=(15,2),size=40, help="percentage of moisture alarm ",required=True)
            }
 
     
