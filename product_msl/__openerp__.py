@@ -22,7 +22,7 @@
     'name': 'Product Msl',
     'version': '1.0',
     'category': 'warehouse',
-    'depends': ['base','mpr'
+    'depends': ['base'
                 ],
     'author': 'TRESCLOUD Henry Granada',
     'description': 
@@ -39,7 +39,7 @@ Identificar áreas de potencial preocupación para  los usuarios y los pasos que
     """,
     'website': 'http://www.trescloud.com',
     'data': [
-        'views/res_partner_view.xml',
+        'views/product_msl_view.xml',
        # 'security/',
     ],
     'installable': True,
