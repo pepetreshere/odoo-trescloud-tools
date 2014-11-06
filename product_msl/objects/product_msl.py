@@ -18,25 +18,30 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
 import datetime
+from lxml import etree
+import math
+import pytz
+import re
+
 import openerp
 from openerp import SUPERUSER_ID
 from openerp import pooler, tools
 from openerp.osv import osv, fields
-
-  
-     
+from openerp.osv.expression import get_unaccent_wrapper
+from openerp.tools.translate import _
 class product_msl(osv.osv):
-     _name = "product.msl"   
-     _columns = {
-        'name': fields.char('Name', size=60, required=True, 
-                            help='Name of the MSL.'),
-        'packagend_time': fields.float('Packaging Time in hours',digits=(15,2), size=40,help="shelf life in sealed bag.", required=True),
-        'open_time': fields.float('Open Time in hours', digits=(15,2),size=40, help="time I open the package",required=True),
-        'alarm_percentage': fields.float('Alarm percentage', digits=(15,2),size=40, help="percentage of moisture alarm, discoloration of lots:  Green (Under),Orange (Under unusable but close), Red (not usable) ",required=True)
-           }
-     product_msl()
+    _name = "product.msl"
+    _columns = {
+    'name': fields.char('Name', size=50, required=True, help='Name of the MSL.'),
+    'packaged_time': fields.float('Packaging Time in hours',digits=(15,2), size=40,help="Shelf life in sealed bag.", required=True),
+    'open_time': fields.float('Open Time in hours', digits=(15,2),size=40, help="Time I open the package",required=True),
+    'alarm_percentage': fields.float('Alarm percentage', digits=(15,2),size=40, help="Percentage of moisture at which the item gets alarmed as follows: Orange (Alarmed. should be sent to baking), Red (Moisture exceeded, do not use)",required=True),
+                }
+product_msl()
+                
+   
+   
     
 
   
