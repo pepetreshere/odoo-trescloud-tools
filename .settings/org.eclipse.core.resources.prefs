@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//product_msl/__init__.py=utf-8
+encoding//product_msl/__openerp__.py=utf-8
+encoding//product_msl/objects/__init__.py=utf-8
+encoding//product_msl/objects/product_msl.py=utf-8
+encoding//product_msl/objects/product_product_msl.py=utf-8
+encoding//product_msl/objects/production_lot_msl.py=utf-8
+encoding//product_origin/__init__.py=utf-8
+encoding//product_origin/product_origin.py=utf-8
+encoding//product_size/product_size.py=utf-8
+encoding//sale_ingredients/sale_ingredients.py=utf-8

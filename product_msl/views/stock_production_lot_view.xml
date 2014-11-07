@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<openerp>
+	    <data>
+	     <record id="stock_production_lot_filter" model="ir.ui.view">
+                <field name="name">stock.production.lot.select</field>
+                <field name="model">stock.production.lot</field>
+                <field name="type">search</field>
+                <field name="arch" type="xml">
+                    <search string="Buscar persona">
+                       <group col='5' colspan='2'>
+                        <field name="msl_status" select="1"/>
+                        <field name="msl_status" select="2"/>
+                        <field name="msl_status" select="3"/>
+                       </group>
+                    </search>
+                </field>
+            </record>
+	    
+	    <!-- Se aumenta campo selection en vista  en el formulario de seriales -->
+	        <record id="stock_production_lot_form_view_msl" model="ir.ui.view">
+	            <field name="name">stock.production.lot.form.view.msl</field>
+	            <field name="model">stock.production.lot</field> 
+	            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+	            <field name="type">form</field>
+	              <field name="arch" type="xml">
+	            	<xpath expr="//field[@name='ref']" position="after">
+	                 	<field name="msl_status" />
+	                 	<field name="moisture_exposed_time" widget="hours" />
+		             </xpath>
+            	  </field>
+	      	</record>
+	      <!-- Se aumenta campo selection en vista  en el formulario de seriales tree-->
+	        <record id="stock_production_lot_form_view_msl:tree" model="ir.ui.view">
+	            <field name="name">stock.production.lot.form.view.msl</field>
+	            <field name="model">stock.production.lot</field> 
+	            <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+	            <field name="type">tree</field>
+	              <field name="arch" type="xml">
+	            	<xpath expr="//field[@name='ref']" position="after">
+	                 	<field name="msl_status" /> 
+		             </xpath>
+            	  </field>
+	      	</record>
+	      	
+	      		
+       	</data>
+   	</openerp>

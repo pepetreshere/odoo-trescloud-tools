@@ -22,21 +22,16 @@
 from osv import fields,osv
 
 
-class product_product(osv.osv):
-    _inherit = 'product.product'
-    _name = 'product.product' 
+class production_lot(osv.osv):
+    _inherit = 'stock.production.lot'
+    _name = 'stock.production.lot' 
     _columns = {
-        
-    'msl_id': fields.many2one('product.msl','Msl',select=True,help="Displays selected MSL"),
-    'open_time': fields.related(
-                                      'msl_id',
-                                      'open_time',
-                                      type="float",
-                                      relation="product.msl",
-                                      string="Open Time in hours",
-                                      store=False,
-                                      readonly=True )
+    'msl_status': fields.selection([('1', 'Ready'),
+                                    ('2', 'Alerte'),
+                                    ('3','Don t Use')],
+                                    string='Msl Status', help="Ready, Alerted or Don't Use. If state is in alerted or don't use you should send the lot to baking"),
+    'moisture_exposed_time': fields.float('Moisture exposed time', digits=(15,2), help="The time this specific lot has been exposed to moisture, is calculated according to the times in the related stock moves in locations with moisture."),                
       
                 }
 
-product_product()
+production_lot()

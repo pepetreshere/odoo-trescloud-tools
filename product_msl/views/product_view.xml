@@ -9,7 +9,8 @@
 	            <field name="type">form</field>
 	              <field name="arch" type="xml">
 	            	<xpath expr="//field[@name='list_price']" position="after">
-	                 	<field name="msl_id" widget="selection"/> 
+	                 	<field name="msl_id" widget="selection"/>
+	                 	<field name="open_time"/> 
 		             </xpath>
             	  </field>
 	      	</record>

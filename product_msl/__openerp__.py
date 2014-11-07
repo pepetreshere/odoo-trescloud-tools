@@ -45,6 +45,7 @@
     'data': [
         'views/product_msl_view.xml',
         'views/product_view.xml',
+        'views/stock_production_lot_view.xml',
        # 'security/',
     ],
     'installable': True,
