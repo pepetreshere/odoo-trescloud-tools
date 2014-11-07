@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<openerp>
 		<data>
-		   <record id="product_msl_tree" model="ir.ui.view">
-			<field name="name">product.msl.tree</field>
-			<field name="model">product.msl</field>
-			<field name="type">tree</field>
-				<field name="arch" type="xml">
-				<field name="name"/>
+		   <record model="ir.ui.view" id="view_product_msl_tree">
+            <field name="name">product.msl.tree</field>
+            <field name="model">product.msl</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="MSLs">
+                
+						<field name="name"/>
 					 	<field name="packaged_time"/>
-					 	<field name="open_time" />
+					 	<field name="open_time"/>
 					 	<field name="alarm_percentage"/>
-				</field>
-			 </record>
+		          
+                </tree>
+            </field>
+       	</record>	 
 	 
-			      <record model="ir.ui.view" id="view_product_msl_form">
+		 <record model="ir.ui.view" id="view_product_msl_form">
             <field name="name">product.msl.form.view</field>
             <field name="model">product.msl</field>
             <field name="arch" type="xml">
                 <form string="MSLs" version="7.0">
                     <group colspan="4" col="2">
-						 	<field name="name"/>
+						<field name="name"/>
 					 	<field name="packaged_time"/>
 					 	<field name="open_time" />
 					 	<field name="alarm_percentage"/>
@@ -30,23 +34,13 @@
         
 		
 		 <record id="view_product_msl_action" model="ir.actions.act_window">
-            <field name="name">product.msl</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">product.msl</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form,tree</field>
-            <field name="view_id" ref="view_product_msl_form"/>
-        </record>
-        
-        <record id="view_product_msl_action_tree" model="ir.actions.act_window">
-            <field name="name">product.msl</field>
+            <field name="name">MSLs</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">product.msl</field>
             <field name="view_type">tree</field>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="product_msl_tree"/>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_product_msl_tree"/>
         </record>
-			<!-- <menuitem action= "view_product_msl_action" id="msls_menu" parent="ir_ui_menu_msl"/> -->
-	<!-- <menuitem action= "view_product_msl_action" id="msls_menu" parent="stock.menu_stock_product"/> -->
+    <menuitem action= "view_product_msl_action" id="msls_menu" parent="stock.menu_stock_product"/> 
 		</data>
 	</openerp>

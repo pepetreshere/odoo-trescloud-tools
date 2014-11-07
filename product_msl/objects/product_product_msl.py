@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2013-Present Acespritech Solutions Pvt. Ltd. (<http://acespritech.com>).
+#    Copyright (C) 2004-2009 Tiny SPRL (<http://tiny.be>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import product_msl
-import product_product_msl
 
+from osv import fields,osv
+class product_msl(osv.osv):
+    _inherit = 'product_msl' 
+    _name = 'product.msl' 
+    {
+     }
+    #Do not touch _name it must be same as _inherit
+    #_name = 'openerpmodel'
 
+class product_product(osv.osv):
+    _inherit = 'product.product'
+    _name = 'product.product' 
+    _columns = {
+        'msl_id': fields.many2one('product.product', 'product.msl', 'Msl'),
+                }
+
+product_product()

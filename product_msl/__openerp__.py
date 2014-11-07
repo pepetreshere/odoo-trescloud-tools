@@ -21,25 +21,30 @@
 {
     'name': 'Product Msl',
     'version': '1.0',
+    "summary": "Moisture Sensitive Level Management",
     'category': 'warehouse',
-    'depends': ['base'
+    'depends': ['base',
+                'stock'
                 ],
     'author': 'TRESCLOUD Henry Granada',
     'description': 
     """
-    Resumen:
-    sensivilidad a la humedad Humedad de niveles
-    Funciones:
- Manejo de Directrices
-Los efectos perjudiciales de la humedad absorbida en paquetes de semiconductores durante el montaje SMT
-Identificar áreas de potencial preocupación para  los usuarios y los pasos que deben tomar para evitar problemas. 
+    Moisture Sensitive Level
+    Moisture sensitivity level relates to the packaging and handling precautions for some semiconductors. 
+    The MSL is an electronic standard for the time period in which a moisture sensitive device can be exposed to ambient room conditions (approximately 30 °C/60%RH).
+  
+    This module adds:
+    - - MSL definition in the product form
+    - - Tracking of exposed time of a specific lot or serial number of the product
+    - - Alarms
     Authors: 
-   Henry Granada
+    Henry Granada
     TRESCLOUD Cia Ltda
     """,
     'website': 'http://www.trescloud.com',
     'data': [
         'views/product_msl_view.xml',
+        'views/product_view.xml',
        # 'security/',
     ],
     'installable': True,
