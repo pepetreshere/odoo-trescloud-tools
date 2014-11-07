@@ -20,19 +20,15 @@
 ##############################################################################
 
 from osv import fields,osv
-class product_msl(osv.osv):
-    _inherit = 'product_msl' 
-    _name = 'product.msl' 
-    {
-     }
-    #Do not touch _name it must be same as _inherit
-    #_name = 'openerpmodel'
+
 
 class product_product(osv.osv):
     _inherit = 'product.product'
     _name = 'product.product' 
     _columns = {
-        'msl_id': fields.many2one('product.product', 'product.msl', 'Msl'),
+        
+    'msl_id': fields.many2one('product.msl','Msl',select=True,help="Displays selected MSL"),
+      
                 }
 
 product_product()
