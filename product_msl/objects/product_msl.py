@@ -38,6 +38,9 @@ class product_msl(osv.osv):
     'open_time': fields.float('Open Time in hours', digits=(15,2),size=40, help="Maximun period of time in which the component must be mounted and reflowed.",required=True),
     'alarm_percentage': fields.float('Alarm percentage', digits=(15,2),size=40, help="Percentage of moisture at which the item gets alarmed as follows: Orange (Alarmed. should be sent to baking), Red (Moisture exceeded, do not use)",required=True),
                 }
+    _defaults = {  
+        'alarm_percentage': 75.0,  
+        }
 product_msl()
                 
    

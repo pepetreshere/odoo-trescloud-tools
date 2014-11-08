@@ -19,7 +19,7 @@
 #
 ##############################################################################
 import product_msl
-import product_product_msl
-import production_lot_msl
+import product
+import stock
 
 

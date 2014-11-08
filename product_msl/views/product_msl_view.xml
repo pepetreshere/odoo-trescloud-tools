@@ -9,17 +9,13 @@
             <field name="arch" type="xml">
                  <tree string="MSLs" version="7.0">
                 		<field name="name"/>
-					 	<field name="packaged_time"/>
-					 	<field name="open_time"/>
-					 	<field name="alarm_percentage"/>
-		          
+					 	<field name="packaged_time" widget="float_time" sum="Packaging Time in hours"/>
+					 	<field name="open_time" widget="float_time" sum="Open Time in hours"/>
+					 	<field name="alarm_percentage"/>          
                   </tree> 
             </field>
        	</record>
-      
-       	
-       		 
-	 
+       	 
 		 <record model="ir.ui.view" id="view_product_msl_form">
             <field name="name">product.msl.form.view</field>
             <field name="model">product.msl</field>
@@ -27,8 +23,8 @@
                 <form string="MSLs" version="7.0">
                     <group colspan="4" col="2">
 						<field name="name"/>
-					 	<field name="packaged_time"/>
-					 	<field name="open_time" />
+					 	<field name="packaged_time" widget="float_time" sum="Packaging Time in hours"/>
+					 	<field name="open_time" widget="float_time" sum="Open Time in hours" />
 					 	<field name="alarm_percentage"/>
 		            </group>
                 </form>
@@ -38,11 +34,19 @@
 		
 		 <record id="view_product_msl_action" model="ir.actions.act_window">
             <field name="name">MSLs</field>
-             <field name="res_model">product.msl</field>
-            <!-- <field name="type">ir.actions.act_window</field>  -->
-            <field name="view_type">tree</field>
+            <field name="res_model">product.msl</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_product_msl_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new product.
+              </p><p>
+                You must define a product for everything you buy or sell,
+                whether it's a physical product, a consumable or service.
+              </p>
+            </field>
         </record>
     <!--  <menuitem action= "view_product_msl_action" id="msls_menu" parent="stock.menu_stock_product"/> -->  
     

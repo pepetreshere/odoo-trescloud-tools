@@ -10,7 +10,7 @@
 	              <field name="arch" type="xml">
 	            	<xpath expr="//field[@name='list_price']" position="after">
 	                 	<field name="msl_id" widget="selection"/>
-	                 	<field name="open_time"/> 
+	                 	<field name="open_time" widget="float_time" sum="Open Time in hours"/> 
 		             </xpath>
             	  </field>
 	      	</record>

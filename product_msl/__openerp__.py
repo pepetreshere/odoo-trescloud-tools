@@ -24,7 +24,8 @@
     "summary": "Moisture Sensitive Level Management",
     'category': 'warehouse',
     'depends': ['base',
-                'stock'
+                'stock',
+                'product_serial'
                 ],
     'author': 'TRESCLOUD Henry Granada',
     'description': 
@@ -45,7 +46,7 @@
     'data': [
         'views/product_msl_view.xml',
         'views/product_view.xml',
-        'views/stock_production_lot_view.xml',
+        'views/stock_view.xml',
        # 'security/',
     ],
     'installable': True,
