@@ -14,7 +14,6 @@
                         This is useful to better analyze your company performance
                     </p>
                 </xpath>
-                <!--
 				<field name="name" position="attributes"> 
 					<attribute name = "invisible">0</attribute> 
 				</field>
@@ -27,7 +26,6 @@
 				<field name="journal_id" position="attributes"> 
 					<attribute name = "invisible">1</attribute> 
 				</field>
-				-->
             </field>
         </record>
         
