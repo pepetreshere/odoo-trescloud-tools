@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source TRESCloud
-#    Copyright (c) 2014-TRESCloud S.A. (<http://www.trescloud.com>).
+#    OpenERP, Open Source Management Solution
+#    Copyright (c) 2013-Present Acespritech Solutions Pvt. Ltd. (<http://acespritech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import objects
-import wizard
-
-
-
+import wizard_product_msl
 

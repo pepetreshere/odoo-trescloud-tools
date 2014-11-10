@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source TRESCloud
-#    Copyright (c) 2014-TRESCloud S.A. (<http://www.trescloud.com>).
+#    OpenERP, Open Source Management Solution
+#    Copyright (c) 2013-Present Acespritech Solutions Pvt. Ltd.
+#    (<http://www.acespritech.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,9 +19,27 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import objects
-import wizard
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+from openerp import netsvc
+import time
 
 
+class wizard_product_msl(osv.osv_memory):
+    _name = 'wizard.product.msl'
+    _columns = {
+#        DR TODO: agregar campo para vista temporal 
+    'last_baket_time': fields.datetime('last baket time', type='datetime',help="Ready, time between the alert."),
+     
+    }
+_defaults = {
+    'last_baket_time': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+}
 
+def save_time_msl(self, cr, user, ids, context=None):
+    if context is None:
+            context = {}
+
+  
+wizard_product_msl()
 

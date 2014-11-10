@@ -56,13 +56,15 @@ class stock_production_lot(osv.osv):
                                      help="Ready, Alerted or Don't Use. If state is in alerted or don't use you should send the lot to baking"),
                 'moisture_exposed_time': fields.float('Moisture exposed time', digits=(15,2), help="The time this specific lot has been exposed to moisture, is calculated according to the times in the related stock moves in locations with moisture."),                
                 'msl_id': fields.related('product_id', 'msl_id', type='many2one', relation='product.msl', string="MSL"),
-                'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours"),  
+                'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours"),
+                'last_baket_time': fields.datetime('last baket time', type='datetime',help="Ready, time between the alert."),
+                  
                 }
     
     _default = {
                 'msl_status': 'ready',
                 }
-production_lot()
+stock_production_lot()
 
 class stock_partial_picking(osv.osv):
     
