@@ -50,19 +50,31 @@
 	      	<record id="stock_partial_picking_form_view_msl" model="ir.ui.view">
 	            <field name="name">stock.partial.picking.form.view.msl</field>
 	            <field name="model">stock.partial.picking</field> 
-	            <field name="inherit_id" ref="stock.stock_partial_picking_form"/>
+	            <field name="inherit_id" ref="product_serial.stock_partial_picking_form_inherit"/>
 	            <field name="type">form</field>
 	            <field name="arch" type="xml">
 	            	<xpath expr="//field[@name='prodlot_id']" position="replace">
 	            		<field name="prodlot_id" 
+	            		options="{'limit': 10, 'create': False, 'create_edit': False}"  
 	            		domain="[('product_id', '=', product_id)]" 
 	            		invisible="context.get('hide_tracking',False)" 
 	            		attrs="{'required':[('tracking','=',True), ('quantity', '!=', 0)]}" 
 	            		groups="stock.group_production_lot" 
 	            		context="{'default_product_id':product_id}"
-	            		on_change="onchange_prodlot_id(prodlot_id,product_id)"/>
+	            		on_change="onchange_prodlot_id(prodlot_id,product_id)"/>	            		
 		             </xpath>
 	            </field>
-	  		</record> 	 		
+	  		</record>
+	  		<record id="view_location_form_msl" model="ir.ui.view">
+	            <field name="name">stock.location.form.view.msl</field>
+	            <field name="model">stock.location</field> 
+	            <field name="inherit_id" ref="stock.view_location_form"/>
+	            <field name="type">form</field>
+	            <field name="arch" type="xml">
+	            	<xpath expr="//field[@name='scrap_location']" position="after">
+	            		<field name="hasmoisture"/>	            		
+		            </xpath>
+	            </field>
+	  		</record>
        	</data>
    	</openerp>
