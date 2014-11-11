@@ -10,7 +10,7 @@
 	                </field>
 	                <group>
 	                <footer>
-                       <button name="save_time_msl" string="Save" type="object" class="oe_highlight"/>
+                       <button name="save_time_msl" string="Save" type="object" class="oe_highlight" context="{'last_baket_time': last_baket_time}"/>
                        <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
 	                </group>

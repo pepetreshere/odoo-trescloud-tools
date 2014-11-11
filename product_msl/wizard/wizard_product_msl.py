@@ -32,14 +32,22 @@ class wizard_product_msl(osv.osv_memory):
     'last_baket_time': fields.datetime('last baket time', type='datetime',help="Ready, time between the alert."),
      
     }
-_defaults = {
-    'last_baket_time': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-}
-
-def save_time_msl(self, cr, user, ids, context=None):
-    if context is None:
-            context = {}
-
+    _defaults = {
+        'last_baket_time': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+    }
+    
+     # def save_time_msl(self, cr, user, ids, context=None):
+     #Se busca el registro  asociado al campo de la base de datos para no confundir el numero de seriales
+         
+    def save_time_msl(self, cr, user, ids,  context=None):
+        if context is None:
+                context = {}
+        #se crea el objeto de la clase  production.lot para ser ocupado en la actualización de la fecha         
+        prodlot_obj = self.pool.get('stock.production.lot')
+        
+        prodlot_id = prodlot_obj.browse(cr,user,context.get('prodlot_id',False))
+        prodlot_obj.write(cr, user, [prodlot_id.id], {'last_baket_time': context.get('last_baket_time',False)}, context=context)         
+        return True
   
 wizard_product_msl()
 
