@@ -23,12 +23,10 @@
 from osv import fields,osv
 
 class product_product(osv.osv):
-    """
-    .
-    """
+    
     _inherit = 'product.product'
     _columns = {
-        'country_id': fields.many2one('res.country', 'Country of Origin'),
+        'msl_id': fields.many2one('product.msl', 'type of Msl'),
                 }
 
 product_product()
