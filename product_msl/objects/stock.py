@@ -74,7 +74,9 @@ class stock_production_lot(osv.osv):
                 'moisture_exposed_time': fields.function(_moisture_exposed_time_calculate, method=True, type='float', string='Moisture exposed time', digits=(15,2), store=True,
                                                          help="The time this specific lot has been exposed to moisture, is calculated according to the times in the related stock moves in locations with moisture."),                
                 'msl_id': fields.related('product_id', 'msl_id', type='many2one', relation='product.msl', string="MSL"),
-                'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours"),  
+                'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours"),
+                'last_baket_time': fields.datetime('last baket time', type='datetime',help="Ready, time between the alert."),
+                  
                 }
     
     _default = {

@@ -25,9 +25,13 @@
 	            	<xpath expr="//field[@name='ref']" position="after">
 	            		<group string="MSL">
 		                 	<field name="msl_status"/>
-		                 	<field name="moisture_exposed_time" widget="float_time" sum="Moisture Exposed Time"/>
+		                <group col="4" colspan="4">
+		                 	<field colspan="1" name="moisture_exposed_time" widget="float_time" sum="Moisture Exposed Time"/>
+		                 	<button name="%(action_product_msl_wizard)d" colspan="2" id="post baked" string="Post baked" type="action" context="{'prodlot_id': id, 'last_baket_time': last_baket_time}"/>
+		                 </group>
 		                 	<field name="msl_id"/>
 		                 	<field name="open_time"/>
+		                 	<field name="last_baket_time"/>
 		                 </group>
 		             </xpath>
             	  </field>
