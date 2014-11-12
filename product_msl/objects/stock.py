@@ -113,31 +113,100 @@ class stock_move(osv.osv):
     _inherit = 'stock.move'
     _name = 'stock.move' 
     
-    def _number_of_hours_used(self, cr, uid, ids, name, args, context=None):
-        res = {}
-        for move in self.browse(cr,uid,ids):
-            if move.moisture_exposed_time:
-                met = move.moisture_exposed_time
-            if move.product_id.msl_id:
-                factor = move.product_id.msl_id.alarm_percentage/100
-            if move.open_time:
-                open_time = move.open_time
-            if met == 0.0 and factor == 0.0 and open_time == 0.0:
-                res[move.id] = 'ready'
-            elif met < factor * open_time:
-                res[move.id] = 'ready'
-            elif met > factor * open_time and met < open_time:
-                res[move.id] = 'alert'
-            elif met >= open_time:
-                res[move.id] = 'donotuse'
-        return res
+    def float_time_convert(self, float_val):
+        hours = math.floor(abs(float_val))
+        mins = abs(float_val) - hours
+        mins = round(mins * 60)
+        if mins >= 60.0:
+            hours = hours + 1
+            mins = 0.0
+        float_time = '%02d:%02d' % (hours,mins)
+        return float_time
+
+    def float_to_datetime(self, float_val):
+        str_float = self.float_time_convert(float_val)
+        hours = int(str_float.split(':')[0])
+        minutes = int(str_float.split(':')[1])
+        days = 1
+        if hours / 24 > 0:
+            days += hours / 24
+            hours = hours % 24
+        return datetime(1900, 1, int(days), hours, minutes)
+
+    def float_to_timedelta(self, float_val):
+        str_time = self.float_time_convert(float_val)
+        return timedelta(0, int(str_time.split(':')[0]) * 60.0*60.0
+            + int(str_time.split(':')[1]) * 60.0)
     
-    _columns = {
-            'number_of_hours_used': fields.function(_number_of_hours_used,
-                                                    type='float', string='Number of hours used', store=True, 
-                                                    help="Ready, Alerted or Don't Use. If state is in alerted or don't use you should send the lot to baking",   
-                                                    digits_compute=dp.get_precision('Product Unit of Measure')),
+    def total_seconds(self, td):
+        return (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6     
+
+    def _get_expose_duration(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        active_tz = pytz.timezone(context.get("tz","UTC") if context else "UTC")
+        move_pool = self.pool.get('stock.move')
+        str_now = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
+        for move_id in ids:
+            duration = 0.0
+            move = self.browse(cr, uid, move_id, context=context)
+            res[move.id] = {}
+            # 2012.10.16 LF FIX : Attendance in context timezone
+            move_begin = datetime.strptime(
+                move.name, '%Y-%m-%d %H:%M:%S'
+                ).replace(tzinfo=pytz.utc).astimezone(active_tz)
+            next_move_date = str_now
+            next_move_ids = False
+            # should we compute for sign out too?
+            if move.location_dest_id:
+                next_move_ids = self.search(cr, uid, [
+                                                      ('state', '!=', 'draft'),
+                                                      ('location_id', '=', move.location_dest_id.id),
+                                                      ('date', '<', move.date)], order='date', context=context)
+                if next_move_ids:
+                    next_move = self.browse(cr, uid, next_move_ids[0], context=context)
+                    next_move_date = next_move.name
+                # 2012.10.16 LF FIX : Attendance in context timezone
+                move_end = datetime.strptime(
+                    next_move_date, '%Y-%m-%d %H:%M:%S'
+                    ).replace(tzinfo=pytz.utc).astimezone(active_tz)
+                duration_delta = move_end - move_begin
+                duration = self.total_seconds(duration_delta) / 60.0 / 60.0
+            res[move.id]['duration'] = duration
+            res[move.id]['end_datetime'] = next_move_date
+        return res
+
+    def _get_by_location(self, cr, uid, ids, context=None):
+        move_ids = []
+        move_pool = self.pool.get('stock.move')
+        for location in self.browse(cr, uid, ids, context=context):
+            movement_ids = move_pool.search(cr, uid, 
+                                            [('location_dest_id', '=', location.id),
+                                             ('state', '!=', 'done')], 
+                                            context=context)
+            for move_id in movement_ids:
+                if move_id not in move_ids:
+                    move_ids.append(move_id)
+        return move_ids
+
+    def _get_by_moves(self, cr, uid, ids, context=None):
+        move_ids = []
+        for move in self.browse(cr, uid, ids, context=context):
+            if move.location_dest_id and move.location_dest_id.hasmoisture and move.id not in move_ids:
+                move_ids.append(move.id) 
+        return move_ids
+
+    _store_rules = {
+                    'stock.move': (_get_by_moves, ['prodlot_id', 'dummy_field','location_dest_id'], 20),
+                    'stock.location': (_get_by_location, ['hasmoisture'], 20),
                     }
+
+    _columns = {
+        'duration': fields.function(_get_expose_duration, method=True, multi='duration', string="Attendance duration",
+            store=_store_rules),
+        'end_datetime': fields.function(_get_expose_duration, method=True, multi='duration', type="datetime", string="End date time",
+            store=_store_rules),
+        'dummy_field': fields.char('Dummy field',help="Used to cause a write that updates the stored function fields")
+    }
                                    
     def onchange_lot_id(self, cr, uid, ids, prodlot_id=False, product_qty=False,
                         loc_id=False, product_id=False, uom_id=False, context=None):
@@ -150,6 +219,9 @@ class stock_move(osv.osv):
         """
         warning = super(stock_move,self).onchange_lot_id(cr, uid, ids, prodlot_id, product_qty,
                         loc_id, product_id, uom_id, context)
+        message=''
+        if warning['warning'] and warning['warning']['message']:
+                    message = warning['warning']['message']
         if not prodlot_id:
             return {'warning': warning}
         product_obj = self.pool.get('product.product')
@@ -157,11 +229,13 @@ class stock_move(osv.osv):
         prodlot = self.pool.get('stock.production.lot').browse(cr, uid, prodlot_id, context)
         if product_id.msl_id:
             if prodlot and prodlot.msl_status and prodlot.msl_status != 'ready':
+                
                 warning = {
                            'title': 'Warning!',
-                           'message': warning['warning']['message'] + "\nYou must send this product lot to bake."
+                           'message': message + "\nYou must send this product lot to bake."
                 }
-        return {'warning': warning}
+                return {'warning': warning}
+        return {warning}
     
 stock_move()
 
