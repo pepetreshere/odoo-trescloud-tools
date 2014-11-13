@@ -19,8 +19,15 @@
 #
 ##############################################################################
 
-from openerp.osv import fields,osv
+from __future__ import division
+from openerp.osv import fields, orm, osv
+from openerp.tools.translate import _
+import time
+from datetime import *
+import math
+from openerp.tools import float_compare
 
+import pytz
 
 class stock_production_lot(osv.osv):
     
@@ -62,21 +69,40 @@ class stock_production_lot(osv.osv):
     
     def _moisture_exposed_time_calculate(self, cr, uid, ids, name, args, context=None):
         res = {}
-        stock_move_ids = self.pool.get('stock.move').search(cr, uid, [('')])
-        location_id = self.pool.get('stock.location').browse(cr, uid, product_id)
+        moisture_exposed_time = 0.0
+        move_pool = self.pool.get('stock.move')
+        move_ids = move_pool.search(cr, uid, [('prodlot_id', 'not in', [0.0])],context=context)
         for lot in self.browse(cr,uid,ids):
-            res[lot.id] = 0.0
+            for move_id in move_ids:
+                move = move_pool.browse(cr,uid,move_id)
+                if lot == move.prodlot_id:
+                    moisture_exposed_time += move.duration 
+            res[lot.id] = moisture_exposed_time
         return res
     
+    def _get_by_moves(self, cr, uid, ids, context=None):
+        lot_ids = []
+        for lot in self.browse(cr, uid, ids, context=context):
+                lot_ids.append(lot.id) 
+        return lot_ids
+
+    _store_rules = {
+                    'stock.production.lot': (_get_by_moves, ['moisture_exposed_time', 'msl_id','open_time'], 20),
+                    }
+
     _columns = {
-                'msl_status': fields.function(_msl_calculate, method=True, type='selection', selection=_MSL_STATUS, string='MSL Status', store=True, 
-                                     help="Ready, Alerted or Don't Use. If state is in alerted or don't use you should send the lot to baking"),
+                'msl_status': fields.function(_msl_calculate, 
+                                              method=True, 
+                                              type='selection', 
+                                              selection=_MSL_STATUS, 
+                                              string='MSL Status', 
+                                              store=_store_rules, 
+                                              help="Ready, Alerted or Don't Use. If state is in alerted or don't use you should send the lot to baking"),
                 'moisture_exposed_time': fields.function(_moisture_exposed_time_calculate, method=True, type='float', string='Moisture exposed time', digits=(15,2), store=True,
                                                          help="The time this specific lot has been exposed to moisture, is calculated according to the times in the related stock moves in locations with moisture."),                
                 'msl_id': fields.related('product_id', 'msl_id', type='many2one', relation='product.msl', string="MSL"),
                 'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours"),
-                'last_baket_time': fields.datetime('last baket time', type='datetime',help="Ready, time between the alert."),
-                  
+                'last_baket_time': fields.datetime('Last Baked Time', type='datetime',help="Ready, time between the alert."),                
                 }
     
     _default = {
@@ -152,7 +178,7 @@ class stock_move(osv.osv):
             res[move.id] = {}
             # 2012.10.16 LF FIX : Attendance in context timezone
             move_begin = datetime.strptime(
-                move.name, '%Y-%m-%d %H:%M:%S'
+                move.date, '%Y-%m-%d %H:%M:%S'
                 ).replace(tzinfo=pytz.utc).astimezone(active_tz)
             next_move_date = str_now
             next_move_ids = False
@@ -161,10 +187,12 @@ class stock_move(osv.osv):
                 next_move_ids = self.search(cr, uid, [
                                                       ('state', '!=', 'draft'),
                                                       ('location_id', '=', move.location_dest_id.id),
+                                                      ('prodlot_id', 'not in', [0.0]),
                                                       ('date', '<', move.date)], order='date', context=context)
-                if next_move_ids:
-                    next_move = self.browse(cr, uid, next_move_ids[0], context=context)
-                    next_move_date = next_move.name
+                for next_move_id in next_move_ids:
+                    next_move = self.browse(cr, uid, next_move_id, context=context)
+                    if next_move.prodlot_id == move.prodlot_id:
+                        next_move_date = next_move.date
                 # 2012.10.16 LF FIX : Attendance in context timezone
                 move_end = datetime.strptime(
                     next_move_date, '%Y-%m-%d %H:%M:%S'
@@ -220,7 +248,7 @@ class stock_move(osv.osv):
         warning = super(stock_move,self).onchange_lot_id(cr, uid, ids, prodlot_id, product_qty,
                         loc_id, product_id, uom_id, context)
         message=''
-        if warning['warning'] and warning['warning']['message']:
+        if warning and warning['warning'] and warning['warning']['message']:
                     message = warning['warning']['message']
         if not prodlot_id:
             return {'warning': warning}
@@ -235,7 +263,10 @@ class stock_move(osv.osv):
                            'message': message + "\nYou must send this product lot to bake."
                 }
                 return {'warning': warning}
-        return {warning}
+        if warning is {}:
+            return {'warning': warning}
+        else:
+            return warning
     
 stock_move()
 
