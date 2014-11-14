@@ -28,15 +28,20 @@ import math
 from openerp.tools import float_compare
 
 import pytz
+from atom import Control
 
 class stock_production_lot(osv.osv):
     
     _inherit = 'stock.production.lot'
     _name = 'stock.production.lot'
+    
+    # Array que contiene los estados de los niveles de humedad
+    
     _MSL_STATUS=[('ready', 'Ready'),
              ('alert', 'Alert'),
              ('donotuse','Don\'t Use')]
 
+    #Metodo que da el nombre de los seriales
     def name_get(self, cr, uid, ids, context=None):
         result = []
         for record in self.browse(cr, uid, ids, context=context):
@@ -44,20 +49,28 @@ class stock_production_lot(osv.osv):
             for status in self._MSL_STATUS:
                 if status[0] == record.msl_status:
                     name +=  ' [' + status[1] + ']'
-            result.append((record.id,name)) #, '+states[session.state]+')'))
+            result.append((record.id,name))
         return result
     
+    # Metodo que analiza el estado en que se encuentra el serial
     def _msl_calculate(self, cr, uid, ids, name, args, context=None):
         res = {}
+        control = False
         met, factor, open_time = 0.0, 0.0, 0.0
         for lot in self.browse(cr,uid,ids):
+            # Si existe serial se busca sus variables asociadas al msl
+            # las condiciones estan dadas por los porcentajes de humedad que soporte el producto
+            # segun su msl 
             if lot.moisture_exposed_time:
                 met = lot.moisture_exposed_time
             if lot.product_id.msl_id:
                 factor = lot.product_id.msl_id.alarm_percentage/100
+                control = lot.product_id.msl_id.control
             if lot.open_time:
                 open_time = lot.open_time
-            if met == 0.0 and factor == 0.0 and open_time == 0.0:
+            if control:
+                res[lot.id] = 'ready'
+            elif met == 0.0 and factor == 0.0 and open_time == 0.0:
                 res[lot.id] = 'ready'
             elif met < factor * open_time:
                 res[lot.id] = 'ready'
@@ -67,25 +80,31 @@ class stock_production_lot(osv.osv):
                 res[lot.id] = 'donotuse'
         return res
     
+    # Se busca todos los stock.moves que tengan humedad su bodega origen ya que es el fin del movimiento
+    # ademas debe ser mayor que la fecha de last baked time, y que tenga los mismos seriales el movimiento
+     
     def _moisture_exposed_time_calculate(self, cr, uid, ids, name, args, context=None):
         res = {}
         moisture_exposed_time = 0.0
         move_pool = self.pool.get('stock.move')
         move_ids = move_pool.search(cr, uid, [('prodlot_id', 'not in', [0.0])],context=context)
         for lot in self.browse(cr,uid,ids):
-            for move_id in move_ids:
-                move = move_pool.browse(cr,uid,move_id)
-                if lot == move.prodlot_id and move.location_id.hasmoisture and move.date > lot.last_baket_time:
-                    moisture_exposed_time += move.duration 
-            res[lot.id] = moisture_exposed_time
+            if lot.product_id.msl_id:
+                for move_id in move_ids:
+                    move = move_pool.browse(cr,uid,move_id)
+                    if lot == move.prodlot_id and move.location_id.hasmoisture and move.date > lot.last_baket_time:
+                        moisture_exposed_time += move.duration 
+                res[lot.id] = moisture_exposed_time
         return res
     
+    # obtiene los lotes que estan siendo modificados las variables, ver _store_rules
     def _get_lots(self, cr, uid, ids, context=None):
         lot_ids = []
         for lot in self.browse(cr, uid, ids, context=context):
                 lot_ids.append(lot.id) 
         return lot_ids
     
+    # obtiene los lotes que estan siendo modificados de los stock.moves, ver _store_rules
     def _get_by_moves(self, cr, uid, ids, context=None):
         lot_ids = []
         move_ids = []
@@ -93,8 +112,32 @@ class stock_production_lot(osv.osv):
             if move.prodlot_id and prodlot_id.id not in lot_ids:               
                 lot_ids.append(move.prodlot_id.id) 
         return lot_ids
-
+    
+    # obtiene los lotes que estan siendo modificados product ver _store_rules
+    def _get_msl(self, cr, uid, ids, context=None):
+        lot_ids = []
+        lot_pool = self.pool.get('stock.production.lot')
+        product_id = False
+        for product in self.browse(cr, uid, ids, context=context):
+            lot_ids = lot_pool.search(cr,uid,[('product_id','=',product.id)]) 
+        return lot_ids
+    
+    # obtiene los lotes que estan siendo modificados product.msl ver _store_rules
+    def _get_prod_msl(self, cr, uid, ids, context=None):
+        lot_ids = []
+        lot_pool = self.pool.get('stock.production.lot')
+        product_pool = self.pool.get('product.product')
+        product_id = False
+        for product_msl in self.browse(cr, uid, ids, context=context):
+            product_ids = product_pool.search(cr,uid,[('msl_id','=', product_msl.id)]) 
+            lot_ids = lot_pool.search(cr,uid,[('product_id','in',product_ids)]) 
+        return lot_ids
+                    #===========================================================
+                    # 
+                    #===========================================================
     _store_rules = {
+                    'product.product': (_get_msl, ['msl_id'],20),
+                    'product.msl': (_get_prod_msl, ['open_time'],20),
                     'stock.production.lot': (_get_lots, ['moisture_exposed_time', 'last_baket_time', 'msl_id','open_time'], 20),
                     'stock.move': (_get_by_moves, ['duration'], 20),
                     }
@@ -107,7 +150,11 @@ class stock_production_lot(osv.osv):
                                               string='MSL Status', 
                                               store=_store_rules, 
                                               help="Ready, Alerted or Don't Use. If state is in alerted or don't use you should send the lot to baking"),
-                'moisture_exposed_time': fields.function(_moisture_exposed_time_calculate, method=True, type='float', string='Moisture exposed time', digits=(15,2), store=True,
+                'moisture_exposed_time': fields.function(_moisture_exposed_time_calculate, 
+                                                         method=True, type='float', 
+                                                         string='Moisture exposed time', 
+                                                         digits=(15,2), 
+                                                         store=True,
                                                          help="The time this specific lot has been exposed to moisture, is calculated according to the times in the related stock moves in locations with moisture."),                
                 'msl_id': fields.related('product_id', 'msl_id', type='many2one', relation='product.msl', string="MSL"),
                 'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours"),
@@ -124,6 +171,8 @@ class stock_partial_picking(osv.osv):
     
     _inherit = 'stock.partial.picking.line'
     _name = 'stock.partial.picking.line' 
+    
+    # Ochange de lotes en esta clase alerta para que se mande este producto al horno
     def onchange_prodlot_id(self, cr, uid, ids, prodlot_id, product_id, context=None):
         prod_id = self.pool.get('product.product').browse(cr, uid, product_id)
         lot = False
@@ -177,7 +226,8 @@ class stock_move(osv.osv):
     
     def total_seconds(self, td):
         return (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6     
-
+    
+    # Obtiene el tiempo de exposicion a humedad de las seriales
     def _get_expose_duration(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
         zone = False
@@ -193,11 +243,17 @@ class stock_move(osv.osv):
             duration = 0.0
             move = self.browse(cr, uid, move_id, context=context)
             res[move.id] = {}
-            move_begin = datetime.strptime(
+            
+            # fecha en que termina la transaccion
+            move_ends = datetime.strptime(
                 move.date, '%Y-%m-%d %H:%M:%S'
                 ).replace(tzinfo=pytz.utc).astimezone(active_tz)
             prev_move_date = str_now
             prev_move_ids = False
+            
+            # se buscan las transacciones que esten listas y ademas que tengan los movimientos 
+            # en bodegas sean internal, los movimientos previos son los que cumplan con estas condiciones
+            # y se lo ordena por fechas desc 
             if move.location_id:
                 picking_ids = picking_pool.search(cr, uid, [
                                             ('state', '=', 'done'),
@@ -208,16 +264,21 @@ class stock_move(osv.osv):
                                                       ('prodlot_id', '=', move.prodlot_id.id),
                                                       ('picking_id','in', picking_ids),
                                                       ('date', '<', move.date)], order='date desc', context=context)
+                
+                # si no hay movimientos previos iguala las fechas de inicio y fin de movimiento
                 if not prev_move_ids:
                     prev_move_date = move.date
                 else:
+                    #Si hay movimientos se toma el inmediato anteriros que cumpla con las condiciones
                     prev_move = self.browse(cr, uid, prev_move_ids[0], context=context)
                     prev_move_date = prev_move.date
-                move_end = datetime.strptime(
+                move_begins = datetime.strptime(
                     prev_move_date, '%Y-%m-%d %H:%M:%S'
                     ).replace(tzinfo=pytz.utc).astimezone(active_tz)
-                duration_delta = move_begin - move_end 
+                duration_delta = move_ends - move_begins 
                 duration = self.total_seconds(duration_delta) / 60.0 / 60.0
+                
+            #Calculo de la duracion
             res[move.id]['duration'] = duration
             res[move.id]['end_datetime'] = prev_move_date
         return res
@@ -266,7 +327,7 @@ class stock_move(osv.osv):
         'dummy_field': fields.char('Dummy field',
                                    help="Used to cause a write that updates the stored function fields")
     }
-                                   
+    # Onchange de los seriales para que indique que el serial tiene que mandarse al horno en stock.move                         
     def onchange_lot_id(self, cr, uid, ids, prodlot_id=False, product_qty=False,
                         loc_id=False, product_id=False, uom_id=False, context=None):
         """ On change of production lot gives a warning message.
