@@ -75,19 +75,28 @@ class stock_production_lot(osv.osv):
         for lot in self.browse(cr,uid,ids):
             for move_id in move_ids:
                 move = move_pool.browse(cr,uid,move_id)
-                if lot == move.prodlot_id:
+                if lot == move.prodlot_id and move.location_id.hasmoisture and move.date > lot.last_baket_time:
                     moisture_exposed_time += move.duration 
             res[lot.id] = moisture_exposed_time
         return res
     
-    def _get_by_moves(self, cr, uid, ids, context=None):
+    def _get_lots(self, cr, uid, ids, context=None):
         lot_ids = []
         for lot in self.browse(cr, uid, ids, context=context):
                 lot_ids.append(lot.id) 
         return lot_ids
+    
+    def _get_by_moves(self, cr, uid, ids, context=None):
+        lot_ids = []
+        move_ids = []
+        for move in self.browse(cr, uid, ids, context=context):
+            if move.prodlot_id and prodlot_id.id not in lot_ids:               
+                lot_ids.append(move.prodlot_id.id) 
+        return lot_ids
 
     _store_rules = {
-                    'stock.production.lot': (_get_by_moves, ['moisture_exposed_time', 'msl_id','open_time'], 20),
+                    'stock.production.lot': (_get_lots, ['moisture_exposed_time', 'last_baket_time', 'msl_id','open_time'], 20),
+                    'stock.move': (_get_by_moves, ['duration'], 20),
                     }
 
     _columns = {
@@ -107,6 +116,7 @@ class stock_production_lot(osv.osv):
     
     _default = {
                 'msl_status': 'ready',
+                'last_baket_time': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
                 }
 stock_production_lot()
 
@@ -117,6 +127,8 @@ class stock_partial_picking(osv.osv):
     def onchange_prodlot_id(self, cr, uid, ids, prodlot_id, product_id, context=None):
         prod_id = self.pool.get('product.product').browse(cr, uid, product_id)
         lot = False
+        value = {'prodlot_id': prodlot_id}
+        warning = {}
         if prod_id.msl_id:
             if prodlot_id:
                     lot = self.pool.get('stock.production.lot').browse(cr, uid, prodlot_id)
@@ -126,11 +138,10 @@ class stock_partial_picking(osv.osv):
                                'title': 'Warning Production',
                                'message': "You must send this product lot to bake."
                     }
-                    value = {'prodlot_id': prodlot_id}
                     return {'warning': warning, 'value': value }
             else:
-                return {'value':{'prodlot_id ': prodlot_id,}
-                }
+                return {'value': value}
+        return {'warning': warning, 'value': value }
 
 stock_partial_picking()
 
@@ -169,71 +180,90 @@ class stock_move(osv.osv):
 
     def _get_expose_duration(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        active_tz = pytz.timezone(context.get("tz","UTC") if context else "UTC")
+        zone = False
+        if 'tz' in context and context.get("tz","UTC"):
+            zone = context.get("tz","UTC") 
+        else: 
+            zone = "UTC"
+        active_tz = pytz.timezone(zone)
         move_pool = self.pool.get('stock.move')
+        picking_pool = self.pool.get('stock.picking')
         str_now = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
         for move_id in ids:
             duration = 0.0
             move = self.browse(cr, uid, move_id, context=context)
             res[move.id] = {}
-            # 2012.10.16 LF FIX : Attendance in context timezone
             move_begin = datetime.strptime(
                 move.date, '%Y-%m-%d %H:%M:%S'
                 ).replace(tzinfo=pytz.utc).astimezone(active_tz)
-            next_move_date = str_now
-            next_move_ids = False
-            # should we compute for sign out too?
-            if move.location_dest_id:
-                next_move_ids = self.search(cr, uid, [
-                                                      ('state', '!=', 'draft'),
-                                                      ('location_id', '=', move.location_dest_id.id),
-                                                      ('prodlot_id', 'not in', [0.0]),
-                                                      ('date', '<', move.date)], order='date', context=context)
-                for next_move_id in next_move_ids:
-                    next_move = self.browse(cr, uid, next_move_id, context=context)
-                    if next_move.prodlot_id == move.prodlot_id:
-                        next_move_date = next_move.date
-                # 2012.10.16 LF FIX : Attendance in context timezone
+            prev_move_date = str_now
+            prev_move_ids = False
+            if move.location_id:
+                picking_ids = self.search(cr, uid, [
+                                            ('state', '=', 'done'),
+                                            ('type', '=', 'internal')],context=context)
+                prev_move_ids = self.search(cr, uid, [
+                                                      ('state', '=', 'done'),
+                                                      ('location_dest_id', '=', move.location_id.id),
+                                                      ('prodlot_id', '=', move.prodlot_id.id),
+                                                      ('picking_id','in', picking_ids),
+                                                      ('date', '<', move.date)], order='date desc', context=context)
+                if not prev_move_ids:
+                    prev_move_date = move.date
+                prev_move = self.browse(cr, uid, prev_move_ids[0], context=context)
+                prev_move_date = prev_move.date
                 move_end = datetime.strptime(
-                    next_move_date, '%Y-%m-%d %H:%M:%S'
+                    prev_move_date, '%Y-%m-%d %H:%M:%S'
                     ).replace(tzinfo=pytz.utc).astimezone(active_tz)
-                duration_delta = move_end - move_begin
+                duration_delta = move_begin - move_end 
                 duration = self.total_seconds(duration_delta) / 60.0 / 60.0
             res[move.id]['duration'] = duration
-            res[move.id]['end_datetime'] = next_move_date
+            res[move.id]['end_datetime'] = prev_move_date
         return res
 
-    def _get_by_location(self, cr, uid, ids, context=None):
-        move_ids = []
-        move_pool = self.pool.get('stock.move')
-        for location in self.browse(cr, uid, ids, context=context):
-            movement_ids = move_pool.search(cr, uid, 
-                                            [('location_dest_id', '=', location.id),
-                                             ('state', '!=', 'done')], 
-                                            context=context)
-            for move_id in movement_ids:
-                if move_id not in move_ids:
-                    move_ids.append(move_id)
-        return move_ids
+#===============================================================================
+#     def _get_by_location(self, cr, uid, ids, context=None):
+#         move_ids = []
+#         move_pool = self.pool.get('stock.move')
+#         for location in self.browse(cr, uid, ids, context=context):
+#             movement_ids = move_pool.search(cr, uid, 
+#                                             [('location_dest_id', '=', location.id),
+#                                              ('state', '=', 'done')], 
+#                                             context=context)
+#             for move_id in movement_ids:
+#                 if move_id not in move_ids:
+#                     move_ids.append(move_id)
+#         return move_ids
+# 
+#     def _get_lots(self, cr, uid, ids, context=None):
+#         move_ids = []
+#         for move in self.browse(cr, uid, ids, context=context):
+#             if move.location_dest_id and move.location_dest_id.hasmoisture and move.id not in move_ids:
+#                 move_ids.append(move.id) 
+#         return move_ids
+#===============================================================================
 
-    def _get_by_moves(self, cr, uid, ids, context=None):
-        move_ids = []
-        for move in self.browse(cr, uid, ids, context=context):
-            if move.location_dest_id and move.location_dest_id.hasmoisture and move.id not in move_ids:
-                move_ids.append(move.id) 
-        return move_ids
-
-    _store_rules = {
-                    'stock.move': (_get_by_moves, ['prodlot_id', 'dummy_field','location_dest_id'], 20),
-                    'stock.location': (_get_by_location, ['hasmoisture'], 20),
-                    }
+    #===========================================================================
+    # _store_rules = {
+    #                 'stock.move': (_get_lots, ['prodlot_id', 'dummy_field','location_dest_id'], 20),
+    #                 'stock.location': (_get_by_location, ['hasmoisture'], 20),
+    #                 }
+    #===========================================================================
 
     _columns = {
-        'duration': fields.function(_get_expose_duration, method=True, multi='duration', string="Attendance duration",
-            store=_store_rules),
-        'end_datetime': fields.function(_get_expose_duration, method=True, multi='duration', type="datetime", string="End date time",
-            store=_store_rules),
-        'dummy_field': fields.char('Dummy field',help="Used to cause a write that updates the stored function fields")
+        'duration': fields.function(_get_expose_duration, 
+                                    method=True, 
+                                    multi='duration', 
+                                    string="Exposed Duration",
+                                    store=True),
+        'end_datetime': fields.function(_get_expose_duration, 
+                                        method=True, 
+                                        multi='duration', 
+                                        type="datetime", 
+                                        string="End date time",
+                                        store=True),
+        'dummy_field': fields.char('Dummy field',
+                                   help="Used to cause a write that updates the stored function fields")
     }
                                    
     def onchange_lot_id(self, cr, uid, ids, prodlot_id=False, product_qty=False,
