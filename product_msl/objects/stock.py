@@ -199,7 +199,7 @@ class stock_move(osv.osv):
             prev_move_date = str_now
             prev_move_ids = False
             if move.location_id:
-                picking_ids = self.search(cr, uid, [
+                picking_ids = picking_pool.search(cr, uid, [
                                             ('state', '=', 'done'),
                                             ('type', '=', 'internal')],context=context)
                 prev_move_ids = self.search(cr, uid, [
@@ -210,8 +210,9 @@ class stock_move(osv.osv):
                                                       ('date', '<', move.date)], order='date desc', context=context)
                 if not prev_move_ids:
                     prev_move_date = move.date
-                prev_move = self.browse(cr, uid, prev_move_ids[0], context=context)
-                prev_move_date = prev_move.date
+                else:
+                    prev_move = self.browse(cr, uid, prev_move_ids[0], context=context)
+                    prev_move_date = prev_move.date
                 move_end = datetime.strptime(
                     prev_move_date, '%Y-%m-%d %H:%M:%S'
                     ).replace(tzinfo=pytz.utc).astimezone(active_tz)
