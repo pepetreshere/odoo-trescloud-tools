@@ -23,6 +23,7 @@
                 <form string="MSLs" version="7.0">
                     <group colspan="4" col="2">
 						<field name="name"/>
+						<field name="control"/>
 					 	<field name="packaged_time" widget="float_time" sum="Packaging Time in hours"/>
 					 	<field name="open_time" widget="float_time" sum="Open Time in hours" />
 					 	<field name="alarm_percentage"/>
@@ -41,10 +42,9 @@
             <field name="view_id" ref="view_product_msl_tree"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                Click to define a new product.
+                Click to define a new MSL.
               </p><p>
-                You must define a product for everything you buy or sell,
-                whether it's a physical product, a consumable or service.
+                You must define a MSL for every product.
               </p>
             </field>
         </record>

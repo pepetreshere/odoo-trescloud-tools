@@ -1,6 +1,6 @@
-id,name,packaged_time,open_time,alarm_percentage
-__export__.product_msl_1,Msl 1,2500,1200,91
-__export__.product_msl_2,Msl 2,1500,1000,95
-__export__.product_msl_3,Msl 3,2500,1200,90
-__export__.product_msl_4,Msl 4,2500,1200,80
-__export__.product_msl_5,Msl 5,1500,1200,79
+id,name,packaged_time,open_time,alarm_percentage,control
+__export__.product_msl_1,Msl 1,2500,1200,91,True
+__export__.product_msl_2,Msl 2,1500,1000,95,False
+__export__.product_msl_3,Msl 3,2500,1200,90,False
+__export__.product_msl_4,Msl 4,2500,1200,80,False
+__export__.product_msl_5,Msl 5,1500,1200,79,False

@@ -27,7 +27,7 @@ class product_product(osv.osv):
     _name = 'product.product' 
     _columns = {
         
-    'msl_id': fields.many2one('product.msl','Msl',select=True,help="Displays selected MSL"),
+    'msl_id': fields.many2one('product.msl','MSL',select=True,help="Displays selected MSL"),
     'open_time': fields.related(
                                       'msl_id',
                                       'open_time',
@@ -38,5 +38,13 @@ class product_product(osv.osv):
                                       readonly=True )
       
                 }
+    #===========================================================================
+    # def _default_msl(self,cr,uid,ids,context=None):
+    #     res = self.pool.get('product.msl').search(cr,uid,[('control','=', True)],context=context)
+    #     return res[0]
+    # _defaults = {  
+    #     'msl_id': _default_msl,  
+    #     }
+    #===========================================================================
 
 product_product()
