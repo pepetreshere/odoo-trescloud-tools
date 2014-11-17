@@ -34,9 +34,10 @@ class product_msl(osv.osv):
     _name = "product.msl"
     _columns = {
     'name': fields.char('Name', size=50, required=True, help='Name of the MSL.'),
-    'packaged_time': fields.float('Packaged  life time in hours',digits=(15,2), size=40,help="Lifetime of the component when sealed", required=True),
-    'open_time': fields.float('Max time exposed to moisture', digits=(15,2),size=40, help="Maximun period of time in which the component must be mounted and reflowed",required=True),
-    'alarm_percentage': fields.float('Alarm percentage', digits=(15,2),size=40, help="Percentage of time exposed to moisture at which the component gets alarmed as follows: Orange (Alarmed. should be sent to baking), Red (Moisture exceeded, do not use)",required=True),
+    'control': fields.boolean('Is not Controlled', required=False), 
+    'packaged_time': fields.float('Packaging Time in hours',digits=(15,2), size=40,help="Packaging life time in hours.", required=True),
+    'open_time': fields.float('Open Time in hours', digits=(15,2),size=40, help="Maximun period of time in which the component must be mounted and reflowed.",required=True),
+    'alarm_percentage': fields.float('Alarm percentage', digits=(15,2),size=40, help="Percentage of moisture at which the item gets alarmed as follows: Orange (Alarmed. should be sent to baking), Red (Moisture exceeded, do not use)",required=True),
                 }
     _defaults = {  
         'alarm_percentage': 75.0,  
