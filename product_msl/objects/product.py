@@ -27,16 +27,13 @@ class product_product(osv.osv):
     _name = 'product.product' 
     _columns = {
         
-    'msl_id': fields.many2one('product.msl','MSL',select=True,help="Displays selected MSL"),
-    'open_time': fields.related(
-                                      'msl_id',
-                                      'open_time',
-                                      type="float",
-                                      relation="product.msl",
-                                      string="Open Time in hours",
-                                      store=False,
-                                      readonly=True )
-      
+    'msl_id': fields.many2one('product.msl','MSL',
+                              select=True,
+                              help="Moisture Sensitivity Level relates to the packaging and handling precautions for some semiconductors"),
+    'open_time': fields.related('msl_id', 'open_time', type="float", relation="product.msl",
+                                string="Open Time in hours",
+                                store=False,
+                                help="Maximun period of time in which the component must be mounted and reflowed."),     
                 }
     #===========================================================================
     # def _default_msl(self,cr,uid,ids,context=None):

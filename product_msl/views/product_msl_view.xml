@@ -2,16 +2,31 @@
 	<openerp>
 		<data>
 		<!-- tree para modulo de  product.msl  -->
+		
+			<record id="view_product_msl_filter" model="ir.ui.view">
+	            <field name="name">product.msl.filter</field>
+	            <field name="model">product.msl</field>
+	            <field name="arch" type="xml">
+	                <search string="Search Product MSL">
+	                    <field name="name" string="Product MSL Reference" filter_domain="['|','|',('name','ilike',self)]"/>
+	                    <filter icon="terp-check" name="control" string="Controlled MSL\'s" domain="[('control', '=', 0)]" help="Controlled MSL\'s"/>
+	                </search>	
+	            </field>
+	        </record>
+		
 		   <record model="ir.ui.view" id="view_product_msl_tree">
             <field name="name">product.msl.tree</field>
             <field name="model">product.msl</field>
             <field name="type">tree</field>
+            <field name="search_view_id" ref="view_product_msl_filter"/>
+            <field name="context">{}</field>
             <field name="arch" type="xml">
-                 <tree string="MSLs" version="7.0">
+                 <tree string="MSL's" version="7.0">
                 		<field name="name"/>
-					 	<field name="packaged_time" widget="float_time" sum="Packaging Time in hours"/>
-					 	<field name="open_time" widget="float_time" sum="Open Time in hours"/>
-					 	<field name="alarm_percentage"/>          
+					 	<field name="packaged_time" widget="float_time" string="Packaging Time in hours"/>
+					 	<field name="open_time" widget="float_time" string="Open Time in hours"/>
+					 	<field name="alarm_percentage"/>
+					 	<field name="time_alert" widget="float_time" string="Alert Time in hours"/>         
                   </tree> 
             </field>
        	</record>
@@ -19,15 +34,37 @@
 		 <record model="ir.ui.view" id="view_product_msl_form">
             <field name="name">product.msl.form.view</field>
             <field name="model">product.msl</field>
+            <field name="search_view_id" ref="view_product_msl_filter"/>
+            <field name="context">{}</field>
             <field name="arch" type="xml">
-                <form string="MSLs" version="7.0">
-                    <group colspan="4" col="2">
-						<field name="name"/>
-						<field name="control"/>
-					 	<field name="packaged_time" widget="float_time" sum="Packaging Time in hours"/>
-					 	<field name="open_time" widget="float_time" sum="Open Time in hours" />
-					 	<field name="alarm_percentage"/>
-		            </group>
+                <form string="MSL's" version="7.0">
+                	<sheet>
+                		<div class="oe_title">
+                            <div class="oe_edit_only">
+                                <label for="name" string="MSL Name"/>
+                            </div>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <notebook>
+                           	<page string="Information">
+			                    <group colspan="4" col="2">
+									<field name="control"/>
+								 	<field name="packaged_time" widget="float_time" string="Packaging Time in hours"/>
+								 	<field name="open_time" widget="float_time" string="Open Time in hours" />
+								 	<field name="alarm_percentage"/>
+								 	<field name="time_alert" widget="float_time" string="Alert Time in hours"/>
+					            </group>
+				            </page>
+			            </notebook>
+			           	<separator string="Additional Information"/>
+                    	<field name="comment" placeholder="Describe additional information here..."/>
+		            </sheet>
+		            <div class="oe_chatter">
+		            	<field name="message_follower_ids" widget="mail_followers"/>
+	                    <field name="message_ids" widget="mail_thread"/>
+	                </div>
                 </form>
             </field>
         </record>
@@ -52,7 +89,5 @@
     
      <!-- Definimos el nombre del menu padre para Demo, este ira en la parte superior de openerp -->
         <menuitem name="MSLs" id="msls_menu" action="view_product_msl_action" sequence="3" parent="stock.menu_stock_product"/>
- 
-    
 		</data>
 	</openerp>
