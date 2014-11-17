@@ -47,7 +47,7 @@
         'views/product_msl_view.xml',
         'views/product_view.xml',
         'wizard/wizard_product_msl_view.xml',
-        'views/stock_view.xml',        
+        'views/stock_view.xml',
         'data/product.msl.csv',
        # 'security/',
     ],

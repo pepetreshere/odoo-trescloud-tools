@@ -24,7 +24,7 @@ from openerp.tools.translate import _
 from openerp import netsvc
 import time
 
-
+# se crea vista temporal  para  actualizar o resetear tiempo y que se actualice con el guardado
 class wizard_product_msl(osv.osv_memory):
     _name = 'wizard.product.msl'
     _columns = {
@@ -33,6 +33,7 @@ class wizard_product_msl(osv.osv_memory):
      
     }
     _defaults = {
+        # se pone por defecto la hora actual para realizar la actualización del tiempo         
         'last_baket_time': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
     }
     
@@ -44,8 +45,9 @@ class wizard_product_msl(osv.osv_memory):
                 context = {}
         #se crea el objeto de la clase  production.lot para ser ocupado en la actualización de la fecha         
         prodlot_obj = self.pool.get('stock.production.lot')
-        
+        # se interactua con la vista para poder ocupar  el serial unico asociado al producto
         prodlot_id = prodlot_obj.browse(cr,user,context.get('prodlot_id',False))
+        # se guarda el tiempo actualizado del producto 
         prodlot_obj.write(cr, user, [prodlot_id.id], {'last_baket_time': context.get('last_baket_time',False)}, context=context)         
         return True
   
