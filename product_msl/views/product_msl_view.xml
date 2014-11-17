@@ -9,7 +9,7 @@
 	            <field name="arch" type="xml">
 	                <search string="Search Product MSL">
 	                    <field name="name" string="Product MSL Reference" filter_domain="['|','|',('name','ilike',self)]"/>
-	                    <filter icon="terp-check" name="control" string="Controlled MSL\'s" domain="[('control', '=', 0)]" help="Controlled MSL\'s"/>
+	                    <filter icon="terp-check" name="control" string="Controlled MSL's" domain="[('control', '=', 0)]" help="Controlled MSL's"/>
 	                </search>	
 	            </field>
 	        </record>
@@ -88,6 +88,6 @@
     <!--  <menuitem action= "view_product_msl_action" id="msls_menu" parent="stock.menu_stock_product"/> -->  
     
      <!-- Definimos el nombre del menu padre para Demo, este ira en la parte superior de openerp -->
-        <menuitem name="MSLs" id="msls_menu" action="view_product_msl_action" sequence="3" parent="stock.menu_stock_product"/>
+        <menuitem name="MSL's" id="msls_menu" action="view_product_msl_action" sequence="3" parent="stock.menu_stock_product"/>
 		</data>
 	</openerp>
