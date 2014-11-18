@@ -23,23 +23,27 @@
 	            <field name="inherit_id" ref="stock.view_production_lot_form"/>
 	            <field name="type">form</field>
 	              <field name="arch" type="xml">
-	            	<xpath expr="//form/group" position="after">
-	            		<group string="MSL" attrs="{'invisible' : [('msl_id','=',False)]}">
-		                 	<field name="msl_status"/>
-			                <group col="4" colspan="4">
-			                 	<field colspan="1" name="moisture_exposed_time" widget="float_time" sum="Moisture Exposed Time"/>
-			                 	<button name="%(action_product_msl_wizard)d" 
-			                 	colspan="3" 
-			                 	id="post baked" 
-			                 	string="Post baked" 
-			                 	type="action" 
-			                 	context="{'prodlot_id': id, 'last_baket_time': last_baket_time}"
-			                 	attrs="{'invisible' : [('msl_status','=', 'ready')]}"/>
-			                </group>
-		                 	<field name="msl_id" readonly="1"/>
-		                 	<field name="open_time" readonly="1" widget="float_time"/>
-		                 	<field name="last_baket_time"/>
-		                 </group>
+	            	<xpath expr="//notebook/page[@string='Revisions']" position="before">
+                        <page string="MSL" groups="stock.group_stock_manager">
+	                        <form string="MSL Form" version="7.0">
+			                 	<group>
+				                 	<field name="msl_status" string="MSL Status"/>
+					                <group col="4" colspan="4">
+					                 	<field colspan="1" name="moisture_exposed_time" widget="float_time" string="Moisture Exposed Time"/>
+					                 	<button name="%(action_product_msl_wizard)d" 
+					                 	colspan="3" 
+					                 	id="post baked" 
+					                 	string="Post baked" 
+					                 	type="action" 
+					                 	context="{'prodlot_id': id, 'last_baket_time': last_baket_time}"
+					                 	attrs="{'invisible' : [('msl_status','=', 'ready')]}"/>
+					                </group>
+				                 	<field name="msl_id" readonly="1" string="MSL"/>
+				                 	<field name="open_time" readonly="1" widget="float_time" string="Open Time in hours"/>
+				                 	<field name="last_baket_time" readonly="1" string="Last Baked Time"/>
+			                 	</group>
+		                 	</form>
+		                 </page>
 		             </xpath>
             	  </field>
 	      	</record>

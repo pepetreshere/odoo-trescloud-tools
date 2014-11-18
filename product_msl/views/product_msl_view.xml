@@ -88,6 +88,11 @@
     <!--  <menuitem action= "view_product_msl_action" id="msls_menu" parent="stock.menu_stock_product"/> -->  
     
      <!-- Definimos el nombre del menu padre para Demo, este ira en la parte superior de openerp -->
-        <menuitem name="MSL's" id="msls_menu" action="view_product_msl_action" sequence="3" parent="stock.menu_stock_product"/>
+        <menuitem name="MSL's" 
+        id="msls_menu" 
+        action="view_product_msl_action" 
+        sequence="3" 
+        parent="stock.menu_stock_product"
+        groups="stock.group_stock_manager"/>
 		</data>
 	</openerp>

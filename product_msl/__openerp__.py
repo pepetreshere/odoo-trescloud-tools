@@ -44,11 +44,13 @@
     """,
     'website': 'http://www.trescloud.com',
     'data': [
-        'views/product_msl_view.xml',
-        'views/product_view.xml',
-        'wizard/wizard_product_msl_view.xml',
-        'views/stock_view.xml',
-        'data/product.msl.csv',
+             'data/product.msl.csv',
+             'security/ir.model.access.csv',
+             'views/product_msl_view.xml',
+             'views/product_view.xml',
+             'wizard/wizard_product_msl_view.xml',
+             'views/stock_view.xml',
+        
        # 'security/',
     ],
     'installable': True,
