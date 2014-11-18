@@ -343,7 +343,7 @@ class stock_move(osv.osv):
         return True
     
     _constraints = [
-       (_check_location, 'You cannot move products from or to a location of the type view.',
+       (_check_location, 'You cannot move products from this location to another.',
            ['location_id','location_dest_id'])]
     
     # Onchange de los seriales para que indique que el serial tiene que mandarse al horno en stock.move                         
