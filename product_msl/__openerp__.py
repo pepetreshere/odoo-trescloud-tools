@@ -27,7 +27,7 @@
                 'stock',
                 'product_serial'
                 ],
-    'author': 'TRESCLOUD Henry Granada',
+    'author': 'TRESCLOUD Henry Granada, Santiago Orozco',
     'description': 
     """
     Moisture Sensitive Level
@@ -39,16 +39,18 @@
     - - Tracking of exposed time of a specific lot or serial number of the product
     - - Alarms
     Authors: 
-    Henry Granada
+    Henry Granada, Santiago Orozco
     TRESCLOUD Cia Ltda
     """,
     'website': 'http://www.trescloud.com',
     'data': [
-        'views/product_msl_view.xml',
-        'views/product_view.xml',
-        'wizard/wizard_product_msl_view.xml',
-        'views/stock_view.xml',
-        'data/product.msl.csv',
+             'data/product.msl.csv',
+             'security/ir.model.access.csv',
+             'views/product_msl_view.xml',
+             'views/product_view.xml',
+             'wizard/wizard_product_msl_view.xml',
+             'views/stock_view.xml',
+        
        # 'security/',
     ],
     'installable': True,

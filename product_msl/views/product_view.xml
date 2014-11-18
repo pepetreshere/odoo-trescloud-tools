@@ -9,8 +9,10 @@
 	            <field name="type">form</field>
 	              <field name="arch" type="xml">
 	            	<xpath expr="//field[@name='list_price']" position="after">
-	                 	<field name="msl_id" widget="selection"/>
-	                 	<field name="open_time" widget="float_time" sum="Open Time in hours"/> 
+		            	<group string="MSL" groups="stock.group_stock_manager">
+		                 	<field name="msl_id" widget="selection"/>
+		                 	<field name="open_time" readonly="1" widget="float_time" string="Open Time in hours"/> 
+		                </group>
 		             </xpath>
             	  </field>
 	      	</record>
