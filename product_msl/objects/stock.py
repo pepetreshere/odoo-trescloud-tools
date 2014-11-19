@@ -28,7 +28,6 @@ import math
 from openerp.tools import float_compare
 
 import pytz
-from atom import Control
 
 class stock_production_lot(osv.osv):
     
@@ -154,10 +153,10 @@ class stock_production_lot(osv.osv):
                                                          method=True, type='float', 
                                                          string='Moisture exposed time', 
                                                          digits=(15,2), 
-                                                         store=True,
+                                                         store=_store_rules,
                                                          help="The time this specific lot has been exposed to moisture, is calculated according to the times in the related stock moves in locations with moisture."),                
-                'msl_id': fields.related('product_id', 'msl_id', type='many2one', relation='product.msl', string="MSL"),
-                'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours"),
+                'msl_id': fields.related('product_id', 'msl_id', type='many2one', relation='product.msl', string="MSL", help="Moisture Sensitivity Level relates to the packaging and handling precautions for some semiconductors"),
+                'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours", help="Maximiun period of time in which the component must be mounted and used."),
                 'last_baket_time': fields.datetime('Last Baked Time', type='datetime',help="Ready, time between the alert."),                
                 }
     

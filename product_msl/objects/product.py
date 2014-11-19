@@ -33,7 +33,7 @@ class product_product(osv.osv):
     'open_time': fields.related('msl_id', 'open_time', type="float", relation="product.msl",
                                 string="Open Time in hours",
                                 store=False,
-                                help="Maximun period of time in which the component must be mounted and reflowed."),     
+                                help="Maximiun period of time in which the component must be mounted and reflowed."),     
                 }
     #===========================================================================
     # def _default_msl(self,cr,uid,ids,context=None):
