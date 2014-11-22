@@ -108,7 +108,7 @@ class stock_production_lot(osv.osv):
         lot_ids = []
         move_ids = []
         for move in self.browse(cr, uid, ids, context=context):
-            if move.prodlot_id and prodlot_id.id not in lot_ids:               
+            if move.prodlot_id and move.prodlot_id.id not in lot_ids:               
                 lot_ids.append(move.prodlot_id.id) 
         return lot_ids
     
@@ -326,6 +326,24 @@ class stock_move(osv.osv):
         'dummy_field': fields.char('Dummy field',
                                    help="Used to cause a write that updates the stored function fields")
     }
+    # Funcion que permite  validar que los productos que tienen  asociados seriales  puedan transferir productos de diferentes bodegas
+    # ademas se informa  que se pueda transferir todo el lote  de bodegas del mismo tipo
+    # las alertas  se informan cuando la cantidad es menor y mayor a la confirmada
+    def _check_location(self, cr, uid, ids, context=None):
+        for record in self.browse(cr, uid, ids, context=context):
+            if record.prodlot_id:
+                if record.location_id.usage == record.location_dest_id.usage:
+                    if record.product_qty > record.prodlot_id.stock_available:
+                        raise osv.except_osv(_('Error'), _('You cannot move  the product %s is greater from a locaton of type view %s.')% (record.product_id.name, record.location_id.name))
+                        #raise osv.except_osv(_('Error'), _('You cannot move the product, the amount is greater than the available.')% (record.product_id.name, record.location_id.name))
+                    elif record.product_qty < record.prodlot_id.stock_available:
+                        raise osv.except_osv(_('Error'), _('You cannot move the product %s is less from a locaton of type view %s.')% (record.product_id.name, record.location_id.name))
+        return True
+    
+    _constraints = [
+       (_check_location, 'You cannot move products from this location to another.',
+           ['location_id','location_dest_id'])]
+    
     # Onchange de los seriales para que indique que el serial tiene que mandarse al horno en stock.move                         
     def onchange_lot_id(self, cr, uid, ids, prodlot_id=False, product_qty=False,
                         loc_id=False, product_id=False, uom_id=False, context=None):
