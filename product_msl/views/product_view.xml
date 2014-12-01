@@ -8,10 +8,10 @@
 	            <field name="inherit_id" ref="product.product_normal_form_view"/>
 	            <field name="type">form</field>
 	              <field name="arch" type="xml">
-	            	<xpath expr="//field[@name='list_price']" position="after">
+	            	<xpath expr="/form/sheet/notebook/page[@string='Information']/group/group/field[@name='variants']" position="before">
 		            	<group string="MSL" groups="stock.group_stock_manager">
 		                 	<field name="msl_id" widget="selection"/>
-		                 	<field name="open_time" readonly="1" widget="float_time" string="Open Time in hours"/> 
+		                 	<field name="open_time" readonly="1" widget="float_time"/>
 		                </group>
 		             </xpath>
             	  </field>

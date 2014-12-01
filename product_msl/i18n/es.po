@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 7.0-20140804-231303\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-17 23:36+0000\n"
-"PO-Revision-Date: 2014-11-18 10:23-0500\n"
+"POT-Creation-Date: 2014-12-01 22:18+0000\n"
+"PO-Revision-Date: 2014-12-01 17:29-0500\n"
 "Last-Translator: Santiago <santiago.orozco@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: product_msl
-#: help:product.product,open_time:0
-msgid "Maximun period of time in which the component must be mounted and reflowed."
-msgstr "Período máximo de  tiempo en el cual el componente debe ser montado y usado."
+#: field:wizard.product.msl,last_baket_time:0
+msgid "last baket time"
+msgstr "Última fecha de horneado"
 
 #. module: product_msl
 #: view:product.msl:0
@@ -68,6 +68,18 @@ msgid "Check this, if the location has moisture."
 msgstr "Check este campo, si la ubucación tiene humedad."
 
 #. module: product_msl
+#: help:product.msl,open_time:0
+msgid "Maximum period of time that the component can be used, after that time the component must be sent to bake"
+msgstr "Máximo periodo de tiempo en que el compomente puede ser usado, después de eso el compomente debe ser enviado a hornear."
+
+#. module: product_msl
+#: code:addons/product_msl/objects/stock.py:317
+#, python-format
+msgid "You cannot move the product %s because the quantity you plan to move is less than the quantity available, you have to move the whole quantity of serial"
+msgstr "No se puede mover el producto %s porque la cantidad que se planea mover es menor que la cantidad disponible, usted debe mover toda la cantidad en el lote."
+
+#. module: product_msl
+#: view:product.product:0
 #: field:product.product,msl_id:0
 #: view:stock.production.lot:0
 #: field:stock.production.lot,msl_id:0
@@ -101,6 +113,11 @@ msgstr "Nombre MSL"
 
 #. module: product_msl
 #: view:stock.production.lot:0
+msgid "MSL Form"
+msgstr "MSL Form"
+
+#. module: product_msl
+#: view:stock.production.lot:0
 msgid "Do not use"
 msgstr "No Usar"
 
@@ -110,15 +127,15 @@ msgid "Available for use"
 msgstr "Disponible para uso"
 
 #. module: product_msl
-#: help:product.msl,open_time:0
-msgid "Maximiun period of time in which the component must be mounted and used."
-msgstr "Período máximo de  tiempo en el cual el componente debe ser montado y usado."
+#: help:product.msl,packaged_time:0
+msgid "Lifetime of the component when sealed in hours."
+msgstr "Tiempo de vida del componente sellado, medido en horas."
 
 #. module: product_msl
 #: code:addons/product_msl/objects/product_msl.py:71
 #, python-format
 msgid "%s (copy)"
-msgstr "%s (copy)"
+msgstr "%s (copia)"
 
 #. module: product_msl
 #: model:ir.model,name:product_msl.model_product_product
@@ -143,16 +160,10 @@ msgstr "Tiempo MSL"
 #. module: product_msl
 #: view:product.msl:0
 #: field:product.msl,open_time:0
-#: view:product.product:0
 #: field:product.product,open_time:0
 #: field:stock.production.lot,open_time:0
 msgid "Open Time in hours"
 msgstr "Tiempo Máximo de exposición"
-
-#. module: product_msl
-#: help:product.msl,time_alert:0
-msgid "Alert time period in which the component should be taken into consideration to send baking."
-msgstr "Periodo de alerta en el cual el compomente debe se considerado en ser enviado al horno."
 
 #. module: product_msl
 #: field:product.msl,message_unread:0
@@ -175,6 +186,18 @@ msgid "MSLs"
 msgstr "MSLs"
 
 #. module: product_msl
+#: help:product.product,open_time:0
+#: help:stock.production.lot,open_time:0
+msgid "Maximum period of time that the component can be used, after that time the component must be sent to bake."
+msgstr "Máximo periodo de tiempo en que el compomente puede ser usado, después de eso el compomente debe ser enviado a hornear."
+
+#. module: product_msl
+#: code:addons/product_msl/objects/stock.py:314
+#, python-format
+msgid "You cannot move the product %s because the quantity you plan to move is greater than the quantity available, you have to move the whole quantity of serial."
+msgstr "No se puede mover el producto %s porque la cantidad que se planea mover es mayor que la cantidad disponible, usted debe mover toda la cantidad en el lote."
+
+#. module: product_msl
 #: view:stock.production.lot:0
 #: selection:stock.production.lot,msl_status:0
 msgid "Alert"
@@ -183,12 +206,12 @@ msgstr "Alerta"
 #. module: product_msl
 #: view:stock.production.lot:0
 msgid "Available for use but should be sent to baking soon"
-msgstr "Disponoble para el uso pero debe ser enviado a hornear pronto."
+msgstr "Disponible para el uso pero debe ser enviado a hornear pronto."
 
 #. module: product_msl
 #: model:ir.model,name:product_msl.model_stock_production_lot
 msgid "Serial Number"
-msgstr "Nº de serie"
+msgstr "Número de serie"
 
 #. module: product_msl
 #: field:stock.move,dummy_field:0
@@ -201,12 +224,18 @@ msgid "Is a Follower"
 msgstr "Es un seguidor"
 
 #. module: product_msl
+#: help:product.msl,time_alert:0
+msgid "Alert period of time in which the component should be taken into consideration to send baking."
+msgstr "Periodo de alerta de tiempo en el cual el componente debe debería ser considerado para enviar a horneado."
+
+#. module: product_msl
 #: view:stock.production.lot:0
 msgid "orange:msl_status == 'alert';red:msl_status == 'donotuse'"
 msgstr "orange:msl_status == 'alert';red:msl_status == 'donotuse'"
 
 #. module: product_msl
 #: help:product.product,msl_id:0
+#: help:stock.production.lot,msl_id:0
 msgid "Moisture Sensitivity Level relates to the packaging and handling precautions for some semiconductors"
 msgstr "Nivel de sensibilidad a la humedad relaciona a empaquetamiento y precauciones de manejo  para ciertos semiconductores."
 
@@ -214,6 +243,11 @@ msgstr "Nivel de sensibilidad a la humedad relaciona a empaquetamiento y precauc
 #: model:ir.actions.act_window,name:product_msl.action_product_msl_wizard
 msgid "Time Msl Wizard"
 msgstr "Wizard Tiempo MSL"
+
+#. module: product_msl
+#: help:stock.production.lot,last_baket_time:0
+msgid "Last date that the component had been sent to bake."
+msgstr "Última fecha que el componente fue enviado a hornear."
 
 #. module: product_msl
 #: view:stock.production.lot:0
@@ -262,15 +296,17 @@ msgid "Ready"
 msgstr "Listo"
 
 #. module: product_msl
-#: field:wizard.product.msl,last_baket_time:0
-msgid "last baket time"
-msgstr "Última fecha de horneado"
-
-#. module: product_msl
 #: code:addons/product_msl/objects/product_msl.py:59
 #, python-format
 msgid "In order to delete a MSL, you must first unlink the MSL from the products related."
 msgstr "Para borrar un MSL, primero desvincule los productos relacionados con este."
+
+#. module: product_msl
+#: code:addons/product_msl/objects/stock.py:314
+#: code:addons/product_msl/objects/stock.py:317
+#, python-format
+msgid "Error"
+msgstr "Error"
 
 #. module: product_msl
 #: view:stock.production.lot:0
@@ -310,12 +346,6 @@ msgid "Don't Use"
 msgstr "No Usar"
 
 #. module: product_msl
-#: model:ir.ui.menu,name:product_msl.msls_menu
-#: view:product.msl:0
-msgid "MSL's"
-msgstr "MSL's"
-
-#. module: product_msl
 #: field:stock.move,duration:0
 msgid "Exposed Duration"
 msgstr "Duración de Exposición"
@@ -323,7 +353,12 @@ msgstr "Duración de Exposición"
 #. module: product_msl
 #: help:stock.move,dummy_field:0
 msgid "Used to cause a write that updates the stored function fields"
-msgstr "Used to cause a write that updates the stored function fields"
+msgstr "Usado para provocar que se escriban las actualizaciones en los campos almacenados tipo función."
+
+#. module: product_msl
+#: constraint:stock.move:0
+msgid "You cannot move products from this location to another."
+msgstr "No se puede mover los productos de esta ubicación a otra."
 
 #. module: product_msl
 #: field:product.msl,alarm_percentage:0
@@ -351,11 +386,6 @@ msgid "Percentage of moisture at which the item gets alarmed as follows: Orange 
 msgstr "Porcentaje de humedad a los cuales los items son alertados: Naranja (Alerta, debe ser enviado a horneado), Rojo (Humedad Excedida, no usar)"
 
 #. module: product_msl
-#: model:ir.model,name:product_msl.model_product_msl
-msgid "product.msl"
-msgstr "product.msl"
-
-#. module: product_msl
 #: code:addons/product_msl/objects/product_msl.py:59
 #, python-format
 msgid "Invalid Action!"
@@ -364,12 +394,18 @@ msgstr "Acción Invalida!"
 #. module: product_msl
 #: help:product.msl,message_summary:0
 msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
-msgstr "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Mantiene el resumen de conversaciones (número de mensajes, ...). Este resumen está directamente en formato html para se insertado en las vistas tipo kanban."
 
 #. module: product_msl
-#: help:product.msl,packaged_time:0
-msgid "Lifetime of the component when saled in hours."
-msgstr "Tiempo de vida de los componentes vendidos en horas."
+#: model:ir.ui.menu,name:product_msl.msls_menu
+#: view:product.msl:0
+msgid "MSL's"
+msgstr "MSL's"
+
+#. module: product_msl
+#: model:ir.model,name:product_msl.model_product_msl
+msgid "Email Thread"
+msgstr "Hilo de mensajes"
 
 #. module: product_msl
 #: view:wizard.product.msl:0
@@ -382,10 +418,9 @@ msgid "Has Moisture"
 msgstr "Tiene humedad"
 
 #. module: product_msl
-#: help:stock.production.lot,last_baket_time:0
 #: help:wizard.product.msl,last_baket_time:0
-msgid "Ready, time between the alert."
-msgstr "Listo, tiempo entre alerta."
+msgid "Last date that the component had been sent to bake."
+msgstr "Última fecha que el componente fue enviado a hornear."
 
 #. module: product_msl
 #: view:product.msl:0

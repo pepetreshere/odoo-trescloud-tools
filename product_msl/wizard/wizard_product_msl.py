@@ -29,7 +29,7 @@ class wizard_product_msl(osv.osv_memory):
     _name = 'wizard.product.msl'
     _columns = {
 #        DR TODO: agregar campo para vista temporal 
-    'last_baket_time': fields.datetime('last baket time', type='datetime',help="Ready, time between the alert."),
+    'last_baket_time': fields.datetime('last baket time', type='datetime',help="Last date that the component had been sent to bake."),
      
     }
     _defaults = {
@@ -48,7 +48,7 @@ class wizard_product_msl(osv.osv_memory):
         # se interactua con la vista para poder ocupar  el serial unico asociado al producto
         prodlot_id = prodlot_obj.browse(cr,user,context.get('prodlot_id',False))
         # se guarda el tiempo actualizado del producto 
-        prodlot_obj.write(cr, user, [prodlot_id.id], {'last_baket_time': context.get('last_baket_time',False)}, context=context)         
+        prodlot_obj.write(cr, user, [prodlot_id.id], {'last_baket_time': context.get('last_baket_time',False)}, context=context)
         return True
   
 wizard_product_msl()
