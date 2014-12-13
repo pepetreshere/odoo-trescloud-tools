@@ -61,7 +61,7 @@ parser.add_argument('-u', '--user', metavar='usuario', dest='user', type=str, de
 parser.add_argument('-p', '--password', metavar='clave', dest='password', type=str, default=None, help=u"Password para ese usuario (no se recomienda pasarlo por consola si se ejecuta directamente el comando)")
 parser.add_argument('-b', '--branches', metavar='rama', dest="branches", action="append", type=str, default=[], help=u"Cada rama a descargar (esta opción se puede incluir varias veces - en su ausencia permanece la rama 'master'), para todos los repositorios")
 parser.add_argument('-d', '--directory', metavar='directorio', default=None, help=u"Directorio en donde descargar los repositorios (o descarga en el directorio de trabajo actual)")
-parser.add_argument('repositories', metavar='repositorio', nargs='+', help=u"Repositorios a clonar, si no existen")
+parser.add_argument('repositories', metavar='repositorio', nargs='+', help=u"Repositorios a clonar, si no existen. Debe especificarse como una lista de repositorios: <repo> <repo> <repo>, donde cada repositorio puede expresarse como <nombre> o <usuario>/<nombre>. Esto último es necesario si el repositorio no pertenece al usuario actual, sino que es de otro quien nos dió permisos. Para repositorios pertenecientes al usuario actual, especificar el usuario es permitido, pero no requerido.")
 
 args = parser.parse_args()
 args = {
@@ -139,7 +139,7 @@ def git_pull(branch):
     command = "git pull origin {branch}".format(branch=branch).split()
     subprocess.call(command)
 
-def git_clone(repo):
+def git_clone(repo, repo_name):
     """
     git clone https://(user):(password)@github.com/(user)/(repo)
     """
@@ -148,7 +148,7 @@ def git_clone(repo):
     repository = urllib.quote(repo)
     if '/' not in repository:
         repository = username + '/' + repository
-    command = "git clone https://{username}:{password}@github.com/{repository}.git {repository}".format(username=username, password=password, repository=repository).split()
+    command = "git clone https://{username}:{password}@github.com/{repository}.git {repo_name}".format(username=username, password=password, repository=repository, repo_name=repo_name).split()
     subprocess.call(command)
 
 
@@ -164,7 +164,8 @@ if input_option(u'Está a punto de crear los repositorios en "{directory}". ¿De
         os.chdir(args['directory'])
 
         for repository in args['repositories']:
-            path = os.path.join(args['directory'], repository)
+            repo_name = repo_name = repository.split('/')[1] if '/' in repository else repository
+            path = os.path.join(args['directory'], repo_name)
             git = os.path.join(path, '.git')
             exists = os.path.exists(git)
             isdir = os.path.isdir(git)
@@ -177,7 +178,7 @@ if input_option(u'Está a punto de crear los repositorios en "{directory}". ¿De
 Clonando repositorio %s (usuario: %s)
 ---------------------------------
 """ % (repository, args['user'])
-                git_clone(repository)
+                git_clone(repository, repo_name)
             os.chdir(path)
 
             for branch in args['branches']:
