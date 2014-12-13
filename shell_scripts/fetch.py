@@ -6,6 +6,7 @@ import os
 import urllib
 import errno
 import subprocess
+import sys
 
 
 class _Getch:
@@ -132,6 +133,16 @@ Tiene la oportunidad de indicar, a continuación, las ramas a descargar, una por
     if not args['branches']:
         args['branches'].append('master')
 
+def git_exists():
+    """
+    Intenta ejecutar "git --version". Si falla, no tenemos git instalado o no se puede localizar.
+    """
+    try:
+        subprocess.call("git --version".split())
+        return True
+    except os.error as e:
+        return False
+
 def git_pull(branch):
     """
     git pull origin "<branch>"
@@ -151,6 +162,14 @@ def git_clone(repo, repo_name):
     command = "git clone https://{username}:{password}@github.com/{repository}.git {repo_name}".format(username=username, password=password, repository=repository, repo_name=repo_name).split()
     subprocess.call(command)
 
+
+if not git_exists():
+    print u"""
+---------------------------------------
+!!! Bestia! no tienes Git instalado !!!
+---------------------------------------
+"""
+    sys.exit(1)
 
 if input_option(u'Está a punto de crear los repositorios en "{directory}". ¿Desea continuar?'.format(**args)) == 'y':
     
