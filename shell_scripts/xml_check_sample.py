@@ -2,7 +2,7 @@
 # coding: utf-8
 
 
-from xml_check import validate_doc, XSD_SRI_110_FACTURA, XSD_SRI_110_NOTACRED, XMLDocumentException, XMLValidationException, XMLFormatException
+from xml_check import validate_doc, XSD_SRI_110_FACTURA, XSD_SRI_110_NOTACRED, XSD_SRI_110_GUIAREM, XMLDocumentException, XMLValidationException, XMLFormatException
 
 
 factura_xml = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -179,10 +179,64 @@ notacred_xml = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     </infoAdicional>
 </notaCredito>"""
 
+
+guiarem_xml = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<guiaRemision id="comprobante" version="1.1.0">
+    <infoTributaria>
+        <ambiente>1</ambiente>
+        <tipoEmision>1</tipoEmision>
+        <razonSocial>XYZ</razonSocial>
+        <nombreComercial>XYZ</nombreComercial>
+        <ruc>0000000000001</ruc>
+        <claveAcceso>2103201306000000000000110015010000000091234567818</claveAcceso>
+        <codDoc>06</codDoc>
+        <estab>001</estab>
+        <ptoEmi>501</ptoEmi>
+        <secuencial>000000009</secuencial>
+        <dirMatriz>AMAZONAS</dirMatriz>
+    </infoTributaria>
+    <infoGuiaRemision>
+        <dirEstablecimiento>AMAZONAS</dirEstablecimiento>
+        <dirPartida>abcd</dirPartida>
+        <razonSocialTransportista>TRANSPORTISTA PN</razonSocialTransportista>
+        <tipoIdentificacionTransportista>05</tipoIdentificacionTransportista>
+        <rucTransportista>1705843251</rucTransportista>
+        <obligadoContabilidad>SI</obligadoContabilidad>
+        <contribuyenteEspecial>12345</contribuyenteEspecial>
+        <fechaIniTransporte>21/03/2013</fechaIniTransporte>
+        <fechaFinTransporte>21/03/2013</fechaFinTransporte>
+        <placa>PQH0450</placa>
+    </infoGuiaRemision>
+    <destinatarios>
+        <destinatario>
+            <identificacionDestinatario>1703251180</identificacionDestinatario>
+            <razonSocialDestinatario>DESTINATARIO PN</razonSocialDestinatario>
+            <dirDestinatario>abcd</dirDestinatario>
+            <motivoTraslado>abcd</motivoTraslado>
+            <docAduaneroUnico>12345</docAduaneroUnico>
+            <codEstabDestino>001</codEstabDestino>
+            <ruta>abcd</ruta>
+            <codDocSustento>01</codDocSustento>
+            <numDocSustento>001-001-000000001</numDocSustento>
+            <numAutDocSustento>0000000000000000000000000000000000000</numAutDocSustento>
+            <fechaEmisionDocSustento>21/03/2013</fechaEmisionDocSustento>
+            <detalles>
+                <detalle>
+                    <codigoInterno>011</codigoInterno>
+                    <descripcion>PRUEBA</descripcion>
+                    <cantidad>0.000000</cantidad>
+                </detalle>
+            </detalles>
+        </destinatario>
+    </destinatarios>
+</guiaRemision>"""
+
+
 try:
     validate_doc(factura_xml, XSD_SRI_110_FACTURA)
     validate_doc(notacred_xml, XSD_SRI_110_NOTACRED)
-    print u"documento validado exitosamente"
+    validate_doc(guiarem_xml, XSD_SRI_110_GUIAREM)
+    print u"documentos validados exitosamente"
 except XMLFormatException as e:
     print u"hubo error en %s: %s" % ({1:"el archivo xml", 2:"el archivo xsd"}[e.args[1]], e.args[0])
 except XMLValidationException as e:
