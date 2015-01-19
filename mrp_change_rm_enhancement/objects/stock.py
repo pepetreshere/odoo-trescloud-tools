@@ -89,10 +89,15 @@ class mrp_production(osv.osv):
     # Metodo que setea el costo teorico del producto
     #===========================================================================
     def create(self, cr, uid, values, context=None):
-        mrp_production_obj=self.pool.get('mrp.production')
+        mrp_production_obj = self.pool.get('mrp.production')
         res = super(mrp_production, self).create(cr, uid, values, context=context)
         bom_read = mrp_production_obj.read(cr, uid, res, ['bom_id','product_qty'], context=context)
-        bom_id= self.pool.get('mrp.bom').browse(cr, uid, bom_read['bom_id'][0])
+        product_obj = self.pool.get('mrp.bom')
+        #Obtenemos los ids ordenados por secuencia
+        product_obj_ids_search = product_obj.search(cr, uid, [('product_id', '=', values['product_id'])], order = 'sequence') 
+        #Hacemos un browse al objeto con el id de menor secuencia
+        product_obj_ids_browse =  product_obj.browse(cr, uid, product_obj_ids_search[0])  
+        bom_id= self.pool.get('mrp.bom').browse(cr, uid, product_obj_ids_browse.product_id.id)
         unit_cost = (bom_id.total_cost/bom_id.product_qty) 
         total_cost = unit_cost * bom_read['product_qty']
         mrp_production_obj.write(cr, uid, res, {'unit_cost' : unit_cost, 'total_cost' : total_cost}, context=context)
