@@ -1,0 +1,395 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* product_msl
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20140804-231303\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-17 23:36+0000\n"
+"PO-Revision-Date: 2014-11-18 10:23-0500\n"
+"Last-Translator: Santiago <santiago.orozco@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: product_msl
+#: help:product.product,open_time:0
+msgid "Maximun period of time in which the component must be mounted and reflowed."
+msgstr "Período máximo de  tiempo en el cual el componente debe ser montado y usado."
+
+#. module: product_msl
+#: view:product.msl:0
+msgid "Information"
+msgstr "Información"
+
+#. module: product_msl
+#: view:product.msl:0
+msgid "Search Product MSL"
+msgstr "Búsqueda MSL"
+
+#. module: product_msl
+#: view:product.msl:0
+#: field:product.msl,time_alert:0
+msgid "Alert Time in hours"
+msgstr "Tiempo para alerta en horas"
+
+#. module: product_msl
+#: field:product.msl,control:0
+msgid "Is not Controlled"
+msgstr "No está controlado"
+
+#. module: product_msl
+#: model:ir.model,name:product_msl.model_wizard_product_msl
+msgid "wizard.product.msl"
+msgstr "wizard.product.msl"
+
+#. module: product_msl
+#: view:product.msl:0
+#: field:product.msl,packaged_time:0
+msgid "Packaging Time in hours"
+msgstr "Caducidad en horas"
+
+#. module: product_msl
+#: model:ir.model,name:product_msl.model_stock_location
+msgid "Location"
+msgstr "Ubicación"
+
+#. module: product_msl
+#: help:stock.production.lot,msl_status:0
+msgid "Ready, Alerted or Don't Use. If state is in alerted or don't use you should send the lot to baking"
+msgstr "Listo, Alerta o No Usar. Si el estado es alerta o  No Usar se debería mandar el lote a horneado"
+
+#. module: product_msl
+#: help:stock.location,hasmoisture:0
+msgid "Check this, if the location has moisture."
+msgstr "Check este campo, si la ubucación tiene humedad."
+
+#. module: product_msl
+#: field:product.product,msl_id:0
+#: view:stock.production.lot:0
+#: field:stock.production.lot,msl_id:0
+msgid "MSL"
+msgstr "MSL"
+
+#. module: product_msl
+#: field:product.msl,message_follower_ids:0
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: product_msl
+#: field:stock.move,end_datetime:0
+msgid "End date time"
+msgstr "Fecha de finalización"
+
+#. module: product_msl
+#: help:product.msl,name:0
+msgid "Name of the MSL."
+msgstr "Nombre del MSL."
+
+#. module: product_msl
+#: field:stock.production.lot,moisture_exposed_time:0
+msgid "Moisture exposed time"
+msgstr "Tiempo de exposición a humedad"
+
+#. module: product_msl
+#: view:product.msl:0
+msgid "MSL Name"
+msgstr "Nombre MSL"
+
+#. module: product_msl
+#: view:stock.production.lot:0
+msgid "Do not use"
+msgstr "No Usar"
+
+#. module: product_msl
+#: view:stock.production.lot:0
+msgid "Available for use"
+msgstr "Disponible para uso"
+
+#. module: product_msl
+#: help:product.msl,open_time:0
+msgid "Maximiun period of time in which the component must be mounted and used."
+msgstr "Período máximo de  tiempo en el cual el componente debe ser montado y usado."
+
+#. module: product_msl
+#: code:addons/product_msl/objects/product_msl.py:71
+#, python-format
+msgid "%s (copy)"
+msgstr "%s (copy)"
+
+#. module: product_msl
+#: model:ir.model,name:product_msl.model_product_product
+msgid "Product"
+msgstr "Producto"
+
+#. module: product_msl
+#: view:product.msl:0
+msgid "Describe additional information here..."
+msgstr "Escriba una descripcion adicional aqui..."
+
+#. module: product_msl
+#: help:stock.production.lot,moisture_exposed_time:0
+msgid "The time this specific lot has been exposed to moisture, is calculated according to the times in the related stock moves in locations with moisture."
+msgstr "El tiempo que este lote ha sido expuesto a humedad, este campo es calculado de acorde a los tiempos que el lote ha sido expuesto a ubicaciones con humedad."
+
+#. module: product_msl
+#: view:wizard.product.msl:0
+msgid "Time Msl"
+msgstr "Tiempo MSL"
+
+#. module: product_msl
+#: view:product.msl:0
+#: field:product.msl,open_time:0
+#: view:product.product:0
+#: field:product.product,open_time:0
+#: field:stock.production.lot,open_time:0
+msgid "Open Time in hours"
+msgstr "Tiempo Máximo de exposición"
+
+#. module: product_msl
+#: help:product.msl,time_alert:0
+msgid "Alert time period in which the component should be taken into consideration to send baking."
+msgstr "Periodo de alerta en el cual el compomente debe se considerado en ser enviado al horno."
+
+#. module: product_msl
+#: field:product.msl,message_unread:0
+msgid "Unread Messages"
+msgstr "Mensajes no leídos"
+
+#. module: product_msl
+#: field:stock.production.lot,msl_status:0
+msgid "MSL Status"
+msgstr "MSL Status"
+
+#. module: product_msl
+#: help:product.msl,control:0
+msgid "Check this field if the MSL is not controlled, this means this lot won't deteriorate on locations with moisture."
+msgstr "Check este campo si el MSL no es controlado, significa que este lote no se deteriorará en ubicaciones con humedad."
+
+#. module: product_msl
+#: model:ir.actions.act_window,name:product_msl.view_product_msl_action
+msgid "MSLs"
+msgstr "MSLs"
+
+#. module: product_msl
+#: view:stock.production.lot:0
+#: selection:stock.production.lot,msl_status:0
+msgid "Alert"
+msgstr "Alerta"
+
+#. module: product_msl
+#: view:stock.production.lot:0
+msgid "Available for use but should be sent to baking soon"
+msgstr "Disponoble para el uso pero debe ser enviado a hornear pronto."
+
+#. module: product_msl
+#: model:ir.model,name:product_msl.model_stock_production_lot
+msgid "Serial Number"
+msgstr "Nº de serie"
+
+#. module: product_msl
+#: field:stock.move,dummy_field:0
+msgid "Dummy field"
+msgstr "Dummy field"
+
+#. module: product_msl
+#: field:product.msl,message_is_follower:0
+msgid "Is a Follower"
+msgstr "Es un seguidor"
+
+#. module: product_msl
+#: view:stock.production.lot:0
+msgid "orange:msl_status == 'alert';red:msl_status == 'donotuse'"
+msgstr "orange:msl_status == 'alert';red:msl_status == 'donotuse'"
+
+#. module: product_msl
+#: help:product.product,msl_id:0
+msgid "Moisture Sensitivity Level relates to the packaging and handling precautions for some semiconductors"
+msgstr "Nivel de sensibilidad a la humedad relaciona a empaquetamiento y precauciones de manejo  para ciertos semiconductores."
+
+#. module: product_msl
+#: model:ir.actions.act_window,name:product_msl.action_product_msl_wizard
+msgid "Time Msl Wizard"
+msgstr "Wizard Tiempo MSL"
+
+#. module: product_msl
+#: view:stock.production.lot:0
+msgid "Post baked"
+msgstr "Envio Horneado"
+
+#. module: product_msl
+#: model:ir.model,name:product_msl.model_stock_partial_picking_line
+msgid "stock.partial.picking.line"
+msgstr "Línea de entrega parcial"
+
+#. module: product_msl
+#: field:product.msl,name:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: product_msl
+#: field:stock.production.lot,last_baket_time:0
+msgid "Last Baked Time"
+msgstr "Última fecha de horneado"
+
+#. module: product_msl
+#: help:product.msl,message_ids:0
+msgid "Messages and communication history"
+msgstr "Historial de mensajes y comunicación"
+
+#. module: product_msl
+#: field:product.msl,message_ids:0
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: product_msl
+#: view:wizard.product.msl:0
+msgid "Save"
+msgstr "Guardar"
+
+#. module: product_msl
+#: view:product.msl:0
+msgid "Controlled MSL's"
+msgstr "MSL's Controlados"
+
+#. module: product_msl
+#: view:stock.production.lot:0
+#: selection:stock.production.lot,msl_status:0
+msgid "Ready"
+msgstr "Listo"
+
+#. module: product_msl
+#: field:wizard.product.msl,last_baket_time:0
+msgid "last baket time"
+msgstr "Última fecha de horneado"
+
+#. module: product_msl
+#: code:addons/product_msl/objects/product_msl.py:59
+#, python-format
+msgid "In order to delete a MSL, you must first unlink the MSL from the products related."
+msgstr "Para borrar un MSL, primero desvincule los productos relacionados con este."
+
+#. module: product_msl
+#: view:stock.production.lot:0
+msgid "Moisture Exposed Time"
+msgstr "Tiempo de exposición a humedad"
+
+#. module: product_msl
+#: model:ir.actions.act_window,help:product_msl.view_product_msl_action
+msgid ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"                Click to define a new MSL.\n"
+"              </p><p>\n"
+"                You must define a MSL for every product.\n"
+"              </p>\n"
+"            "
+msgstr ""
+"<p class=\"oe_view_nocontent_create\">\n"
+"                Click para definir un nuevo MSL.\n"
+"              </p><p>\n"
+"                Se debe definir un MSL para los productos.\n"
+"              </p>\n"
+"            "
+
+#. module: product_msl
+#: field:product.msl,message_summary:0
+msgid "Summary"
+msgstr "Resumen"
+
+#. module: product_msl
+#: help:product.msl,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr "Si esta señalado, los mensajes nuevos requieren de atención."
+
+#. module: product_msl
+#: selection:stock.production.lot,msl_status:0
+msgid "Don't Use"
+msgstr "No Usar"
+
+#. module: product_msl
+#: model:ir.ui.menu,name:product_msl.msls_menu
+#: view:product.msl:0
+msgid "MSL's"
+msgstr "MSL's"
+
+#. module: product_msl
+#: field:stock.move,duration:0
+msgid "Exposed Duration"
+msgstr "Duración de Exposición"
+
+#. module: product_msl
+#: help:stock.move,dummy_field:0
+msgid "Used to cause a write that updates the stored function fields"
+msgstr "Used to cause a write that updates the stored function fields"
+
+#. module: product_msl
+#: field:product.msl,alarm_percentage:0
+msgid "Alarm percentage"
+msgstr "Porcenjate de tiempo para alertar"
+
+#. module: product_msl
+#: view:stock.production.lot:0
+msgid "Do not use, send to baking"
+msgstr "No usar, enviar a horneado"
+
+#. module: product_msl
+#: model:ir.model,name:product_msl.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
+
+#. module: product_msl
+#: view:product.msl:0
+msgid "Product MSL Reference"
+msgstr "Referencia MSL "
+
+#. module: product_msl
+#: help:product.msl,alarm_percentage:0
+msgid "Percentage of moisture at which the item gets alarmed as follows: Orange (Alarmed. should be sent to baking), Red (Moisture exceeded, do not use)"
+msgstr "Porcentaje de humedad a los cuales los items son alertados: Naranja (Alerta, debe ser enviado a horneado), Rojo (Humedad Excedida, no usar)"
+
+#. module: product_msl
+#: model:ir.model,name:product_msl.model_product_msl
+msgid "product.msl"
+msgstr "product.msl"
+
+#. module: product_msl
+#: code:addons/product_msl/objects/product_msl.py:59
+#, python-format
+msgid "Invalid Action!"
+msgstr "Acción Invalida!"
+
+#. module: product_msl
+#: help:product.msl,message_summary:0
+msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+
+#. module: product_msl
+#: help:product.msl,packaged_time:0
+msgid "Lifetime of the component when saled in hours."
+msgstr "Tiempo de vida de los componentes vendidos en horas."
+
+#. module: product_msl
+#: view:wizard.product.msl:0
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: product_msl
+#: field:stock.location,hasmoisture:0
+msgid "Has Moisture"
+msgstr "Tiene humedad"
+
+#. module: product_msl
+#: help:stock.production.lot,last_baket_time:0
+#: help:wizard.product.msl,last_baket_time:0
+msgid "Ready, time between the alert."
+msgstr "Listo, tiempo entre alerta."
+
+#. module: product_msl
+#: view:product.msl:0
+#: field:product.msl,comment:0
+msgid "Additional Information"
+msgstr "Información Adicional"
+

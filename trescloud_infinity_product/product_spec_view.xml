@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+		 <!-- INHERIT PRODUCT -->
+		<record id="product_inherit2_tree_view" model="ir.ui.view">
+            <field name="name">product.inherit2.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field eval="9" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Products">
+                		<field name="spec_id"/>
+                 </tree>
+            </field>
+        </record>
+         <record id="product_inherit2_form_view" model="ir.ui.view">
+            <field name="name">product.inherit2.form</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//div[@name='ean']" position="after">
+            		<separator string="Especial Info"/>
+            		<newline/>
+            		<field name="spec_id"/>
+            		<field name="density"/>
+            	</xpath>
+            </field>
+	         </record>
+	
+		<record id="product_inherit2_search_form_view" model="ir.ui.view">
+			<field name="name">product.inherit2.search.form</field>
+			<field name="model">product.product</field>
+			<field name="inherit_id" ref="product.product_search_form_view" />
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+					<field name="default_code" string="Referencia Interna" />
+					<field name="brand_id" string="Marca" />
+					<field name="measure" string="Medidas" />
+					<field name="spec_id" string="SPEC" />
+					<field name="country_id" string="Pais de Origen" />
+					<field name="categ_id" string="Categoria" />
+					
+				</field>
+				<xpath expr="//filter[@string='Company']" position="after">
+					<filter string='Spec' icon="terp-stock_symbol-selection"
+						domain="[]" context="{'group_by' : 'spec_id'}" />
+				</xpath>
+			</field>
+		</record>
+         <!-- END INHERIT -->
+         
+        <record id="view_product_spec_tree" model="ir.ui.view">
+            <field name="name">product.spec.tree</field>
+            <field name="model">product.spec</field>
+            <field name="arch" type="xml">
+                <tree string="Product Spec">
+                    <field name="name"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+		<record id="view_product_spec_form" model="ir.ui.view">
+            <field name="name">product.spec.form</field>
+            <field name="model">product.spec</field>
+            <field name="arch" type="xml">
+                <form string="Product Spec" version="7.0">
+                    <group col="4">
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_product_spec" model="ir.actions.act_window">
+            <field name="name">Product Spec</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.spec</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="view_product_spec_tree"/>
+        </record>
+		
+         
+    <!--      parent="product.prod_config_main" -->
+    <menuitem
+        action="action_product_spec" 
+        parent="product.prod_config_main"
+        id="menu_product_spec" 
+        sequence="0" groups="base.group_no_one"/>
+		
+</data>
+</openerp>
+

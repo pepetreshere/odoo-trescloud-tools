@@ -1,0 +1,9 @@
+id,alarm_percentage,open_time,name,packaged_time,control
+__export__.product_msl_1,91,,MSL 1 – ilimitado,,True
+__export__.product_msl_2,91,700,MSL 2 – un año,1500,False
+__export__.product_msl_3,90,672,MSL 2A – 4 semanas,2500,False
+__export__.product_msl_4,91,168,MSL 3 – 168 horas,2500,False
+__export__.product_msl_5,87,72,MSL 4 – 72 horas,1500,False
+__export__.product_msl_6,90,48,MSL 5 – 48 horas,1500,False
+__export__.product_msl_7,91,24,MSL 5A – 24 horas,1100,False
+__export__.product_msl_8,91,0,MSL 6 – horneado obligatorio antes de su uso,1000,False

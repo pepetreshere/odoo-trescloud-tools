@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<openerp>
+	    <data>
+	    <!-- Filtros en la busqueda search de seriales -->
+	    <record id="search_product_lot_filter_msl" model="ir.ui.view">
+	            <field name="name">stock.search.product.lot.filter.msl</field>
+	            <field name="model">stock.production.lot</field> 
+	            <field name="inherit_id" ref="stock.search_product_lot_filter"/>
+	            <field name="arch" type="xml">
+	            	<xpath expr="//filter[@name='available']" position="after">
+	            		<filter icon="terp-check" name="msl_status_ready" string="Ready" domain="[('msl_status', '=', 'ready')]" help="Available for use"/>
+	            		<filter icon="terp-check" name="msl_status_alert" string="Alert" domain="[('msl_status', '=', 'alert')]" help="Available for use but should be sent to baking soon"/>
+	            		<filter icon="terp-check" name="msl_status_dontuse" string="Do not use" domain="[('msl_status', '=', 'donotuse')]" help="Do not use, send to baking"/>
+	            		<field name="msl_status"/>
+		            </xpath>
+            	</field>
+      	</record>
+	    
+	    <!-- Se aumenta campos autocalculados en vista  en el formulario de seriales -->
+	        <record id="stock_production_lot_form_view_msl" model="ir.ui.view">
+	            <field name="name">stock.production.lot.form.view.msl</field>
+	            <field name="model">stock.production.lot</field> 
+	            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+	            <field name="type">form</field>
+	              <field name="arch" type="xml">
+	            	<xpath expr="//notebook/page[@string='Revisions']" position="before">
+                        <page string="MSL" groups="stock.group_stock_manager">
+	                        <form string="MSL Form" version="7.0">
+			                 	<group>
+				                 	<field name="msl_status" string="MSL Status"/>
+					                <group col="4" colspan="4">
+					                 	<field colspan="1" name="moisture_exposed_time" widget="float_time" string="Moisture Exposed Time"/>
+					                 	<button name="%(action_product_msl_wizard)d" 
+					                 	colspan="3" 
+					                 	id="post baked" 
+					                 	string="Post baked" 
+					                 	type="action" 
+					                 	context="{'prodlot_id': id, 'last_baket_time': last_baket_time}"
+					                 	attrs="{'invisible' : [('msl_status','=', 'ready')]}"/>
+					                </group>
+				                 	<field name="msl_id" readonly="1" string="MSL"/>
+				                 	<field name="open_time" readonly="1" widget="float_time" string="Open Time in hours"/>
+				                 	<field name="last_baket_time" readonly="1" string="Last Baked Time"/>
+			                 	</group>
+		                 	</form>
+		                 </page>
+		             </xpath>
+            	  </field>
+	      	</record>
+	      <!-- Se aumenta campo selection en vista en el tree de seriales, cambio de colores segun el 
+	      estado del serial-->	      	
+	      	<record id="stock_production_lot_form_view_msl_tree" model="ir.ui.view">
+	            <field name="name">stock.production.lot.tree.view.msl</field>
+	            <field name="model">stock.production.lot</field> 
+	            <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+	            <field name="type">tree</field>
+	              <field name="arch" type="xml">
+	            	<xpath expr="//field[@name='ref']" position="after">
+	                 	<field name="msl_status" />
+	                 	<field name="moisture_exposed_time" widget="float_time"/>
+		             </xpath>
+		             <xpath expr="//tree[@string='Serial Number']" position="attributes">
+	                 	<attribute name="colors">orange:msl_status == 'alert';red:msl_status == 'donotuse'</attribute> 
+		             </xpath>
+            	  </field>
+	      	</record>
+	      	
+	      	<!-- Redefinicion del campo prodlot_id para que se pueda poner el onchange 
+	      	TODO: encontrar una mejor solucion que redefinir todo el campo -->
+	      	<record id="stock_partial_picking_form_view_msl" model="ir.ui.view">
+	            <field name="name">stock.partial.picking.form.view.msl</field>
+	            <field name="model">stock.partial.picking</field> 
+	            <field name="inherit_id" ref="product_serial.stock_partial_picking_form_inherit"/>
+	            <field name="type">form</field>
+	            <field name="arch" type="xml">
+	            	<xpath expr="//field[@name='prodlot_id']" position="replace">
+	            		<field name="prodlot_id" 
+	            		options="{'limit': 10, 'create': False, 'create_edit': False}"  
+	            		domain="[('product_id', '=', product_id)]" 
+	            		invisible="context.get('hide_tracking',False)" 
+	            		attrs="{'required':[('tracking','=',True), ('quantity', '!=', 0)]}" 
+	            		groups="stock.group_production_lot" 
+	            		context="{'default_product_id':product_id}"
+	            		on_change="onchange_prodlot_id(prodlot_id,product_id)"/>	            		
+		             </xpath>
+	            </field>
+	  		</record>
+	  		
+	  		<!-- Campo si una ubicacion tiene humedad -->
+	  		<record id="view_location_form_msl" model="ir.ui.view">
+	            <field name="name">stock.location.form.view.msl</field>
+	            <field name="model">stock.location</field> 
+	            <field name="inherit_id" ref="stock.view_location_form"/>
+	            <field name="type">form</field>
+	            <field name="arch" type="xml">
+	            	<xpath expr="//field[@name='scrap_location']" position="after">
+	            		<field name="hasmoisture"/>	            		
+		            </xpath>
+	            </field>
+	  		</record>
+       	</data>
+   	</openerp>

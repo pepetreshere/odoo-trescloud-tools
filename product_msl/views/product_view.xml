@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<openerp>
+	    <data>
+	    <!-- Se aumenta campos requeridos en el formulario de productos -->
+	        <record id="product_normal_form_view_msl" model="ir.ui.view">
+	            <field name="name">product.normal.form.view.msl</field>
+	            <field name="model">product.product</field> 
+	            <field name="inherit_id" ref="product.product_normal_form_view"/>
+	            <field name="type">form</field>
+	              <field name="arch" type="xml">
+	            	<xpath expr="//field[@name='list_price']" position="after">
+		            	<group string="MSL" groups="stock.group_stock_manager">
+		                 	<field name="msl_id" widget="selection"/>
+		                 	<field name="open_time" readonly="1" widget="float_time" string="Open Time in hours"/> 
+		                </group>
+		             </xpath>
+            	  </field>
+	      	</record>
+       	</data>
+   	</openerp>

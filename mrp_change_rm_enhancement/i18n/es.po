@@ -1,0 +1,138 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* mrp_change_rm_enhancement
+#	* mrp_bom_product_details_enhancement
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20140804-231303\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-31 20:20+0000\n"
+"PO-Revision-Date: 2014-10-31 15:27-0500\n"
+"Last-Translator: Santiago <santiago.orozco@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: mrp_change_rm_enhancement
+#: view:mrp.production:0
+msgid "product_qty_change(bom_id,product_qty)"
+msgstr "product_qty_change(bom_id,product_qty)"
+
+#. module: mrp_change_rm_enhancement
+#: field:mrp.production,total_deviation:0
+msgid "Total Deviation"
+msgstr " Desviación Total"
+
+#. module: mrp_change_rm_enhancement
+#: sql_constraint:mrp.production:0
+msgid "Reference must be unique per Company!"
+msgstr "Referencia debe ser única por compañía!"
+
+#. module: mrp_change_rm_enhancement
+#: model:ir.model,name:mrp_change_rm_enhancement.model_mrp_production
+msgid "Manufacturing Order"
+msgstr "Orden de fabricación"
+
+#. module: mrp_change_rm_enhancement
+#: field:mrp.production,unit_cost:0
+msgid "Unit Cost"
+msgstr "Costo Unitario"
+
+#. module: mrp_change_rm_enhancement
+#: field:stock.move,product_standard_price:0
+msgid "Product Price"
+msgstr "Precio Producto"
+
+#. module: mrp_change_rm_enhancement
+#: view:mrp.production:0
+msgid "Update"
+msgstr "Actualizar"
+
+#. module: mrp_bom_product_details_enhancement
+#: view:mrp.bom:0
+msgid "Costo Aproximado"
+msgstr "Costo Aproximado"
+
+#. module: mrp_change_rm_enhancement
+#: field:stock.move,cost_total:0
+msgid "Costo Total"
+msgstr "Costo Total"
+
+#. module: mrp_change_rm_enhancement
+#: help:mrp.production,unit_cost:0
+msgid "Unit Cost of the product"
+msgstr "Costo Unitario del product"
+
+#. module: mrp_change_rm_enhancement
+#: constraint:mrp.production:0
+msgid "Order quantity cannot be negative or zero!"
+msgstr "¡La cantidad de la orden no puede ser negativa o cero!"
+
+#. module: mrp_change_rm_enhancement
+#: field:mrp.production,total_cost:0
+msgid "Total Cost"
+msgstr "Costo Total"
+
+#. module: mrp_change_rm_enhancement
+#: help:mrp.production,total_cost:0
+msgid "Total Cost of the Product"
+msgstr "Costo Total del Producto"
+
+#. module: mrp_change_rm_enhancement
+#: view:mrp.production:0
+msgid "bom_id_change(bom_id,product_qty)"
+msgstr "bom_id_change(bom_id,product_qty)"
+
+#. module: mrp_bom_product_details_enhancement
+#: model:ir.model,name:mrp_bom_product_details_enhancement.model_mrp_bom
+msgid "Bill of Material"
+msgstr "Lista de material"
+
+#. module: mrp_change_rm_enhancement
+#: field:mrp.production,total_real_cost:0
+msgid "Total Real Cost"
+msgstr "Costo Total Real "
+
+#. module: mrp_bom_product_details_enhancement
+#: field:mrp.bom,total_cost:0
+msgid "Total Cost of BOM"
+msgstr "Costo Total de LdM"
+
+#. module: mrp_change_rm_enhancement
+#: view:mrp.production:0
+msgid "\"{'default_product_id': product_id, 'product_qty':product_qty}\""
+msgstr "\"{'default_product_id': product_id, 'product_qty':product_qty}\""
+
+#. module: mrp_change_rm_enhancement
+#: help:mrp.production,total_deviation:0
+msgid "Total Cost Deviation of the production"
+msgstr "Deviation del Costo Total de la producción"
+
+#. module: mrp_change_rm_enhancement
+#: model:ir.model,name:mrp_change_rm_enhancement.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento stock"
+
+#. module: mrp_change_rm_enhancement
+#: help:mrp.production,unit_real_cost:0
+msgid "Unit Real Cost of the product"
+msgstr "Costo Real Unitario del producto"
+
+#. module: mrp_change_rm_enhancement
+#: help:mrp.production,total_real_cost:0
+msgid "Total Real Cost of the product"
+msgstr "Costo Real Total del producto"
+
+#. module: mrp_bom_product_details_enhancement
+#: help:mrp.bom,total_cost:0
+msgid "Total Cost of this Bill Of Materials"
+msgstr "Costo Total de la Lista de Materiales"
+
+#. module: mrp_change_rm_enhancement
+#: field:mrp.production,unit_real_cost:0
+msgid "Unit Real Cost"
+msgstr "Costo Unitario Real "
+
