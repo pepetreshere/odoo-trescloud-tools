@@ -42,10 +42,10 @@ class product_msl(osv.osv):
     _columns = {
     'name': fields.char('Name', size=50, required=True, help='Name of the MSL.'),
     'control': fields.boolean('Is not Controlled', required=False, help='Check this field if the MSL is not controlled, this means this lot won\'t deteriorate on locations with moisture.', track_visibility='onchange'), 
-    'packaged_time': fields.float('Packaging Time in hours',digits=(15,2), size=40,help="Lifetime of the component when saled in hours.", required=True, track_visibility='onchange'),
-    'open_time': fields.float('Open Time in hours', digits=(15,2),size=40, help="Maximiun period of time in which the component must be mounted and used.",required=True, track_visibility='onchange'),
+    'packaged_time': fields.float('Packaging Time in hours',digits=(15,2), size=40,help="Lifetime of the component when sealed in hours.", required=True, track_visibility='onchange'),
+    'open_time': fields.float('Open Time in hours', digits=(15,2),size=40, help="Maximum period of time that the component can be used, after that time the component must be sent to bake",required=True, track_visibility='onchange'),
     'alarm_percentage': fields.float('Alarm percentage', digits=(15,2),size=40, help="Percentage of moisture at which the item gets alarmed as follows: Orange (Alarmed. should be sent to baking), Red (Moisture exceeded, do not use)",required=True, track_visibility='onchange'),
-    'time_alert': fields.function(_calculate_alert_time, method=True, type='float', string='Alert Time in hours', help="Alert time period in which the component should be taken into consideration to send baking."), 
+    'time_alert': fields.function(_calculate_alert_time, method=True, type='float', string='Alert Time in hours', help="Alert period of time in which the component should be taken into consideration to send baking."), 
     'comment': fields.text('Additional Information'),
                 }
     _defaults = {  

@@ -51,49 +51,55 @@ class stock_production_lot(osv.osv):
             result.append((record.id,name))
         return result
     
-    # Metodo que analiza el estado en que se encuentra el serial
-    def _msl_calculate(self, cr, uid, ids, name, args, context=None):
-        res = {}
-        control = False
-        met, factor, open_time = 0.0, 0.0, 0.0
-        for lot in self.browse(cr,uid,ids):
-            # Si existe serial se busca sus variables asociadas al msl
-            # las condiciones estan dadas por los porcentajes de humedad que soporte el producto
-            # segun su msl 
-            if lot.moisture_exposed_time:
-                met = lot.moisture_exposed_time
-            if lot.product_id.msl_id:
-                factor = lot.product_id.msl_id.alarm_percentage/100
-                control = lot.product_id.msl_id.control
-            if lot.open_time:
-                open_time = lot.open_time
-            if control:
-                res[lot.id] = 'ready'
-            elif met == 0.0 and factor == 0.0 and open_time == 0.0:
-                res[lot.id] = 'ready'
-            elif met < factor * open_time:
-                res[lot.id] = 'ready'
-            elif met > factor * open_time and met < open_time:
-                res[lot.id] = 'alert'
-            elif met >= open_time:
-                res[lot.id] = 'donotuse'
-        return res
-    
     # Se busca todos los stock.moves que tengan humedad su bodega origen ya que es el fin del movimiento
     # ademas debe ser mayor que la fecha de last baked time, y que tenga los mismos seriales el movimiento
      
     def _moisture_exposed_time_calculate(self, cr, uid, ids, name, args, context=None):
+            # Metodo que analiza el estado en que se encuentra el serial
+        def _msl_calculate(self, cr, uid, ids, name, args, context=None):
+            res = {}      
+            for lot in self.browse(cr,uid,ids):
+                res[lot.id] = {'msl_status':''} 
+                control = False
+                met, factor, open_time = 0.0, 0.0, 0.0
+                # Si existe serial se busca sus variables asociadas al msl
+                # las condiciones estan dadas por los porcentajes de humedad que soporte el producto
+                # segun su msl 
+                if context is not None and 'moisture_exposed_time' in context:
+                    met = context.get('moisture_exposed_time', 0.0)
+                if lot.product_id.msl_id:
+                    factor = lot.product_id.msl_id.alarm_percentage/100
+                    control = lot.product_id.msl_id.control
+                if lot.open_time:
+                    open_time = lot.open_time
+                if control:
+                    res[lot.id]['msl_status'] = 'ready'
+                elif met == 0.0 and factor == 0.0 and open_time == 0.0:
+                    res[lot.id]['msl_status'] = 'ready'
+                elif met < factor * open_time:
+                    res[lot.id]['msl_status'] = 'ready'
+                elif met > factor * open_time and met < open_time:
+                    res[lot.id]['msl_status'] = 'alert'
+                elif met >= open_time:
+                    res[lot.id]['msl_status'] = 'donotuse'
+            return res
         res = {}
-        moisture_exposed_time = 0.0
+        time_baked = "1900-01-01 00:00:00"
         move_pool = self.pool.get('stock.move')
         move_ids = move_pool.search(cr, uid, [('prodlot_id', 'not in', [0.0])],context=context)
         for lot in self.browse(cr,uid,ids):
+            res[lot.id] = {'moisture_exposed_time': 0.0, 'msl_status':''}
             if lot.product_id.msl_id:
+                moisture_exposed_time = 0.0
                 for move_id in move_ids:
                     move = move_pool.browse(cr,uid,move_id)
-                    if lot == move.prodlot_id and move.location_id.hasmoisture and move.date > lot.last_baket_time:
+                    if lot.last_baket_time:
+                        time_baked = lot.last_baket_time
+                    if lot == move.prodlot_id and move.location_id.hasmoisture and datetime.strptime(move.date, "%Y-%m-%d %H:%M:%S") > datetime.strptime(time_baked, "%Y-%m-%d %H:%M:%S"):
                         moisture_exposed_time += move.duration 
-                res[lot.id] = moisture_exposed_time
+                res[lot.id]['moisture_exposed_time'] = moisture_exposed_time
+                context.update({'moisture_exposed_time':moisture_exposed_time})
+                res[lot.id].update(_msl_calculate(self, cr, uid, ids, name, args, context=context)[lot.id])
         return res
     
     # obtiene los lotes que estan siendo modificados las variables, ver _store_rules
@@ -131,33 +137,33 @@ class stock_production_lot(osv.osv):
             product_ids = product_pool.search(cr,uid,[('msl_id','=', product_msl.id)]) 
             lot_ids = lot_pool.search(cr,uid,[('product_id','in',product_ids)]) 
         return lot_ids
-                    #===========================================================
-                    # 
-                    #===========================================================
+                     
     _store_rules = {
                     'product.product': (_get_msl, ['msl_id'],20),
                     'product.msl': (_get_prod_msl, ['open_time'],20),
-                    'stock.production.lot': (_get_lots, ['moisture_exposed_time', 'last_baket_time', 'msl_id','open_time'], 20),
+                    'stock.production.lot': (_get_lots, ['product_id', 'moisture_exposed_time', 'last_baket_time', 'msl_id','open_time'], 20),
                     'stock.move': (_get_by_moves, ['duration'], 20),
                     }
 
     _columns = {
-                'msl_status': fields.function(_msl_calculate, 
+                'msl_status': fields.function(_moisture_exposed_time_calculate, 
                                               method=True, 
                                               type='selection', 
-                                              selection=_MSL_STATUS, 
+                                              selection=_MSL_STATUS,
+                                              multi = 'calculation_time', 
                                               string='MSL Status', 
                                               store=_store_rules, 
                                               help="Ready, Alerted or Don't Use. If state is in alerted or don't use you should send the lot to baking"),
                 'moisture_exposed_time': fields.function(_moisture_exposed_time_calculate, 
                                                          method=True, type='float', 
+                                                         multi = 'calculation_time',
                                                          string='Moisture exposed time', 
                                                          digits=(15,2), 
                                                          store=_store_rules,
                                                          help="The time this specific lot has been exposed to moisture, is calculated according to the times in the related stock moves in locations with moisture."),                
                 'msl_id': fields.related('product_id', 'msl_id', type='many2one', relation='product.msl', string="MSL", help="Moisture Sensitivity Level relates to the packaging and handling precautions for some semiconductors"),
-                'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours", help="Maximiun period of time in which the component must be mounted and used."),
-                'last_baket_time': fields.datetime('Last Baked Time', type='datetime',help="Ready, time between the alert."),                
+                'open_time': fields.related('product_id', 'open_time', type='float', relation='product.product', string="Open Time in hours", help="Maximum period of time that the component can be used, after that time the component must be sent to bake."),
+                'last_baket_time': fields.datetime('Last Baked Time', type='datetime',help="Last date that the component had been sent to bake."),                
                 }
     
     _default = {
@@ -282,35 +288,6 @@ class stock_move(osv.osv):
             res[move.id]['end_datetime'] = prev_move_date
         return res
 
-#===============================================================================
-#     def _get_by_location(self, cr, uid, ids, context=None):
-#         move_ids = []
-#         move_pool = self.pool.get('stock.move')
-#         for location in self.browse(cr, uid, ids, context=context):
-#             movement_ids = move_pool.search(cr, uid, 
-#                                             [('location_dest_id', '=', location.id),
-#                                              ('state', '=', 'done')], 
-#                                             context=context)
-#             for move_id in movement_ids:
-#                 if move_id not in move_ids:
-#                     move_ids.append(move_id)
-#         return move_ids
-# 
-#     def _get_lots(self, cr, uid, ids, context=None):
-#         move_ids = []
-#         for move in self.browse(cr, uid, ids, context=context):
-#             if move.location_dest_id and move.location_dest_id.hasmoisture and move.id not in move_ids:
-#                 move_ids.append(move.id) 
-#         return move_ids
-#===============================================================================
-
-    #===========================================================================
-    # _store_rules = {
-    #                 'stock.move': (_get_lots, ['prodlot_id', 'dummy_field','location_dest_id'], 20),
-    #                 'stock.location': (_get_by_location, ['hasmoisture'], 20),
-    #                 }
-    #===========================================================================
-
     _columns = {
         'duration': fields.function(_get_expose_duration, 
                                     method=True, 
@@ -334,10 +311,10 @@ class stock_move(osv.osv):
             if record.prodlot_id:
                 if record.location_id.usage == record.location_dest_id.usage:
                     if record.product_qty > record.prodlot_id.stock_available:
-                        raise osv.except_osv(_('Error'), _('You cannot move  the product %s is greater from a locaton of type view %s.')% (record.product_id.name, record.location_id.name))
+                        raise osv.except_osv(_('Error'), _('You cannot move the product %s because the quantity you plan to move is greater than the quantity available, you have to move the whole quantity of serial.')% (record.product_id.name))
                         #raise osv.except_osv(_('Error'), _('You cannot move the product, the amount is greater than the available.')% (record.product_id.name, record.location_id.name))
                     elif record.product_qty < record.prodlot_id.stock_available:
-                        raise osv.except_osv(_('Error'), _('You cannot move the product %s is less from a locaton of type view %s.')% (record.product_id.name, record.location_id.name))
+                        raise osv.except_osv(_('Error'), _('You cannot move the product %s because the quantity you plan to move is less than the quantity available, you have to move the whole quantity of serial')% (record.product_id.name))
         return True
     
     _constraints = [
