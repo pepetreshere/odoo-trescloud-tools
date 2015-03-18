@@ -33,6 +33,9 @@
     "category" : "Custom Modules",
     "init_xml" : [],
     "demo_xml" : [],
+    "data" : [
+        'security/ir.model.access.csv',
+    ],
     "update_xml" : [
         'product_spec_view.xml',
     ],
