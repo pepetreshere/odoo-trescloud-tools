@@ -27,16 +27,17 @@
                         <page string="MSL" groups="stock.group_stock_manager">
 	                        <form string="MSL Form" version="7.0">
 			                 	<group>
-				                 	<field name="msl_status"/>
+				                 	<field name="msl_status"
+				                 		context="{'prodlot_id': id, 'last_baket_time': last_baket_time}"/>
 					                <group col="4" colspan="4">
 					                 	<field colspan="1" name="moisture_exposed_time" widget="float_time" string="Moisture Exposed Time"/>
 					                 	<button name="%(action_product_msl_wizard)d" 
-					                 	colspan="3" 
-					                 	id="post baked" 
-					                 	string="Post baked" 
-					                 	type="action" 
-					                 	context="{'prodlot_id': id, 'last_baket_time': last_baket_time}"
-					                 	attrs="{'invisible' : [('msl_status','=', 'ready')]}"/>
+						                 	colspan="3" 
+						                 	id="post baked" 
+						                 	string="Post baked" 
+						                 	type="action" 
+						                 	context="{'prodlot_id': id, 'last_baket_time': last_baket_time}"
+						                 	attrs="{'invisible' : [('msl_status','=', 'ready')]}"/>
 					                </group>
 				                 	<field name="msl_id" readonly="1"/>
 				                 	<field name="open_time" readonly="1" widget="float_time"/>
