@@ -74,10 +74,12 @@ class sale_order_line(osv.osv):
 
 sale_order_line()
 
+
 class sale_order(osv.osv):
     _inherit = 'sale.order'
 
-    def create_bom_line(self, cr, uid, line, order, sequence, main_discount=0.0, context=None):
+    # def create_bom_line(self, cr, uid, line, order, sequence, main_discount=0.0, context=None):
+    def create_bom_line(self, cr, uid, line, order, sequence, main_discount=0.0, hierarchy=(), context=None):
         bom_obj = self.pool.get('mrp.bom')
         sale_line_obj = self.pool.get('sale.order.line')
         bom_ids = bom_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('type', '=', 'break_down_on_sale')])
@@ -104,33 +106,44 @@ class sale_order(osv.osv):
                     # then we use as discount the discount of the main product.
                     print main_discount
                     discount = main_discount
-                    
-                warnings += result.get('warning') and result.get('warning').get('message') and \
-                    "\nProduct :- " + bom_line.product_id.name + "\n" + result.get('warning').get('message') +"\n" or ''
-                vals = {
-                    'order_id': order.id,
-                    'name': '%s%s' % ('>'* (line.pack_depth+1), result.get('value',{}).get('name')),
-                    'sequence': sequence,
-                    'delay': bom_line.product_id.sale_delay or 0.0,
-                    'product_id': bom_line.product_id.id,
-                    # TODO: Esta funcionalidad deberia ser parametrizable
-                    'price_unit': 0.0 ,#result.get('value',{}).get('price_unit'),
-                    'tax_id': [(6,0,result.get('value',{}).get('tax_id'))],
-                    'type': bom_line.product_id.procure_method,
-                    'product_uom_qty': result.get('value',{}).get('product_uos_qty'),
-                    'product_uom': result.get('value',{}).get('product_uom') or line.product_id.uom_id.id,
-                    'product_uos_qty': result.get('value',{}).get('product_uos_qty'),
-                    'product_uos': result.get('value',{}).get('product_uos') or line.product_id.uos_id.id,
-                    'product_packaging': result.get('value',{}).get('product_packaging'),
-                    'discount': discount,
-                    'bom_line': True,
-                    'th_weight': result.get('value',{}).get('th_weight'),
-                    'pack_depth': line.pack_depth + 1,
-                    'parent_sale_order_line': line.id
-                }
-                sale_id = sale_line_obj.create(cr, uid, vals, context)
-                line_data = sale_line_obj.browse(cr, uid, sale_id, context)
-                warnings += self.create_bom_line(cr, uid, line_data, order, sequence, main_discount, context)
+
+                if bom_line.product_id.id in hierarchy:
+
+                    warnings += """
+                                Cannot expand BoM line for product: [%d] %s. Such product is misconfigured since it belongs to a BoM hierarchy it's also an ancestor for.
+                                """ % (line.product_id.id, line.product_id.name)
+
+                else:
+
+                    warnings += result.get('warning') and result.get('warning').get('message') and \
+                        "\nProduct :- " + bom_line.product_id.name + "\n" + result.get('warning').get('message') +"\n" or ''
+                    vals = {
+                        'order_id': order.id,
+                        'name': '%s%s' % ('>'* (line.pack_depth+1), result.get('value',{}).get('name')),
+                        'sequence': sequence,
+                        'delay': bom_line.product_id.sale_delay or 0.0,
+                        'product_id': bom_line.product_id.id,
+                        # TODO: Esta funcionalidad deberia ser parametrizable
+                        'price_unit': 0.0 ,#result.get('value',{}).get('price_unit'),
+                        'tax_id': [(6,0,result.get('value',{}).get('tax_id'))],
+                        'type': bom_line.product_id.procure_method,
+                        'product_uom_qty': result.get('value',{}).get('product_uos_qty'),
+                        'product_uom': result.get('value',{}).get('product_uom') or line.product_id.uom_id.id,
+                        'product_uos_qty': result.get('value',{}).get('product_uos_qty'),
+                        'product_uos': result.get('value',{}).get('product_uos') or line.product_id.uos_id.id,
+                        'product_packaging': result.get('value',{}).get('product_packaging'),
+                        'discount': discount,
+                        'bom_line': True,
+                        'th_weight': result.get('value',{}).get('th_weight'),
+                        'pack_depth': line.pack_depth + 1,
+                        'parent_sale_order_line': line.id
+                    }
+
+                    sale_id = sale_line_obj.create(cr, uid, vals, context)
+                    line_data = sale_line_obj.browse(cr, uid, sale_id, context)
+                    # warnings += self.create_bom_line(cr, uid, line_data, order, sequence, main_discount, context)
+                    warnings += self.create_bom_line(cr, uid, line_data, order, sequence, main_discount,
+                                                     hierarchy + (line.product_id.id,), context)
 
         return warnings
 
@@ -159,7 +172,8 @@ class sale_order(osv.osv):
                             sequence = line.sequence
 #                        for bom_line in bom_data.bom_lines:
                         sequence += 1
-                warnings += self.create_bom_line(cr, uid, line, order, sequence, main_discount, context)
+                # warnings += self.create_bom_line(cr, uid, line, order, sequence, main_discount, context)
+                warnings += self.create_bom_line(cr, uid, line, order, sequence, main_discount, context=context)
         context.update({'default_name': warnings})
         vals = True
         if warnings:
