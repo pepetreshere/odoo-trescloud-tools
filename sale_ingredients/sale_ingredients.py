@@ -45,14 +45,32 @@ mrp_bom()
 
 class sale_order_line(osv.osv):
     _inherit = 'sale.order.line'
+    
+    def unlink(self, cr, uid, ids, context=None):
+        sale_order_line_obj = self.pool.get('sale.order.line')
+        for line in sale_order_line_obj.browse(cr, uid, ids, context=context):
+            parent=0
+            try: #Se usa try porque el orm borra en la primera iteración los campos asociados
+                if line and line.parent_sale_order_line:
+                    parent = line.parent_sale_order_line
+                if(parent==0):
+                    parent = ids[0]
+                unlink_ids = sale_order_line_obj.search(cr, uid, [('parent_sale_order_line', '=', parent), ('state', 'in', ['draft', 'cancel'])], context=context)
+                unlink_ids.append(parent)  
+            except:
+                unlink_ids = []              
+      
+        return osv.osv.unlink(self, cr, uid, unlink_ids, context=context)
 
     _columns = {
         'pack_depth': fields.integer('Depth', required=True, help='Depth of the product if it is part of a pack.'),
         'bom_line': fields.boolean('Bom Lines'),
+        'parent_sale_order_line': fields.integer('Parent sale order line', required=True, help='Depth of the product if it is part of a pack.')
     }
     _defaults={
-        'pack_depth':0      
-               }
+        'pack_depth':0,
+        'parent_sale_order_line':0      
+    }
 
 sale_order_line()
 
@@ -108,6 +126,7 @@ class sale_order(osv.osv):
                     'bom_line': True,
                     'th_weight': result.get('value',{}).get('th_weight'),
                     'pack_depth': line.pack_depth + 1,
+                    'parent_sale_order_line': line.id
                 }
                 sale_id = sale_line_obj.create(cr, uid, vals, context)
                 line_data = sale_line_obj.browse(cr, uid, sale_id, context)
