@@ -46,6 +46,19 @@ mrp_bom()
 class sale_order_line(osv.osv):
     _inherit = 'sale.order.line'
     
+    def write(self, cr, uid, ids, vals, context=None):
+        sale_order_obj = self.pool.get('sale.order')
+        if context is None:
+            context = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            try:
+                order_id = [line.order_id.id]
+            except:
+                order_id = []  
+        res = super(sale_order_line, self).write(cr, uid, ids, vals, context)
+        sale_order_obj.expand_bom(cr, uid, order_id, context=context, depth=0)        
+        return res
+    
     def unlink(self, cr, uid, ids, context=None):
         sale_order_line_obj = self.pool.get('sale.order.line')
         for line in sale_order_line_obj.browse(cr, uid, ids, context=context):
@@ -145,7 +158,8 @@ class sale_order(osv.osv):
         warnings = ''
         for order in self.browse(cr, uid, ids, context):
             sequence = -1
-            delete_line_ids = sale_line_obj.search(cr, uid, [('bom_line', '=', True), ('order_id', '=', order.id)])
+            delete_line_ids = sale_line_obj.search(cr, uid, [('bom_line', '=', True), 
+                                                             ('order_id', '=', order.id)])
             if delete_line_ids:
                 sale_line_obj.unlink(cr, uid, delete_line_ids)
             for line in order.order_line:
@@ -174,7 +188,20 @@ class sale_order(osv.osv):
                     'target': 'new',
                 }
         return vals
+    
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
+        res = super(sale_order, self).create(cr, uid, vals, context=context)
+        self.expand_bom(cr, uid, [res], context=context, depth=0)
+        return res
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        if context is None:
+            context = {}
+        self.expand_bom(cr, uid, ids, context=context, depth=0)
+        res = super(sale_order, self).write(cr, uid, ids, vals, context)
+        return res
 
 sale_order()
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <button name="action_quotation_send" position="after">
-                    <button name="expand_bom" type="object" string="Expand bom" states="draft" class="oe_highlight"/>
+                    <button name="expand_bom" type="object" string="Expand bom" states="draft" class="oe_highlight" invisible="1"/>
                 </button>
             </field>
         </record>
