@@ -58,9 +58,10 @@ class sale_order_line(osv.osv):
                 order_id = [line.order_id.id]
             except:
                 order_id = []  
-        res = super(sale_order_line, self).write(cr, uid, ids, vals, context)
-        sale_order_obj.expand_bom(cr, uid, order_id, context=context, depth=0)        
-        return res
+            res = super(sale_order_line, self).write(cr, uid, ids, vals, context)
+            sale_order_obj.expand_bom(cr, uid, order_id, context=context, depth=0)
+            return res
+        return True
     
     def unlink(self, cr, uid, ids, context=None):
         """
@@ -74,14 +75,15 @@ class sale_order_line(osv.osv):
         sale_order_line_obj = self.pool.get('sale.order.line')
         for line in sale_order_line_obj.browse(cr, uid, ids, context=context):
             # para cada objeto, navegamos hacia el padre superior
-            try:
-                while line.parent_sale_order_line:
-                    line = line.parent_sale_order_line
-            except ValueError:
-                # Absorbemos cualquier excepcion en este punto.
-                # Estas pueden darse por alguna cuestion relacionada a integridad referencial
-                #   ya que el objeto padre puede haberse borrado en alguna otra iteracion anterior.
-                pass
+            if context.get('upwards', True):
+                try:
+                    while line.parent_sale_order_line:
+                        line = line.parent_sale_order_line
+                except ValueError:
+                    # Absorbemos cualquier excepcion en este punto.
+                    # Estas pueden darse por alguna cuestion relacionada a integridad referencial
+                    #   ya que el objeto padre puede haberse borrado en alguna otra iteracion anterior.
+                    pass
 
             try:
                 return super(sale_order_line, self).unlink(cr, uid, [line.id], context=context)
@@ -198,7 +200,11 @@ class sale_order(osv.osv):
             delete_line_ids = sale_line_obj.search(cr, uid, [('bom_line', '=', True), 
                                                              ('order_id', '=', order.id)])
             if delete_line_ids:
-                sale_line_obj.unlink(cr, uid, delete_line_ids)
+                new_context = context.copy()
+                new_context.update({
+                    'upwards': False
+                })
+                sale_line_obj.unlink(cr, uid, delete_line_ids, context=new_context)
             for line in order.order_line:
                 # el descuento del producto principal del combo
                 main_discount = line.discount
@@ -236,8 +242,8 @@ class sale_order(osv.osv):
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = {}
-        self.expand_bom(cr, uid, ids, context=context, depth=0)
         res = super(sale_order, self).write(cr, uid, ids, vals, context)
+        self.expand_bom(cr, uid, ids, context=context, depth=0)
         return res
 
 sale_order()
