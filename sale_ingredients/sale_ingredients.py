@@ -22,11 +22,13 @@
 
 from osv import fields,osv
 
+
 def rounding(f, r):
     import math
     if not r:
         return f
     return math.ceil(f / r) * r
+
 
 class mrp_bom(osv.osv):
     """
@@ -43,33 +45,49 @@ class mrp_bom(osv.osv):
 
 mrp_bom()
 
+
 class sale_order_line(osv.osv):
     _inherit = 'sale.order.line'
     
     def unlink(self, cr, uid, ids, context=None):
+        """
+        Desvincula desde el padre, jalando por cascade a los hijos
+        :param cr:
+        :param uid:
+        :param ids:
+        :param context:
+        :return:
+        """
         sale_order_line_obj = self.pool.get('sale.order.line')
         for line in sale_order_line_obj.browse(cr, uid, ids, context=context):
-            parent=0
-            try: #Se usa try porque el orm borra en la primera iteración los campos asociados
-                if line and line.parent_sale_order_line:
-                    parent = line.parent_sale_order_line
-                if(parent==0):
-                    parent = ids[0]
-                unlink_ids = sale_order_line_obj.search(cr, uid, [('parent_sale_order_line', '=', parent), ('state', 'in', ['draft', 'cancel'])], context=context)
-                unlink_ids.append(parent)  
-            except:
-                unlink_ids = []              
-      
-        return osv.osv.unlink(self, cr, uid, unlink_ids, context=context)
+            # para cada objeto, navegamos hacia el padre superior
+            try:
+                while line.parent_sale_order_line:
+                    line = line.parent_sale_order_line
+            except ValueError:
+                # Absorbemos cualquier excepcion en este punto.
+                # Estas pueden darse por alguna cuestion relacionada a integridad referencial
+                #   ya que el objeto padre puede haberse borrado en alguna otra iteracion anterior.
+                pass
+
+            try:
+                return super(sale_order_line, self).unlink(cr, uid, [line.id], context=context)
+            except ValueError:
+                # Absorbemos cualquier excepcion en este punto.
+                # Estas pueden darse por alguna cuestion relacionada a integridad referencial
+                #   ya que el objeto padre puede haberse borrado en alguna otra iteracion anterior.
+                return True
 
     _columns = {
         'pack_depth': fields.integer('Depth', required=True, help='Depth of the product if it is part of a pack.'),
         'bom_line': fields.boolean('Bom Lines'),
-        'parent_sale_order_line': fields.integer('Parent sale order line', required=True, help='Depth of the product if it is part of a pack.')
+        'parent_sale_order_line': fields.many2one('sale.order.line', string='Parent sale order line', required=False,
+                                                  help='Depth of the product if it is part of a pack.',
+                                                  ondelete="cascade")
     }
     _defaults={
-        'pack_depth':0,
-        'parent_sale_order_line':0      
+        'pack_depth': 0,
+        'parent_sale_order_line': 0
     }
 
 sale_order_line()
@@ -78,12 +96,12 @@ sale_order_line()
 class sale_order(osv.osv):
     _inherit = 'sale.order'
 
-    # def create_bom_line(self, cr, uid, line, order, sequence, main_discount=0.0, context=None):
     def create_bom_line(self, cr, uid, line, order, sequence, main_discount=0.0, hierarchy=(), context=None):
         bom_obj = self.pool.get('mrp.bom')
         sale_line_obj = self.pool.get('sale.order.line')
         bom_ids = bom_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('type', '=', 'break_down_on_sale')])
         warnings = ''
+        hierarchy = hierarchy + (line.product_id.id,)
         if bom_ids:
             bom_data = bom_obj.browse(cr, uid, bom_ids[0])
             factor = line.product_uos_qty / (bom_data.product_efficiency or 1.0)
@@ -92,15 +110,18 @@ class sale_order(osv.osv):
                 factor = bom_data.product_rounding
             for bom_line in bom_data.bom_lines:
                 quantity = bom_line.product_qty * factor
-                result = sale_line_obj.product_id_change(cr, uid, [], order.pricelist_id.id, bom_line.product_id.id, quantity, bom_line.product_id.uom_id.id, quantity, bom_line.product_id.uos_id.id, 
-                            '', order.partner_id.id, False, True, order.date_order, False, order.fiscal_position.id, False, context=context)
+                result = sale_line_obj.product_id_change(cr, uid, [], order.pricelist_id.id, bom_line.product_id.id,
+                                                         quantity, bom_line.product_id.uom_id.id, quantity,
+                                                         bom_line.product_id.uos_id.id, '', order.partner_id.id, False,
+                                                         True, order.date_order, False, order.fiscal_position.id, False,
+                                                         context=context)
 
-                discount = result.get('value',{}).get('discount') or 0.0,
+                discount = result.get('value', {}).get('discount') or 0.0,
                 
                 if order.pricelist_id.visible_discount == True:
                     # if visible discount is installed and if enabled 
                     # use the discount provided by list price
-                    discount = result.get('value',{}).get('discount') or 0.0
+                    discount = result.get('value', {}).get('discount') or 0.0
                 else:
                     # we asume the visible discount is not enabled
                     # then we use as discount the discount of the main product.
@@ -109,29 +130,33 @@ class sale_order(osv.osv):
 
                 if bom_line.product_id.id in hierarchy:
 
-                    warnings += """
-                                Cannot expand BoM line for product: [%d] %s. Such product is misconfigured since it belongs to a BoM hierarchy it's also an ancestor for.
-                                """ % (line.product_id.id, line.product_id.name)
+                    pass
+                    # comentamos el mensaje que agregamos porque a los de SF no les va a gustar ver esto asi.
+                    # sin embargo, el codigo de abajo NO es erroneo.
+                    ###########################################################################################
+                    # warnings += """
+                    #             Cannot expand BoM line for product: [%d] %s. Such product is misconfigured since it belongs to a BoM hierarchy it's also an ancestor for.
+                    #             """ % (line.product_id.id, line.product_id.name)
 
                 else:
 
                     warnings += result.get('warning') and result.get('warning').get('message') and \
-                        "\nProduct :- " + bom_line.product_id.name + "\n" + result.get('warning').get('message') +"\n" or ''
+                        "\nProduct :- %s\n%s\n" % (bom_line.product_id.name, result.get('warning').get('message')) or ''
                     vals = {
                         'order_id': order.id,
-                        'name': '%s%s' % ('>'* (line.pack_depth+1), result.get('value',{}).get('name')),
+                        'name': '%s%s' % ('>' * (line.pack_depth+1), result.get('value', {}).get('name')),
                         'sequence': sequence,
                         'delay': bom_line.product_id.sale_delay or 0.0,
                         'product_id': bom_line.product_id.id,
                         # TODO: Esta funcionalidad deberia ser parametrizable
-                        'price_unit': 0.0 ,#result.get('value',{}).get('price_unit'),
-                        'tax_id': [(6,0,result.get('value',{}).get('tax_id'))],
+                        'price_unit': 0.0,  # result.get('value',{}).get('price_unit'),
+                        'tax_id': [(6, 0, result.get('value', {}).get('tax_id'))],
                         'type': bom_line.product_id.procure_method,
-                        'product_uom_qty': result.get('value',{}).get('product_uos_qty'),
-                        'product_uom': result.get('value',{}).get('product_uom') or line.product_id.uom_id.id,
-                        'product_uos_qty': result.get('value',{}).get('product_uos_qty'),
-                        'product_uos': result.get('value',{}).get('product_uos') or line.product_id.uos_id.id,
-                        'product_packaging': result.get('value',{}).get('product_packaging'),
+                        'product_uom_qty': result.get('value', {}).get('product_uos_qty'),
+                        'product_uom': result.get('value', {}).get('product_uom') or line.product_id.uom_id.id,
+                        'product_uos_qty': result.get('value', {}).get('product_uos_qty'),
+                        'product_uos': result.get('value', {}).get('product_uos') or line.product_id.uos_id.id,
+                        'product_packaging': result.get('value', {}).get('product_packaging'),
                         'discount': discount,
                         'bom_line': True,
                         'th_weight': result.get('value',{}).get('th_weight'),
@@ -141,9 +166,8 @@ class sale_order(osv.osv):
 
                     sale_id = sale_line_obj.create(cr, uid, vals, context)
                     line_data = sale_line_obj.browse(cr, uid, sale_id, context)
-                    # warnings += self.create_bom_line(cr, uid, line_data, order, sequence, main_discount, context)
-                    warnings += self.create_bom_line(cr, uid, line_data, order, sequence, main_discount,
-                                                     hierarchy + (line.product_id.id,), context)
+                    warnings += self.create_bom_line(cr, uid, line_data, order, sequence, main_discount, hierarchy,
+                                                     context)
 
         return warnings
 
@@ -172,8 +196,7 @@ class sale_order(osv.osv):
                             sequence = line.sequence
 #                        for bom_line in bom_data.bom_lines:
                         sequence += 1
-                # warnings += self.create_bom_line(cr, uid, line, order, sequence, main_discount, context)
-                warnings += self.create_bom_line(cr, uid, line, order, sequence, main_discount, context=context)
+                warnings += self.create_bom_line(cr, uid, line, order, sequence, main_discount, hierarchy=(), context=context)
         context.update({'default_name': warnings})
         vals = True
         if warnings:
