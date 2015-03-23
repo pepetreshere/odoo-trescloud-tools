@@ -59,7 +59,8 @@ class sale_order_line(osv.osv):
             except:
                 order_id = []  
             res = super(sale_order_line, self).write(cr, uid, ids, vals, context)
-            sale_order_obj.expand_bom(cr, uid, order_id, context=context, depth=0)
+            if not context.get('already_expanding', False):
+                sale_order_obj.expand_bom(cr, uid, order_id, context=context, depth=0)
             return res
         return True
     
@@ -200,18 +201,14 @@ class sale_order(osv.osv):
             delete_line_ids = sale_line_obj.search(cr, uid, [('bom_line', '=', True), 
                                                              ('order_id', '=', order.id)])
             if delete_line_ids:
-                new_context = context.copy()
-                new_context.update({
-                    'upwards': False
-                })
-                sale_line_obj.unlink(cr, uid, delete_line_ids, context=new_context)
+                sale_line_obj.unlink(cr, uid, delete_line_ids, context=dict(context, upwards=False))
             for line in order.order_line:
                 # el descuento del producto principal del combo
                 main_discount = line.discount
                 if line.product_id and line.state == 'draft':
                         sequence += 1
                         if sequence > line.sequence:
-                            sale_line_obj.write(cr, uid, [line.id], {'sequence': sequence}, context)
+                            sale_line_obj.write(cr, uid, [line.id], {'sequence': sequence}, dict(context, already_expanding=True))
                         else:
                             sequence = line.sequence
 #                        for bom_line in bom_data.bom_lines:
