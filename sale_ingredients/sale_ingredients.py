@@ -20,7 +20,8 @@
 #
 ##############################################################################
 
-from osv import fields,osv
+from osv import fields, osv
+from openerp.tools.translate import _
 
 
 def rounding(f, r):
@@ -48,6 +49,60 @@ mrp_bom()
 
 class sale_order_line(osv.osv):
     _inherit = 'sale.order.line'
+
+    def price_change(self, cr, uid, ids, price, discount, context=None):
+        """
+
+        :param cr:
+        :param uid:
+        :param ids:
+        :param price:
+        :param discount:
+        :return:
+        """
+        for obj in self.browse(cr, uid, ids, context):
+            if not (obj.price_unit == price and obj.discount == discount) and obj.bom_line:
+                return {
+                    'value': {
+                        'price_unit': obj.price_unit,
+                        'discount': obj.discount
+                    },
+                    'warning': {
+                        'title': 'Error!',
+                        'message': 'No se puede cambiar el precio ni el descuento de una línea '
+                                   'perteneciente a una receta'
+                    }
+                }
+        return {
+            'value': {}
+        }
+
+    def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
+                          uom=False, qty_uos=0, uos=False, name='', partner_id=False,
+                          lang=False, update_tax=True, date_order=False, packaging=False,
+                          fiscal_position=False, flag=False, context=None):
+        """
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        for obj in self.browse(cr, uid, ids, context):
+            if not (obj.product_id and obj.product_id.id == product and obj.product_uom_qty == qty) and obj.bom_line:
+                return {
+                    'value': {
+                        'product_uom_qty': obj.product_uom_qty,
+                        'product_id': obj.product_id and obj.product_id.id
+                    },
+                    'warning': {
+                        'title': 'Error!',
+                        'message': 'No se puede cambiar el producto ni la cantidad de una línea perteneciente a una receta'
+                    }
+                }
+                # raise osv.except_osv(_('Error!'), _('No se puede cambiar cantidad ni producto en las líneas hijas'))
+        return super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty, uom,
+                                                              qty_uos, uos, name, partner_id, lang, update_tax,
+                                                              date_order, packaging, fiscal_position, flag, context)
     
     def write(self, cr, uid, ids, vals, context=None):
         sale_order_obj = self.pool.get('sale.order')
@@ -59,8 +114,6 @@ class sale_order_line(osv.osv):
             except:
                 order_id = []  
             res = super(sale_order_line, self).write(cr, uid, ids, vals, context)
-            if not context.get('already_expanding', False):
-                sale_order_obj.expand_bom(cr, uid, order_id, context=context, depth=0)
             return res
         return True
     
@@ -87,12 +140,12 @@ class sale_order_line(osv.osv):
                     pass
 
             try:
-                return super(sale_order_line, self).unlink(cr, uid, [line.id], context=context)
+                super(sale_order_line, self).unlink(cr, uid, [line.id], context=context)
             except ValueError:
                 # Absorbemos cualquier excepcion en este punto.
                 # Estas pueden darse por alguna cuestion relacionada a integridad referencial
                 #   ya que el objeto padre puede haberse borrado en alguna otra iteracion anterior.
-                return True
+                pass
 
     _columns = {
         'pack_depth': fields.integer('Depth', required=True, help='Depth of the product if it is part of a pack.'),
