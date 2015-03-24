@@ -52,7 +52,7 @@ class sale_order_line(osv.osv):
 
     def price_change(self, cr, uid, ids, price, discount, context=None):
         """
-
+        Impedimos el cambio de precio y descuento, o registramos cambio y que se debe reexpandir.
         :param cr:
         :param uid:
         :param ids:
@@ -73,49 +73,47 @@ class sale_order_line(osv.osv):
                                    'perteneciente a una receta'
                     }
                 }
-        return {
-            'value': {}
-        }
+            else:
+                if not obj.bom_line:
+                    self.pool['sale.order'].write(cr, uid, [obj.order_id and obj.order_id.id], {}, context=dict(context or {}, should_expand=True))
+                return {
+                    'value': {}
+                }
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='', partner_id=False,
                           lang=False, update_tax=True, date_order=False, packaging=False,
                           fiscal_position=False, flag=False, context=None):
         """
-
+        Impedimos el cambio de producto y de cantidad, o registramos cambio y que se debe reexpandir.
         :param args:
         :param kwargs:
         :return:
         """
+        result = {
+            'warning': {},
+            'value': {}
+        }
         for obj in self.browse(cr, uid, ids, context):
+            result = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty, uom,
+                                                                    qty_uos, uos, name, partner_id, lang, update_tax,
+                                                                    date_order, packaging, fiscal_position, flag,
+                                                                    context)
             if not (obj.product_id and obj.product_id.id == product and obj.product_uom_qty == qty) and obj.bom_line:
-                return {
-                    'value': {
-                        'product_uom_qty': obj.product_uom_qty,
-                        'product_id': obj.product_id and obj.product_id.id
-                    },
-                    'warning': {
-                        'title': 'Error!',
-                        'message': 'No se puede cambiar el producto ni la cantidad de una línea perteneciente a una receta'
-                    }
-                }
-                # raise osv.except_osv(_('Error!'), _('No se puede cambiar cantidad ni producto en las líneas hijas'))
-        return super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty, uom,
-                                                              qty_uos, uos, name, partner_id, lang, update_tax,
-                                                              date_order, packaging, fiscal_position, flag, context)
-    
-    def write(self, cr, uid, ids, vals, context=None):
-        sale_order_obj = self.pool.get('sale.order')
-        if context is None:
-            context = {}
-        for line in self.browse(cr, uid, ids, context=context):
-            try:
-                order_id = [line.order_id.id]
-            except:
-                order_id = []  
-            res = super(sale_order_line, self).write(cr, uid, ids, vals, context)
-            return res
-        return True
+                result.setdefault('value', {})
+                result['value'].update({
+                    'product_uom_qty': obj.product_uom_qty,
+                    'product_id': obj.product_id and obj.product_id.id
+                })
+                result.setdefault('warning', {})
+                result['warning'].update({
+                    'title': 'Error!',
+                    'message': 'No se puede cambiar el producto ni la cantidad de una linea perteneciente a una receta'
+                })
+            else:
+                if not obj.bom_line:
+                    self.pool['sale.order'].write(cr, uid, [obj.order_id and obj.order_id.id], {}, context=dict(context, should_expand=True))
+        return result
     
     def unlink(self, cr, uid, ids, context=None):
         """
@@ -154,7 +152,7 @@ class sale_order_line(osv.osv):
                                                   help='Depth of the product if it is part of a pack.',
                                                   ondelete="cascade")
     }
-    _defaults={
+    _defaults = {
         'pack_depth': 0,
         'parent_sale_order_line': 0
     }
@@ -164,6 +162,14 @@ sale_order_line()
 
 class sale_order(osv.osv):
     _inherit = 'sale.order'
+
+    _columns = {
+        'should_expand': fields.boolean(string='Should Expand BoM', required=True)
+    }
+
+    _defaults = {
+        'should_expand': lambda *a, **kwa: False
+    }
 
     def create_bom_line(self, cr, uid, line, order, sequence, main_discount=0.0, hierarchy=(), context=None):
         bom_obj = self.pool.get('mrp.bom')
@@ -179,7 +185,7 @@ class sale_order(osv.osv):
                 factor = bom_data.product_rounding
             for bom_line in bom_data.bom_lines:
                 quantity = bom_line.product_qty * factor
-                result = sale_line_obj.product_id_change(cr, uid, [], order.pricelist_id.id, bom_line.product_id.id,
+                result = sale_line_obj.product_id_change(cr, uid, [bom_line.id], order.pricelist_id.id, bom_line.product_id.id,
                                                          quantity, bom_line.product_id.uom_id.id, quantity,
                                                          bom_line.product_id.uos_id.id, '', order.partner_id.id, False,
                                                          True, order.date_order, False, order.fiscal_position.id, False,
@@ -290,11 +296,32 @@ class sale_order(osv.osv):
         return res
     
     def write(self, cr, uid, ids, vals, context=None):
+        """
+        Debemos contemplar que, al guardar, puede que la guardada sea autonoma y que
+          tengamos que refrescar todo el contenido, si así fue encargado. Si la guardada
+          NO es autonoma, sino que pertenece a algun cambio registrado, entonces invocamos
+          que se guarde y se marque para expandir.
+        :param cr:
+        :param uid:
+        :param ids:
+        :param vals:
+        :param context:
+        :return:
+        """
         if context is None:
             context = {}
-        res = super(sale_order, self).write(cr, uid, ids, vals, context)
-        self.expand_bom(cr, uid, ids, context=context, depth=0)
-        return res
 
+        if not context.get('should_expand', False):
+            # Esta llamada se realiza cuando guardamos con el boton 'Save' de la vista, o desde cualquier
+            # otro lado.
+            for values in self.read(cr, uid, ids, fields=('id', 'should_expand'), context=context):
+                if values['should_expand']:
+                    super(sale_order, self).write(cr, uid, [values['id']], dict(vals, should_expand=False), context)
+                    self.expand_bom(cr, uid, [values['id']], context=context, depth=0)
+        else:
+            # Esta llamada se realiza cuando guardamos mediante write() con el contexto explicito.
+            super(sale_order, self).write(cr, uid, ids, dict(vals, should_expand=True), context)
+
+        return True
 sale_order()
 
