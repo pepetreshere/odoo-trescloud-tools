@@ -318,6 +318,8 @@ class sale_order(osv.osv):
                 if values['should_expand']:
                     super(sale_order, self).write(cr, uid, [values['id']], dict(vals, should_expand=False), context)
                     self.expand_bom(cr, uid, [values['id']], context=context, depth=0)
+                else:
+                    super(sale_order, self).write(cr, uid, [values['id']], vals, context)
         else:
             # Esta llamada se realiza cuando guardamos mediante write() con el contexto explicito.
             super(sale_order, self).write(cr, uid, ids, dict(vals, should_expand=True), context)
