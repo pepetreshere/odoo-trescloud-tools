@@ -82,6 +82,9 @@ class sale_order_line(osv.osv):
                 return {
                     'value': {}
                 }
+        return {
+            'value': {}
+        }
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='', partner_id=False,
@@ -97,12 +100,14 @@ class sale_order_line(osv.osv):
             'warning': {},
             'value': {}
         }
+        if not context:
+            context = {}
         ids = ids if isinstance(ids, (list, tuple, set, frozenset)) else [ids]
+        result = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty, uom,
+                                                                qty_uos, uos, name, partner_id, lang, update_tax,
+                                                                date_order, packaging, fiscal_position, flag,
+                                                                context or {})
         for obj in self.browse(cr, uid, ids, context):
-            result = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty, uom,
-                                                                    qty_uos, uos, name, partner_id, lang, update_tax,
-                                                                    date_order, packaging, fiscal_position, flag,
-                                                                    context or {})
             if not (obj.product_id and obj.product_id.id == product and obj.product_uom_qty == qty) and obj.bom_line:
                 result.setdefault('value', {})
                 result['value'].update({
@@ -115,7 +120,7 @@ class sale_order_line(osv.osv):
                     'message': 'No se puede cambiar el producto ni la cantidad de una linea perteneciente a una receta'
                 })
             else:
-                if not obj.bom_line:
+                if not obj.bom_line and not context.get('already_expanding', False):
                     self.pool['sale.order'].write(cr, uid, [obj.order_id and obj.order_id.id], {}, context=dict(context or {}, should_expand=True))
         return result
     
@@ -206,7 +211,7 @@ class sale_order(osv.osv):
                     if date_stop < now:
                         continue
 
-                result = sale_line_obj.product_id_change(cr, uid, [bom_line.id], order.pricelist_id.id, bom_line.product_id.id,
+                result = sale_line_obj.product_id_change(cr, uid, [], order.pricelist_id.id, bom_line.product_id.id,
                                                          quantity, bom_line.product_id.uom_id.id, quantity,
                                                          bom_line.product_id.uos_id.id, '', order.partner_id.id, False,
                                                          True, order.date_order, False, order.fiscal_position.id, False,
@@ -293,7 +298,7 @@ class sale_order(osv.osv):
                             sequence = line.sequence
 #                        for bom_line in bom_data.bom_lines:
                         sequence += 1
-                warnings += self.create_bom_line(cr, uid, line, order, sequence, main_discount, hierarchy=(), context=context)
+                warnings += self.create_bom_line(cr, uid, line, order, sequence, main_discount, hierarchy=(), context=dict(context, already_expanding=True))
         context.update({'default_name': warnings})
         vals = True
         if warnings:
