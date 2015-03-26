@@ -90,8 +90,10 @@ class sale_order_line(osv.osv):
         if context is None:
             context = {}
         if not context.get('sequence_preset', False):
-            parent = self.pool['sale.order'].browse(cr, uid, vals.get('order_id'), context)
-            vals['sequence'] = max([obj.sequence if obj.sequence is not False else -1 for obj in parent.order_line] or [-1]) + 1
+            order_line_ids = self.pool['sale.order.line'].search(cr, uid, [('order_id', '=', vals['order_id'])], context=context)
+            order_lines = self.pool['sale.order.line'].read(cr, uid, order_line_ids, fields=('sequence',), context=context)
+            vals['sequence'] = max([obj['sequence'] if obj['sequence'] is not False else -1
+                                    for obj in order_lines] or [-1]) + 1
         return super(sale_order_line, self).create(cr, uid, vals, context=context)
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
