@@ -60,6 +60,7 @@ class sale_order_line(osv.osv):
         :param discount:
         :return:
         """
+        ids = ids if isinstance(ids, (list, tuple, set, frozenset)) else [ids]
         for obj in self.browse(cr, uid, ids, context):
             if not (obj.price_unit == price and obj.discount == discount) and obj.bom_line:
                 return {
@@ -94,6 +95,7 @@ class sale_order_line(osv.osv):
             'warning': {},
             'value': {}
         }
+        ids = ids if isinstance(ids, (list, tuple, set, frozenset)) else [ids]
         for obj in self.browse(cr, uid, ids, context):
             result = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty, uom,
                                                                     qty_uos, uos, name, partner_id, lang, update_tax,
@@ -125,6 +127,7 @@ class sale_order_line(osv.osv):
         :return:
         """
         sale_order_line_obj = self.pool.get('sale.order.line')
+        ids = ids if isinstance(ids, (list, tuple, set, frozenset)) else [ids]
         for line in sale_order_line_obj.browse(cr, uid, ids, context=context):
             # para cada objeto, navegamos hacia el padre superior
             if context.get('upwards', True):
