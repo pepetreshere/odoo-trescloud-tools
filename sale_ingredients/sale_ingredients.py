@@ -98,7 +98,7 @@ class sale_order_line(osv.osv):
             result = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty, uom,
                                                                     qty_uos, uos, name, partner_id, lang, update_tax,
                                                                     date_order, packaging, fiscal_position, flag,
-                                                                    context)
+                                                                    context or {})
             if not (obj.product_id and obj.product_id.id == product and obj.product_uom_qty == qty) and obj.bom_line:
                 result.setdefault('value', {})
                 result['value'].update({
@@ -112,7 +112,7 @@ class sale_order_line(osv.osv):
                 })
             else:
                 if not obj.bom_line:
-                    self.pool['sale.order'].write(cr, uid, [obj.order_id and obj.order_id.id], {}, context=dict(context, should_expand=True))
+                    self.pool['sale.order'].write(cr, uid, [obj.order_id and obj.order_id.id], {}, context=dict(context or {}, should_expand=True))
         return result
     
     def unlink(self, cr, uid, ids, context=None):
@@ -189,7 +189,7 @@ class sale_order(osv.osv):
                                                          quantity, bom_line.product_id.uom_id.id, quantity,
                                                          bom_line.product_id.uos_id.id, '', order.partner_id.id, False,
                                                          True, order.date_order, False, order.fiscal_position.id, False,
-                                                         context=context)
+                                                         context=context or {})
 
                 discount = result.get('value', {}).get('discount') or 0.0,
                 
@@ -314,6 +314,7 @@ class sale_order(osv.osv):
         if not context.get('should_expand', False):
             # Esta llamada se realiza cuando guardamos con el boton 'Save' de la vista, o desde cualquier
             # otro lado.
+            ids = ids if isinstance(ids, (list, tuple, set, frozenset)) else [ids]
             for values in self.read(cr, uid, ids, fields=('id', 'should_expand'), context=context):
                 if values['should_expand']:
                     super(sale_order, self).write(cr, uid, [values['id']], dict(vals, should_expand=False), context)
