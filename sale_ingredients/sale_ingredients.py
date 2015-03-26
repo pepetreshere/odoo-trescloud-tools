@@ -265,10 +265,9 @@ class sale_order(osv.osv):
                         'parent_sale_order_line': line.id
                     }
 
-                    context['_shared']['sequence'] += 1
-
                     sale_id = sale_line_obj.create(cr, uid, vals, context)
                     line_data = sale_line_obj.browse(cr, uid, sale_id, context)
+                    context['_shared']['sequence'] += 1
                     warnings += self.create_bom_line(cr, uid, line_data, order, main_discount, hierarchy,
                                                      context)
 
@@ -298,7 +297,7 @@ class sale_order(osv.osv):
                 main_discount = line.discount
                 if line.product_id and line.state == 'draft':
                     sale_line_obj.write(cr, uid, [line.id], {'sequence': context['_shared']['sequence']}, dict(context, already_expanding=True))
-                    context['_shared']['sequence'] += 1
+                context['_shared']['sequence'] += 1
                 warnings += self.create_bom_line(cr, uid, line, order, main_discount, hierarchy=(), context=dict(context, already_expanding=True))
         context.update({'default_name': warnings})
         context.pop('_shared', None)
