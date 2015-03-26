@@ -86,6 +86,14 @@ class sale_order_line(osv.osv):
             'value': {}
         }
 
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
+        if not context.get('sequence_preset', False):
+            parent = self.pool['sale.order'].browse(cr, uid, vals.get('order_id'), context)
+            vals['sequence'] = max([obj.sequence if obj.sequence is not False else -1 for obj in parent.order_line]) + 1
+        return super(sale_order_line, self).create(cr, uid, vals, context=context)
+
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='', partner_id=False,
                           lang=False, update_tax=True, date_order=False, packaging=False,
@@ -265,7 +273,7 @@ class sale_order(osv.osv):
                         'parent_sale_order_line': line.id
                     }
 
-                    sale_id = sale_line_obj.create(cr, uid, vals, context)
+                    sale_id = sale_line_obj.create(cr, uid, vals, dict(context or {}, sequence_preset=True))
                     line_data = sale_line_obj.browse(cr, uid, sale_id, context)
                     context['_shared']['sequence'] += 1
                     warnings += self.create_bom_line(cr, uid, line_data, order, main_discount, hierarchy,
@@ -292,7 +300,7 @@ class sale_order(osv.osv):
                                                              ('order_id', '=', order.id)])
             if delete_line_ids:
                 sale_line_obj.unlink(cr, uid, delete_line_ids, context=dict(context, upwards=False))
-            for line in order.order_line:
+            for line in sale_line_obj.browse(cr, uid, sale_line_obj.search(cr, uid, [('order_id', '=', order.id)], order='sequence', context=context), context=context):
                 # el descuento del producto principal del combo
                 main_discount = line.discount
                 if line.product_id and line.state == 'draft':
