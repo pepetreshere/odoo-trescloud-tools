@@ -182,7 +182,7 @@ class sale_order(osv.osv):
         'should_expand': lambda *a, **kwa: False
     }
 
-    def create_bom_line(self, cr, uid, line, order, sequence, main_discount=0.0, hierarchy=(), context=None):
+    def create_bom_line(self, cr, uid, line, order, main_discount=0.0, hierarchy=(), context=None):
         bom_obj = self.pool.get('mrp.bom')
         sale_line_obj = self.pool.get('sale.order.line')
         bom_ids = bom_obj.search(cr, uid, [('product_id', '=', line.product_id.id), ('type', '=', 'break_down_on_sale')])
@@ -246,7 +246,7 @@ class sale_order(osv.osv):
                     vals = {
                         'order_id': order.id,
                         'name': '%s%s' % ('>' * (line.pack_depth+1), result.get('value', {}).get('name')),
-                        'sequence': sequence,
+                        'sequence': context['_shared']['sequence'],
                         'delay': bom_line.product_id.sale_delay or 0.0,
                         'product_id': bom_line.product_id.id,
                         # TODO: Esta funcionalidad deberia ser parametrizable
@@ -265,16 +265,23 @@ class sale_order(osv.osv):
                         'parent_sale_order_line': line.id
                     }
 
+                    context['_shared']['sequence'] += 1
+
                     sale_id = sale_line_obj.create(cr, uid, vals, context)
                     line_data = sale_line_obj.browse(cr, uid, sale_id, context)
-                    warnings += self.create_bom_line(cr, uid, line_data, order, sequence, main_discount, hierarchy,
+                    warnings += self.create_bom_line(cr, uid, line_data, order, main_discount, hierarchy,
                                                      context)
 
         return warnings
 
     def expand_bom(self, cr, uid, ids, context=None, depth=0):
         if context is None:
-            context={}
+            context = {}
+        context.update({
+            '_shared': {
+                'sequence': 0
+            }
+        })
         if depth == 10:
             return True
         if type(ids) in [int, long]:
@@ -282,7 +289,6 @@ class sale_order(osv.osv):
         sale_line_obj = self.pool.get('sale.order.line')
         warnings = ''
         for order in self.browse(cr, uid, ids, context):
-            sequence = -1
             delete_line_ids = sale_line_obj.search(cr, uid, [('bom_line', '=', True), 
                                                              ('order_id', '=', order.id)])
             if delete_line_ids:
@@ -291,15 +297,11 @@ class sale_order(osv.osv):
                 # el descuento del producto principal del combo
                 main_discount = line.discount
                 if line.product_id and line.state == 'draft':
-                        sequence += 1
-                        if sequence > line.sequence:
-                            sale_line_obj.write(cr, uid, [line.id], {'sequence': sequence}, dict(context, already_expanding=True))
-                        else:
-                            sequence = line.sequence
-#                        for bom_line in bom_data.bom_lines:
-                        sequence += 1
-                warnings += self.create_bom_line(cr, uid, line, order, sequence, main_discount, hierarchy=(), context=dict(context, already_expanding=True))
+                    sale_line_obj.write(cr, uid, [line.id], {'sequence': context['_shared']['sequence']}, dict(context, already_expanding=True))
+                    context['_shared']['sequence'] += 1
+                warnings += self.create_bom_line(cr, uid, line, order, main_discount, hierarchy=(), context=dict(context, already_expanding=True))
         context.update({'default_name': warnings})
+        context.pop('_shared', None)
         vals = True
         if warnings:
             vals = {
