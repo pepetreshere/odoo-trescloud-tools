@@ -22,6 +22,8 @@
 
 from osv import fields, osv
 from openerp.tools.translate import _
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from datetime import datetime
 
 
 def rounding(f, r):
@@ -126,6 +128,7 @@ class sale_order_line(osv.osv):
         :param context:
         :return:
         """
+        context = context or {}
         sale_order_line_obj = self.pool.get('sale.order.line')
         ids = ids if isinstance(ids, (list, tuple, set, frozenset)) else [ids]
         for line in sale_order_line_obj.browse(cr, uid, ids, context=context):
@@ -188,6 +191,21 @@ class sale_order(osv.osv):
                 factor = bom_data.product_rounding
             for bom_line in bom_data.bom_lines:
                 quantity = bom_line.product_qty * factor
+                date_start = bom_line.date_start
+                date_stop = bom_line.date_stop
+
+                now = datetime.now().date()
+
+                if date_start:
+                    date_start = datetime.strptime(date_start, DEFAULT_SERVER_DATE_FORMAT).date()
+                    if date_start > now:
+                        continue
+
+                if date_stop:
+                    date_stop = datetime.strptime(date_stop, DEFAULT_SERVER_DATE_FORMAT).date()
+                    if date_stop < now:
+                        continue
+
                 result = sale_line_obj.product_id_change(cr, uid, [bom_line.id], order.pricelist_id.id, bom_line.product_id.id,
                                                          quantity, bom_line.product_id.uom_id.id, quantity,
                                                          bom_line.product_id.uos_id.id, '', order.partner_id.id, False,
