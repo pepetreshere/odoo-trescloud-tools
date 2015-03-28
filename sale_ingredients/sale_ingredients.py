@@ -348,12 +348,31 @@ class sale_order(osv.osv):
         if context is None:
             context = {}
 
+        # Nos quedamos con los elementos que existan en la base de datos. LA RAZON ES QUE si no filtramos asi,
+        #   vamos a tener elementos para el WRITE que se refiere a elementos que no estan en la base de datos,
+        #   y vamos a tener un bonito error.
+        #
+        # OJO tambien conservamos los nuevos eeh.
+        existent_lines = self.pool['sale.order.line'].search(cr, uid, [('order_id', 'in', ids)], context=context)
+        if 'order_line' in vals:
+            vals['order_line'] = [e for e in vals.get('order_line', []) if (e[0] == 0 or e[1] in existent_lines)]
+
+        # nos quedamos con los elementos NUEVOS de sale.order.line
+        new_order_lines = [e for e in vals.get('order_line', []) if e[0] == 0]
+
         if not context.get('should_expand', False):
-            # Esta llamada se realiza cuando guardamos con el boton 'Save' de la vista, o desde cualquier
-            # otro lado.
+            """
+            Entramos aca si cualquiera de las dos condiciones se cumple:
+            1. Es una guardada normal (es decir, no es una guardada que preguarda la indicación de expandir.
+               En este sentido, ya que no estamos preindicando, lo que nos toca es revisar si teniamos anteriormente
+                 una preindicacion para expandir, y obedecerla.
+            2. Es una guardada que modifica las lineas que existen en la orden de venta. En tal caso deberiamos
+                 forzar una expansion, como si hubieramos tenido la indicacion de expandir puesta explicitamente.
+            """
+
             ids = ids if isinstance(ids, (list, tuple, set, frozenset)) else [ids]
             for values in self.read(cr, uid, ids, fields=('id', 'should_expand'), context=context):
-                if values['should_expand']:
+                if values['should_expand'] or new_order_lines:
                     super(sale_order, self).write(cr, uid, [values['id']], dict(vals, should_expand=False), context)
                     self.expand_bom(cr, uid, [values['id']], context=context, depth=0)
                 else:
