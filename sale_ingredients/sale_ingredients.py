@@ -326,6 +326,9 @@ class sale_order(osv.osv):
         return vals
     
     def create(self, cr, uid, vals, context=None):
+        """
+        Se invoca el super de create para llamar el metodo expand_bom en el boton guardar
+        """
         if context is None:
             context = {}
         res = super(sale_order, self).create(cr, uid, vals, context=context)

@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 <data>
-
+    	<!-- Ocultamos el campo sequence, el bom_line y el boton expand_bom en pedidos de venta, ademas pintamos de gray
+ 		     las lineas donde el spam_bom es true-->
         <record id="view_order_bom_expand_form" model="ir.ui.view">
             <field name="name">sale.order.bom_expand.form</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='sequence']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//tree/field[@name='sequence']" position="after">
+                    <field name="bom_line" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree[@string='Sales Order Lines']" position="attributes">
+                    <attribute name="colors">gray:bom_line == True</attribute>
+                </xpath>
                 <button name="action_quotation_send" position="after">
                     <button name="expand_bom" type="object" string="Expand bom" states="draft" class="oe_highlight" invisible="1"/>
                 </button>
@@ -33,7 +43,6 @@
                 <xpath expr="//field[@name='name']" position="replace">
                 	<field name="name"/>
                 </xpath>
-                
                 <field name="type" position="after">
                     <p colspan="2" class="oe_grey" attrs="{'invisible': [('type','!=','break_down_on_sale')]}">
                         When selecting this product in a sale order it will be broken down
@@ -42,7 +51,6 @@
                 </field>
             </field>
         </record>
-
-</data>
+    </data>
 </openerp>
 
