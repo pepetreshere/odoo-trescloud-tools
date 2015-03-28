@@ -347,6 +347,7 @@ class sale_order(osv.osv):
         """
         if context is None:
             context = {}
+        ids = ids if isinstance(ids, (list, tuple, set, frozenset)) else [ids]
 
         # Nos quedamos con los elementos que existan en la base de datos. LA RAZON ES QUE si no filtramos asi,
         #   vamos a tener elementos para el WRITE que se refiere a elementos que no estan en la base de datos,
