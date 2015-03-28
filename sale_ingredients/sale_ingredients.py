@@ -326,6 +326,9 @@ class sale_order(osv.osv):
         return vals
     
     def create(self, cr, uid, vals, context=None):
+        """
+        Se invoca el super de create para llamar el metodo expand_bom en el boton guardar
+        """
         if context is None:
             context = {}
         res = super(sale_order, self).create(cr, uid, vals, context=context)
@@ -372,8 +375,8 @@ class sale_order(osv.osv):
             """
 
             ids = ids if isinstance(ids, (list, tuple, set, frozenset)) else [ids]
-            for values in self.read(cr, uid, ids, fields=('id', 'should_expand'), context=context):
-                if values['should_expand'] or new_order_lines:
+            for values in self.read(cr, uid, ids, fields=('id', 'should_expand', 'state'), context=context):
+                if (values['should_expand'] or new_order_lines) and (values.get('state') not in ['cancel', 'waiting_date', 'progress', 'manual', 'shipping_except', 'invoice_except', 'done']):
                     super(sale_order, self).write(cr, uid, [values['id']], dict(vals, should_expand=False), context)
                     self.expand_bom(cr, uid, [values['id']], context=context, depth=0)
                 else:
