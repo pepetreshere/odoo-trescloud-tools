@@ -170,8 +170,10 @@ class sale_order_line(osv.osv):
         'pack_depth': fields.integer('Depth', required=True, help='Depth of the product if it is part of a pack.'),
         'bom_line': fields.boolean('Bom Lines'),
         'parent_sale_order_line': fields.many2one('sale.order.line', string='Parent sale order line', required=False,
-                                                  help='Depth of the product if it is part of a pack.',
-                                                  ondelete="cascade")
+                                                  help='Id of parent line when the line is an ingredient in Bill of Material of type Break Down on Sale Order',
+                                                  ondelete="cascade"),
+        'child_sale_order_lines': fields.one2many('sale.order.line', 'parent_sale_order_line', 'Child sale order lines', required=False,
+                                                  help='Ids of children lines when the line is an ingredient in Bill of Material of type Break Down on Sale Order')
     }
     _defaults = {
         'pack_depth': 0,
