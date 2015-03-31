@@ -132,6 +132,14 @@ class sale_order_line(osv.osv):
             else:
                 if not obj.bom_line and not context.get('already_expanding', False):
                     self.pool['sale.order'].write(cr, uid, [obj.order_id and obj.order_id.id], {}, context=dict(context or {}, should_expand=True))
+                    if self.search(cr, uid, [('parent_sale_order_line', '=', obj.id)], context=context):
+                        # no solo estamos editando una linea que no es BOM y que no ocurre durante el proceso de
+                        # expansion, sino que ademas estamos editando una linea que tiene lineas hijas. por esto,
+                        # tenemos que tirar una alerta para indicarle que esto no se verá hasta que to' esté guardado.
+                        result['warning'].update({
+                            'title': u'Información',
+                            'message': u'Usted se encuentra realizando cambios en una línea de producto que despliega ingredientes. Los cambios en los mismos se reflejarán cuando se guarde la orden de venta.'
+                        })
         return result
     
     def unlink(self, cr, uid, ids, context=None):
