@@ -133,7 +133,19 @@ class sale_order_line(osv.osv):
                 if not obj.bom_line and not context.get('already_expanding', False):
                     self.pool['sale.order'].write(cr, uid, [obj.order_id and obj.order_id.id], {}, context=dict(context or {}, should_expand=True))
         return result
-    
+
+    def product_uom_change(self, cursor, user, ids, pricelist, product, qty=0,
+                           uom=False, qty_uos=0, uos=False, name='', partner_id=False,
+                           lang=False, update_tax=True, date_order=False, context=None):
+        result = super(sale_order_line, self).product_uom_change(cursor, user, ids, pricelist, product, qty,
+                                                                 uom, qty_uos, uos, name, partner_id, lang,
+                                                                 update_tax, date_order, context)
+        for obj in self.browse(cursor, user, ids, context=context):
+            if obj.bom_line:
+                result['value'] = {}
+
+        return result
+
     def unlink(self, cr, uid, ids, context=None):
         """
         Desvincula desde el padre, jalando por cascade a los hijos
