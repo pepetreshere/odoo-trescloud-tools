@@ -395,14 +395,5 @@ class sale_order(osv.osv):
             super(sale_order, self).write(cr, uid, ids, dict(vals, should_expand=True), context)
 
         return True
-    
-    def copy(self, cr, uid, id, default=None, context=None):
-        if default is None:
-            default = {}
-        default = default.copy()
-        order_line = self.browse(cr, uid, id, context=context).order_line
-            
-        #default.update({'order_line': []})
-        return super(sale_order, self).copy(cr, uid, id, default, context)
 sale_order()
 
