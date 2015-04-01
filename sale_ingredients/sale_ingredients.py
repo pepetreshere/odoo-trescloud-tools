@@ -353,6 +353,13 @@ class sale_order(osv.osv):
         """
         if context is None:
             context = {}
+        # Obtenemos todas las lineas que sean padres y lineas regulares
+        notchilds = [line for line in vals['order_line'] if isinstance(line[2], dict) and not line[2].get('parent_sale_order_line')]
+        # Seteamos a todas estas lineas sus hijos en [] (vacio) hijos solo es el nombre de la variable
+        # no se me ocurrio otro
+        hijos = [notchild[2].update({'child_sale_order_lines': []}) for notchild in notchilds]
+        # La variable order_line se setea con los nuevos valores de notchilds
+        vals['order_line'] = notchilds
         res = super(sale_order, self).create(cr, uid, vals, context=context)
         self.expand_bom(cr, uid, [res], context=context, depth=0)
         return res
