@@ -87,11 +87,17 @@ class sale_order_line(osv.osv):
         }
 
     def create(self, cr, uid, vals, context=None):
+        """
+        Si le especificamos sequence_preset=False, o no se lo especificamos, entonces
+          la creacion de una linea de orden de compra tendra un indice de secuencial
+          igual al maximo que encuentre (tomando lineas de orden de compra dentro de
+          la misma orden) +1.
+        """
         if context is None:
             context = {}
         if not context.get('sequence_preset', False):
-            order_line_ids = self.pool['sale.order.line'].search(cr, uid, [('order_id', '=', vals['order_id'])], context=context)
-            order_lines = self.pool['sale.order.line'].read(cr, uid, order_line_ids, fields=('sequence',), context=context)
+            order_line_ids = self.search(cr, uid, [('order_id', '=', vals['order_id'])], context=context)
+            order_lines = self.read(cr, uid, order_line_ids, fields=('sequence',), context=context)
             vals['sequence'] = max([obj['sequence'] if obj['sequence'] is not False else -1
                                     for obj in order_lines] or [-1]) + 1
         return super(sale_order_line, self).create(cr, uid, vals, context=context)
