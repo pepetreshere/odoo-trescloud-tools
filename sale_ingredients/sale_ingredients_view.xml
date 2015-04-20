@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
+    	
     	<!-- Ocultamos el campo sequence, el bom_line y el boton expand_bom en pedidos de venta, ademas pintamos de gray
  		     las lineas donde el spam_bom es true-->
         <record id="view_order_bom_expand_form" model="ir.ui.view">
@@ -28,6 +29,7 @@
                 </xpath>
             </field>
         </record>
+        
 		<!-- Ocultamos el campo sequence, en facturas de cliente-->
         <record id="sale_ingredients_invoice_form" model="ir.ui.view">
             <field name="name">sale.ingredients.invoice.form</field>
@@ -39,6 +41,7 @@
                 </xpath>
             </field>
         </record> 
+        
         <record id="view_mrp_bom_new_type_form" model="ir.ui.view">
             <field name="name">mrp.bom.form</field>
             <field name="model">mrp.bom</field>
@@ -61,6 +64,7 @@
                 </field>
             </field>
         </record>
+        
     </data>
 </openerp>
 
