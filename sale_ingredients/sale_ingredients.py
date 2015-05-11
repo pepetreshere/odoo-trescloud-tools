@@ -230,7 +230,7 @@ class sale_order(osv.osv):
         # La variable order_line se setea con los nuevos valores de notchilds
         vals['order_line'] = notchilds
         res = super(sale_order, self).create(cr, uid, vals, context=context)
-        self.expand_bom(cr, uid, [res], context=context, depth=0)
+        #self.expand_bom(cr, uid, [res], context=context, depth=0)
         return res
     
     def write(self, cr, uid, ids, vals, context=None):
