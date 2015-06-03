@@ -59,15 +59,17 @@ class stock_production_lot(osv.osv):
              ('donotuse','Don\'t Use')]
 
     #Metodo que da el nombre de los seriales
-    def name_get(self, cr, uid, ids, context=None):
-        result = []
-        for record in self.browse(cr, uid, ids, context=context):
-            name = record.name
-            for status in self._MSL_STATUS:
-                if status[0] == record.msl_status:
-                    name +=  ' [' + status[1] + ']'
-            result.append((record.id,name))
-        return result
+    #===========================================================================
+    # def name_get(self, cr, uid, ids, context=None):
+    #     result = []
+    #     for record in self.browse(cr, uid, ids, context=context):
+    #         name = record.name
+    #         for status in self._MSL_STATUS:
+    #             if status[0] == record.msl_status:
+    #                 name +=  ' [' + status[1] + ']'
+    #         result.append((record.id,name))
+    #     return result
+    #===========================================================================
     
     # Metodo que analiza el estado en que se encuentra el serial
     def _msl_calculate(self, cr, uid, ids, name, args, context=None):
