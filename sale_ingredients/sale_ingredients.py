@@ -231,7 +231,7 @@ class sale_order(osv.osv):
             hijos = [notchild[2].update({'child_sale_order_lines': []}) for notchild in notchilds]
             # La variable order_line se setea con los nuevos valores de notchilds
             vals['order_line'] = notchilds
-            res = super(sale_order, self).create(cr, uid, vals, context=context)
+        res = super(sale_order, self).create(cr, uid, vals, context=context)
         self.expand_bom(cr, uid, [res], context=context, depth=0)
         return res
     
