@@ -54,13 +54,17 @@ class fleet_vehicle(osv.osv):
             }
         return {'value' : values}
     
-    def on_change_odometer(self, cr, uid, ids, vals, context=None):
-        for vehicle in self.browse(cr, uid, ids, context):
-            old_odometer = vehicle.odometer or _('None')
-            if old_odometer >= vals:
-                raise osv.except_osv(_('Invalid action!'), _('The date Value is not valid because is less than the last Value for the odometer'))
-                if old_odometer < vals:
-                    return old_odometer;
+    def on_change_odometer(self, cr, uid, ids, odometer, context=None):
+        if context is None:
+            context = {}
+        vals = {}
+        if ids:
+            for vehicle in self.browse(cr, uid, ids, context):
+                old_odometer = vehicle.odometer
+                if old_odometer > odometer:
+                    raise osv.except_osv(_('Invalid action!'), 
+                                         _('The new reading should be greater than or equal to the accumulated read for this equipment.'))
+                vals.update({'odometer': odometer})
         return vals
     
     def create(self, cr, uid, data, context=None):
